@@ -1,0 +1,22 @@
+﻿@inject IAppSettings appSetting
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+    ViewData["Title"] = "";
+    ViewData["PaginaTitulo"] = "Psicologa";
+    ViewData["PaginaTituloMenor"] = "Seu espaço de acolhimento, equilíbrio e desenvolvimento emocional";
+    ViewData["Descricao"] = "Portal dedicado ao cuidado com a saúde emocional, atendimentos psicológicos e conteúdos para bem-estar e qualidade de vida.";
+    ViewData["BodyPadrao"] = true;
+    ViewData["TopoExpandido"] = true;
+    ViewData["ExibirTopo"] = true;
+}
+
+
+@section Scripts{
+
+    <script src="~/clientapp/dist/views/home/Index.js?cache=@appSetting.Version"></script>
+}
+
+
+<div id="root"></div>

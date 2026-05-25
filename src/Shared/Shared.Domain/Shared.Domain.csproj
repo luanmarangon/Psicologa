@@ -1,0 +1,12 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Shared.Infra.CrossCutting\Shared.Infra.CrossCutting.csproj" />
+    <ProjectReference Include="..\Shared.Infra.Data.Providers\Shared.Infra.Data.Providers.csproj" />
+  </ItemGroup>
+
+</Project>

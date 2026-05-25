@@ -1,0 +1,20 @@
+﻿@{
+    ViewData["Title"] = "Dashboard";
+    ViewData["PaginaTitulo"] = "Dashboard";
+    // ViewData["Descricao"] = "Indicadores e informações do MultiServiços.";
+}
+
+@inject IAppSettings appSetting
+
+@section Styles {
+    <link href="~/css/views/dashboard/Index.css?cache=@appSetting.Version" rel="stylesheet" />
+}
+
+
+@section Scripts {
+
+    <script src="~/clientapp/dist/views/dashboard/Index.js?cache=@appSetting.Version"></script>
+}
+
+
+<div id="root"></div>

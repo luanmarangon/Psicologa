@@ -1,0 +1,196 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+	<Nullable>enable</Nullable>
+	<ImplicitUsings>enable</ImplicitUsings>
+    <MvcRazorCompileOnPublish>false</MvcRazorCompileOnPublish>
+    <CopyRazorGenerateFilesToPublishDirectory>true</CopyRazorGenerateFilesToPublishDirectory>
+    <UserSecretsId>bbc689bb-c1f0-400a-8acc-94656ae40e73</UserSecretsId>
+	<TypeScriptCompileBlocked>true</TypeScriptCompileBlocked>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <ServerGarbageCollection>false</ServerGarbageCollection>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Content Remove="Areas\Administrativo\Views\BlogPost\Index.cshtml" />
+    <Content Remove="Areas\Administrativo\Views\BlogPost\NovoPost.cshtml" />
+    <Content Remove="Areas\Administrativo\Views\Cliente\Index.cshtml" />
+    <Content Remove="Areas\Administrativo\Views\Cliente\Servicos.cshtml" />
+    <Content Remove="Areas\Administrativo\Views\Agendamento\Index.cshtml" />
+    <Content Remove="Areas\Administrativo\Views\Perfil\Index.cshtml" />
+    <Content Remove="Areas\Administrativo\Views\Leads\Index.cshtml" />
+    <Content Remove="Areas\Administrativo\Views\Configuracao\Index.cshtml" />
+    <Content Remove="Areas\Administrativo\Views\Servico\Index.cshtml" />
+    <Content Remove="Areas\Administrativo\Views\Convenio\Index.cshtml" />
+  </ItemGroup>
+  
+
+  <ItemGroup>
+    <None Include="Areas\Administrativo\Views\BlogPost\NovoPost.cshtml" />
+    <None Include="Areas\Administrativo\Views\BlogPost\Index.cshtml" />
+    <None Include="Areas\Administrativo\Views\Cliente\Servicos.cshtml" />
+    <None Include="Areas\Administrativo\Views\Agendamento\Index.cshtml" />
+    <None Include="Areas\Administrativo\Views\Perfil\Index.cshtml" />
+    <None Include="Areas\Administrativo\Views\Leads\Index.cshtml" />
+    <None Include="Areas\Administrativo\Views\Dashboard\Error.cshtml" />
+    <None Include="Areas\Administrativo\Views\Dashboard\Index.cshtml" />
+    <None Include="Areas\Administrativo\Views\PerfilUsuario\Index.cshtml" />
+    <None Include="Areas\Administrativo\Views\Cliente\Index.cshtml" />
+    <None Include="Areas\Administrativo\Views\Pessoa\Index.cshtml" />
+    <None Include="Areas\Administrativo\Views\Shared\_Layout.cshtml" />
+    <None Include="Areas\Administrativo\Views\Shared\_LayoutLimpo.cshtml" />
+    <None Include="Areas\Administrativo\Views\Shared\_LayoutLogin.cshtml" />
+    <None Include="Areas\Administrativo\Views\Configuracao\Index.cshtml" />
+    <None Include="Areas\Administrativo\Views\Servico\Index.cshtml" />
+    <None Include="Areas\Administrativo\Views\Convenio\Index.cshtml" />
+    <None Include="Areas\Administrativo\Views\Usuario\Index.cshtml" />
+    <None Include="wwwroot\chat-ia-old\script.js" />
+    <None Include="wwwroot\clientapp\src\views\home\dashboard\Movimento.js" />
+    <None Include="wwwroot\clientapp\src\views\home\Index.js" />
+    <None Include="wwwroot\clientapp\src\views\pessoa\components\Cadastro.js" />
+    <None Include="wwwroot\clientapp\src\views\pessoa\components\CadastroTipo.js" />
+    <None Include="wwwroot\clientapp\src\views\pessoa\Index.js" />
+    <None Include="wwwroot\js\site.js" />
+    <None Include="wwwroot\lib\sweetalert2-11\sweetalert2.all.js" />
+    <None Include="wwwroot\lib\sweetalert2-11\sweetalert2.all.min.js" />
+    <None Include="wwwroot\lib\sweetalert2-11\sweetalert2.js" />
+    <None Include="wwwroot\lib\sweetalert2-11\sweetalert2.min.js" />
+    <None Include="wwwroot\template\online-education-website-template\js\main.js" />
+    <None Include="wwwroot\template\online-education-website-template\lib\counterup\counterup.min.js" />
+    <None Include="wwwroot\template\online-education-website-template\lib\easing\easing.js" />
+    <None Include="wwwroot\template\online-education-website-template\lib\easing\easing.min.js" />
+    <None Include="wwwroot\template\online-education-website-template\lib\owlcarousel\LICENSE" />
+    <None Include="wwwroot\template\online-education-website-template\lib\owlcarousel\owl.carousel.js" />
+    <None Include="wwwroot\template\online-education-website-template\lib\owlcarousel\owl.carousel.min.js" />
+    <None Include="wwwroot\template\online-education-website-template\lib\waypoints\links.php" />
+    <None Include="wwwroot\template\online-education-website-template\lib\waypoints\waypoints.min.js" />
+    <None Include="wwwroot\template\online-education-website-template\scss\bootstrap\scss\bootstrap-grid.scss" />
+    <None Include="wwwroot\template\online-education-website-template\scss\bootstrap\scss\bootstrap-reboot.scss" />
+    <None Include="wwwroot\template\online-education-website-template\scss\bootstrap\scss\bootstrap.scss" />
+    <None Include="wwwroot\template\online-education-website-template\scss\bootstrap\scss\mixins\_alert.scss" />
+    <None Include="wwwroot\template\online-education-website-template\scss\bootstrap\scss\mixins\_background-variant.scss" />
+    <None Include="wwwroot\template\online-education-website-template\scss\bootstrap\scss\mixins\_badge.scss" />
+    <None Include="wwwroot\template\online-education-website-template\scss\bootstrap\scss\mixins\_border-radius.scss" />
+    <None Include="wwwroot\template\online-education-website-template\scss\bootstrap\scss\mixins\_box-shadow.scss" />
+    <None Include="wwwroot\template\online-education-website-template\scss\bootstrap\scss\mixins\_breakpoints.scss" />
+    <None Include="wwwroot\template\online-education-website-template\scss\bootstrap\scss\mixins\_buttons.scss" />
+    <None Include="wwwroot\template\online-education-website-template\scss\bootstrap\scss\mixins\_caret.scss" />
+    <None Include="wwwroot\template\online-education-website-template\scss\bootstrap\scss\mixins\_clearfix.scss" />
+    <None Include="wwwroot\template\online-education-website-template\scss\bootstrap\scss\mixins\_deprecate.scss" />
+    <None Include="wwwroot\template\online-education-website-template\scss\bootstrap\scss\mixins\_float.scss" />
+    <None Include="wwwroot\template\online-education-website-template\scss\bootstrap\scss\mixins\_forms.scss" />
+    <None Include="wwwroot\template\online-education-website-template\scss\bootstrap\scss\mixins\_gradients.scss" />
+    <None Include="wwwroot\template\online-education-website-template\scss\bootstrap\scss\mixins\_grid-framework.scss" />
+    <None Include="wwwroot\template\online-education-website-template\scss\bootstrap\scss\mixins\_grid.scss" />
+    <None Include="wwwroot\template\online-education-website-template\scss\bootstrap\scss\mixins\_hover.scss" />
+    <None Include="wwwroot\template\online-education-website-template\scss\bootstrap\scss\mixins\_image.scss" />
+    <None Include="wwwroot\template\online-education-website-template\scss\bootstrap\scss\mixins\_list-group.scss" />
+    <None Include="wwwroot\template\online-education-website-template\scss\bootstrap\scss\mixins\_lists.scss" />
+    <None Include="wwwroot\template\online-education-website-template\scss\bootstrap\scss\mixins\_nav-divider.scss" />
+    <None Include="wwwroot\template\online-education-website-template\scss\bootstrap\scss\mixins\_pagination.scss" />
+    <None Include="wwwroot\template\online-education-website-template\scss\bootstrap\scss\mixins\_reset-text.scss" />
+    <None Include="wwwroot\template\online-education-website-template\scss\bootstrap\scss\mixins\_resize.scss" />
+    <None Include="wwwroot\template\online-education-website-template\scss\bootstrap\scss\mixins\_screen-reader.scss" />
+    <None Include="wwwroot\template\online-education-website-template\scss\bootstrap\scss\mixins\_size.scss" />
+    <None Include="wwwroot\template\online-education-website-template\scss\bootstrap\scss\mixins\_table-row.scss" />
+    <None Include="wwwroot\template\online-education-website-template\scss\bootstrap\scss\mixins\_text-emphasis.scss" />
+    <None Include="wwwroot\template\online-education-website-template\scss\bootstrap\scss\mixins\_text-hide.scss" />
+    <None Include="wwwroot\template\online-education-website-template\scss\bootstrap\scss\mixins\_text-truncate.scss" />
+    <None Include="wwwroot\template\online-education-website-template\scss\bootstrap\scss\mixins\_transition.scss" />
+    <None Include="wwwroot\template\online-education-website-template\scss\bootstrap\scss\mixins\_visibility.scss" />
+    <None Include="wwwroot\template\online-education-website-template\scss\bootstrap\scss\utilities\_align.scss" />
+    <None Include="wwwroot\template\online-education-website-template\scss\bootstrap\scss\utilities\_background.scss" />
+    <None Include="wwwroot\template\online-education-website-template\scss\bootstrap\scss\utilities\_borders.scss" />
+    <None Include="wwwroot\template\online-education-website-template\scss\bootstrap\scss\utilities\_clearfix.scss" />
+    <None Include="wwwroot\template\online-education-website-template\scss\bootstrap\scss\utilities\_display.scss" />
+    <None Include="wwwroot\template\online-education-website-template\scss\bootstrap\scss\utilities\_embed.scss" />
+    <None Include="wwwroot\template\online-education-website-template\scss\bootstrap\scss\utilities\_flex.scss" />
+    <None Include="wwwroot\template\online-education-website-template\scss\bootstrap\scss\utilities\_float.scss" />
+    <None Include="wwwroot\template\online-education-website-template\scss\bootstrap\scss\utilities\_interactions.scss" />
+    <None Include="wwwroot\template\online-education-website-template\scss\bootstrap\scss\utilities\_overflow.scss" />
+    <None Include="wwwroot\template\online-education-website-template\scss\bootstrap\scss\utilities\_position.scss" />
+    <None Include="wwwroot\template\online-education-website-template\scss\bootstrap\scss\utilities\_screenreaders.scss" />
+    <None Include="wwwroot\template\online-education-website-template\scss\bootstrap\scss\utilities\_shadows.scss" />
+    <None Include="wwwroot\template\online-education-website-template\scss\bootstrap\scss\utilities\_sizing.scss" />
+    <None Include="wwwroot\template\online-education-website-template\scss\bootstrap\scss\utilities\_spacing.scss" />
+    <None Include="wwwroot\template\online-education-website-template\scss\bootstrap\scss\utilities\_stretched-link.scss" />
+    <None Include="wwwroot\template\online-education-website-template\scss\bootstrap\scss\utilities\_text.scss" />
+    <None Include="wwwroot\template\online-education-website-template\scss\bootstrap\scss\utilities\_visibility.scss" />
+    <None Include="wwwroot\template\online-education-website-template\scss\bootstrap\scss\vendor\_rfs.scss" />
+    <None Include="wwwroot\template\online-education-website-template\scss\bootstrap\scss\_alert.scss" />
+    <None Include="wwwroot\template\online-education-website-template\scss\bootstrap\scss\_badge.scss" />
+    <None Include="wwwroot\template\online-education-website-template\scss\bootstrap\scss\_breadcrumb.scss" />
+    <None Include="wwwroot\template\online-education-website-template\scss\bootstrap\scss\_button-group.scss" />
+    <None Include="wwwroot\template\online-education-website-template\scss\bootstrap\scss\_buttons.scss" />
+    <None Include="wwwroot\template\online-education-website-template\scss\bootstrap\scss\_card.scss" />
+    <None Include="wwwroot\template\online-education-website-template\scss\bootstrap\scss\_carousel.scss" />
+    <None Include="wwwroot\template\online-education-website-template\scss\bootstrap\scss\_close.scss" />
+    <None Include="wwwroot\template\online-education-website-template\scss\bootstrap\scss\_code.scss" />
+    <None Include="wwwroot\template\online-education-website-template\scss\bootstrap\scss\_custom-forms.scss" />
+    <None Include="wwwroot\template\online-education-website-template\scss\bootstrap\scss\_dropdown.scss" />
+    <None Include="wwwroot\template\online-education-website-template\scss\bootstrap\scss\_forms.scss" />
+    <None Include="wwwroot\template\online-education-website-template\scss\bootstrap\scss\_functions.scss" />
+    <None Include="wwwroot\template\online-education-website-template\scss\bootstrap\scss\_grid.scss" />
+    <None Include="wwwroot\template\online-education-website-template\scss\bootstrap\scss\_images.scss" />
+    <None Include="wwwroot\template\online-education-website-template\scss\bootstrap\scss\_input-group.scss" />
+    <None Include="wwwroot\template\online-education-website-template\scss\bootstrap\scss\_jumbotron.scss" />
+    <None Include="wwwroot\template\online-education-website-template\scss\bootstrap\scss\_list-group.scss" />
+    <None Include="wwwroot\template\online-education-website-template\scss\bootstrap\scss\_media.scss" />
+    <None Include="wwwroot\template\online-education-website-template\scss\bootstrap\scss\_mixins.scss" />
+    <None Include="wwwroot\template\online-education-website-template\scss\bootstrap\scss\_modal.scss" />
+    <None Include="wwwroot\template\online-education-website-template\scss\bootstrap\scss\_nav.scss" />
+    <None Include="wwwroot\template\online-education-website-template\scss\bootstrap\scss\_navbar.scss" />
+    <None Include="wwwroot\template\online-education-website-template\scss\bootstrap\scss\_pagination.scss" />
+    <None Include="wwwroot\template\online-education-website-template\scss\bootstrap\scss\_popover.scss" />
+    <None Include="wwwroot\template\online-education-website-template\scss\bootstrap\scss\_print.scss" />
+    <None Include="wwwroot\template\online-education-website-template\scss\bootstrap\scss\_progress.scss" />
+    <None Include="wwwroot\template\online-education-website-template\scss\bootstrap\scss\_reboot.scss" />
+    <None Include="wwwroot\template\online-education-website-template\scss\bootstrap\scss\_root.scss" />
+    <None Include="wwwroot\template\online-education-website-template\scss\bootstrap\scss\_spinners.scss" />
+    <None Include="wwwroot\template\online-education-website-template\scss\bootstrap\scss\_tables.scss" />
+    <None Include="wwwroot\template\online-education-website-template\scss\bootstrap\scss\_toasts.scss" />
+    <None Include="wwwroot\template\online-education-website-template\scss\bootstrap\scss\_tooltip.scss" />
+    <None Include="wwwroot\template\online-education-website-template\scss\bootstrap\scss\_transitions.scss" />
+    <None Include="wwwroot\template\online-education-website-template\scss\bootstrap\scss\_type.scss" />
+    <None Include="wwwroot\template\online-education-website-template\scss\bootstrap\scss\_utilities.scss" />
+    <None Include="wwwroot\template\online-education-website-template\scss\bootstrap\scss\_variables.scss" />
+    <None Include="wwwroot\template\online-education-website-template\scss\style.scss" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="8.0.6" />
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="8.0.4" />
+    <PackageReference Include="Serilog.AspNetCore" Version="8.0.1" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.6.2" />
+    <PackageReference Include="System.Diagnostics.Debug" Version="4.3.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Update="appsettings.Development.json">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Content>
+    <Content Update="appsettings.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Update="wwwroot\clientapp\src\**\*.*">
+      <CopyToPublishDirectory>Never</CopyToPublishDirectory>
+    </Content>
+  </ItemGroup>
+  
+  <ItemGroup>
+    <ProjectReference Include="..\..\Shared\Shared.Infra.CrossCutting\Shared.Infra.CrossCutting.csproj" />
+    <ProjectReference Include="..\BackOffice.Infra.CrossCutting.IOC\MultiServicos.Infra.CrossCutting.IOC.csproj" />
+  </ItemGroup>
+  
+  <ItemGroup>
+    <Folder Include="HostedServices\" />
+    <Folder Include="wwwroot\clientapp\dist\" />
+    <Folder Include="wwwroot\lib\toastui-editor\" />
+  </ItemGroup>
+  
+  <ProjectExtensions><VisualStudio><UserProperties appsettings_1json__JsonSchema="" /></VisualStudio></ProjectExtensions>
+
+</Project>

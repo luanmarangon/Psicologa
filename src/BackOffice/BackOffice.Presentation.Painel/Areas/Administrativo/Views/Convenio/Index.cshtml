@@ -1,0 +1,15 @@
+﻿@{  
+    ViewData["Title"] = "   ";
+    ViewData["PaginaTitulo"] = "Convênios";
+    ViewData["Descricao"] = "Convênios atendidos";
+}
+
+@inject IAppSettings appSetting
+
+@section Scripts{
+
+    <script src="~/clientapp/dist/views/convenio/Index.js?cache=@appSetting.Version"></script>
+}
+
+
+<div id="root"></div>

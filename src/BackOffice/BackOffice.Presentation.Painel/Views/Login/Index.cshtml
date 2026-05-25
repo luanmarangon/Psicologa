@@ -1,0 +1,60 @@
+﻿@inject IAppSettings appSetting
+
+@{
+    Layout = "~/Views/Shared/_LayoutLogin.cshtml";
+}
+
+<p style="font-size: 14px; color: #64748b; margin-bottom: 1.6rem; line-height: 1.6;">
+    Para ter acesso ao <strong style="color: #1e293b;">@appSetting.Nome</strong>, informe seus dados abaixo.
+</p>
+
+<form>
+    <div class="academy-form-group">
+        <label class="academy-form-label" for="login-usuario">Usuário</label>
+        <div class="academy-input-wrap">
+            <input type="text"
+                   id="login-usuario"
+                   class="form-control"
+                   placeholder="Informe seu usuário"
+                   name="nome"
+                   maxlength="50"
+                   autocomplete="username">
+            <div class="input-group-append">
+                <div class="input-group-text">
+                    <span class="fas fa-user"></span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="academy-form-group">
+        <label class="academy-form-label" for="login-senha">Senha</label>
+        <div class="academy-input-wrap">
+            <input type="password"
+                   id="login-senha"
+                   class="form-control"
+                   placeholder="Informe sua senha"
+                   name="senha"
+                   maxlength="20"
+                   autocomplete="current-password">
+            <div class="input-group-append">
+                <div class="input-group-text">
+                    <span class="fas fa-lock"></span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="academy-form-footer">
+        <div class="icheck-primary">
+            <input type="checkbox" id="manter-autenticado" name="autenticado">
+            <label for="manter-autenticado">Manter autenticado</label>
+        </div>
+        <a class="academy-recover-link" href="~/Login/RecuperarSenha">Esqueci a senha</a>
+    </div>
+
+    <button type="submit" class="academy-btn-primary" onclick="index.entrar(event)">
+        <i class="fas fa-sign-in-alt"></i>
+        Entrar
+    </button>
+</form>

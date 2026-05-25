@@ -1,0 +1,37 @@
+﻿@{
+    Layout = null;
+}
+<!DOCTYPE html>
+
+<html lang="pt-br">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+
+    <title>Erro</title>
+    <link rel="icon" type="image/png" href="~/img/bo-favicon.png">
+    <link rel="stylesheet" href="~/template/AdminLTE/plugins/fontawesome-free/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700" rel="stylesheet">
+    <link href="~/template/AdminLTE/dist/css/adminlte.css" rel="stylesheet" />
+</head>
+
+
+<body>
+
+    <div class="container-fluid">
+        <div class="row justify-content-center" style="margin-top: 5%">
+            <img src="~/img/error.png" />
+        </div>
+
+        <div class="row justify-content-center mt-5">
+            <a style="width: 200px; color:#fff;" class="btn btn-success" href="~/">Ir para o Início</a>
+        </div>
+        <div class="row justify-content-center mt-5 text-muted">@ViewData["statusCode"]</div>
+    </div>
+
+    <script src="~/template/AdminLTE/plugins/jquery/jquery.min.js"></script>
+    <script src="~/template/AdminLTE/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="~/template/AdminLTE/dist/js/adminlte.min.js"></script>
+</body>
+</html>

@@ -1,0 +1,74 @@
+﻿@inject IAppSettings appSetting
+
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <title>Portal E-Academy - E-Gestora</title>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <meta content="Treinamento Capacitação Loja Virtual E-Commerce Delivery Varejo Mercado Sistema Tabela de Preço Super Painel Digital ERP Retaguardar PDV Frente de Caixa" name="keywords">
+    <meta content="O Portal oficial de capacitação da E-Gestora Sistemas e Soluções" name="description">
+
+    <link rel="icon" type="image/png" href="~/img/favicon.png">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
+    <link href="~/template/online-education-website-template/css/style.css" rel="stylesheet">
+    <link href="~/css/views/login/Index.css?cache=@appSetting.Version" rel="stylesheet" />
+    <link href="~/css/loading.css?cache=@appSetting.Version" rel="stylesheet" />
+
+    <script>
+        const BASE_URL = "@appSetting.BaseURL";
+    </script>
+
+    <style>
+
+        .page-login:before {
+            background-image: url( @Href("~/img/login-bg.jpg") );
+        }
+    </style>
+
+</head>
+<body class="page-login layout-full page-dark">
+
+    <div class="page animsition" data-animsition-in="fade-in" data-animsition-out="fade-out">
+        <div class="page-content">
+            <div class="page-brand-info">
+                <div class="brand">
+                    <h2 class="brand-text font-size-40 margin-left-0"></h2>
+                </div>
+            </div>
+            <div class="page-login-main">
+                <div class="brand text-center margin-bottom-0">
+                    <img src="~/img/logo/logo.png" class="brand-img" alt="E-Gestora Academy" />
+                </div>
+
+                <div class="backoffice">Portal E-Academy</div>
+
+                <div>
+                    @RenderBody()
+                </div>
+
+
+                <footer class="mt-5">
+                    <span class="text-muted small">
+                        @appSetting.Version (@appSetting.VersionData)
+                    </span>
+                    <p class="mt-1 small"><strong><a href="http://www.egestora.com.br/" target="_blank">E-Gestora - Sistemas e Soluções</a></strong><br />Todos os direitos reservados</p>
+                </footer>
+            </div>
+        </div>
+    </div>
+
+
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.bundle.min.js"></script>
+    <script src="~/lib/sweetalert2-11/sweetalert2.all.min.js"></script>
+    <script src="~/js/site.js?cache=@appSetting.Version"></script>
+    <script src="~/js/HTTPClient.js?cache=@appSetting.Version"></script>
+    <script src="~/serverapp/views/login/Index.js?cache=@appSetting.Version"></script>
+
+</body>
+</html>

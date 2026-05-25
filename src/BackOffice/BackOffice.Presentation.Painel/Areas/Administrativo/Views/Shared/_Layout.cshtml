@@ -1,0 +1,433 @@
+﻿@inject IAppSettings appSetting
+@inject UsuarioAutenticado ua;
+
+@{
+    var permissoes = ua.Permissoes;
+}
+
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2.0">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+
+    <title>@(ViewData["Title"] != null && ViewData["Title"].ToString() != "" ? ViewData["Title"].ToString().Trim() + " - " : "")@appSetting.Nome</title>
+
+    <link rel="icon" type="image/png" href="~/img/favicon.png">
+    <link rel="stylesheet" href="~/template/AdminLTE/plugins/fontawesome-free/css/all.min.css">
+    <link href="~/template/AdminLTE/plugins/select2/css/select2.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="~/template/AdminLTE/dist/css/adminlte.min.css">
+    <link href="~/template/AdminLTE/custom.css?cache=@appSetting.Version" rel="stylesheet" />
+    <link href="~/css/site.css?cache=@appSetting.Version" rel="stylesheet" />
+    <link href="~/css/loading.css?cache=@appSetting.Version" rel="stylesheet" />
+
+    @RenderSection("Styles", required: false)
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" crossorigin="anonymous"></script>
+
+    @* //Deve ser importado no início *@
+    <script>
+            const BASE_URL = "@appSetting.BaseURL";
+    </script>
+
+    <script src="~/js/site.js?cache=@appSetting.Version"></script>
+    <script src="~/js/HTTPClient.js?cache=@appSetting.Version"></script>
+</head>
+
+@{
+    dynamic sideBarItens = new List<dynamic>();
+
+    var cadastros = new { Titulo = "Gerenciador", IconeClass = "fas fa-folder", Filhos = new List<dynamic>() };
+
+
+    if (permissoes.Contains(PerfilUsuarioViewModel.TpPermissao.GerenciarPessoas))
+    {
+        cadastros.Filhos.Add(new { Titulo = "Pessoas", HRef = "Administrativo/Pessoa", IconeClass = "fas fa-user-friends", Tag = ""});
+    }
+
+    if(permissoes.Contains(PerfilUsuarioViewModel.TpPermissao.GerenciarServicos))
+    {
+                cadastros.Filhos.Add(new { Titulo = "Serviços", HRef = "Administrativo/Servico", IconeClass = "fas fa-brain", Tag = "" });
+    }
+
+    if(permissoes.Contains(PerfilUsuarioViewModel.TpPermissao.GerenciarConvenios))
+    {
+        cadastros.Filhos.Add(new { Titulo = "Convênios", HRef = "Administrativo/Convenio", IconeClass = "fas fa-handshake", Tag = "" });
+    }
+
+    if (permissoes.Contains(PerfilUsuarioViewModel.TpPermissao.GerenciarUsuarios))
+    {
+        cadastros.Filhos.Add(new { Titulo = "Usuários", HRef = "Administrativo/Usuario", IconeClass = "fas fa-users", Tag = "" });
+    }
+
+
+    if (cadastros.Filhos.Count > 0)
+    {
+        sideBarItens.Add(cadastros);
+    }
+
+
+    var blog = new { Titulo = "Blog", IconeClass = "fas fa-newspaper", Filhos = new List<dynamic>() };
+
+    if (permissoes.Contains(PerfilUsuarioViewModel.TpPermissao.AcessarConteudoBlog))
+    {
+        blog.Filhos.Add(new { Titulo = "Blog's", HRef = "Administrativo/BlogPost", IconeClass = "fas fa-book-open", Tag = "" });
+        blog.Filhos.Add(new { Titulo = "Novo Blog", HRef = "Administrativo/BlogPost/NovoPost", IconeClass = "fas fa-edit", Tag = "" });
+    }
+
+    if (blog.Filhos.Count > 0)
+    {
+        sideBarItens.Add(blog);
+    }
+
+    var leads = new { Titulo = "Leads", IconeClass = "fas fa-address-book", Filhos = new List<dynamic>() };
+
+    // var leads = new { Titulo = "Leads", IconClass = "fas fa-address-book", Filhos = new List<dynamic>() };
+
+    if(permissoes.Contains(PerfilUsuarioViewModel.TpPermissao.GerenciarLeads))
+    {
+        leads.Filhos.Add(new { Titulo = "Gerenciar Leads", HRef = "Administrativo/Leads", IconeClass = "fas fa-address-book", Tag = "" });
+    }
+    
+    if(leads.Filhos.Count > 0)
+    {
+        sideBarItens.Add(leads);
+    }
+
+    var agendamentos = new { Titulo = "Agendamentos", IconeClass = "fas fa-calendar-alt", Filhos = new List<dynamic>() };
+
+    // var leads = new { Titulo = "Leads", IconClass = "fas fa-address-book", Filhos = new List<dynamic>() };
+
+    if(permissoes.Contains(PerfilUsuarioViewModel.TpPermissao.GerenciarAgendamentos))
+    {
+        agendamentos.Filhos.Add(new { Titulo = "Gerenciar Agendamentos", HRef = "Administrativo/Agendamento", IconeClass = "fas fa-calendar-alt", Tag = "" });
+    }
+    
+    if(agendamentos.Filhos.Count > 0)
+    {
+        sideBarItens.Add(agendamentos);
+    }
+
+    var configs = new { Titulo = "Configurações", IconeClass = "fas fa-cog", Filhos = new List<dynamic>() };
+
+    if (permissoes.Contains(PerfilUsuarioViewModel.TpPermissao.GerenciarPermissoes))
+    {
+        configs.Filhos.Add(new { Titulo = "Permissões de Usuário", HRef = "Administrativo/PerfilUsuario", IconeClass = "fas fa-users-cog", Tag = "" });
+    }
+
+    if (permissoes.Contains(PerfilUsuarioViewModel.TpPermissao.GerenciarConfiguracoes))
+    {            
+        configs.Filhos.Add(new { Titulo = "Configurações", HRef = "Administrativo/Configuracao", IconeClass = "fas fa-cogs", Tag = "" });
+    }
+
+
+    if (configs.Filhos.Count > 0)
+    {
+        sideBarItens.Add(configs);
+    }
+    
+    var relatorios = new { Titulo = "Relatórios", IconeClass = "fas fa-poll", Filhos = new List<dynamic>() };
+
+    if (permissoes.Contains(PerfilUsuarioViewModel.TpPermissao.Relatorios))
+    {
+        // relatorios.Filhos.Add(new { Titulo = "Registros de Acessos", HRef = "Administrativo/EspacoPaginaRegistroAcesso", IconeClass = "fas fa-file", Tag = "" });
+    }
+   
+  
+    if (relatorios.Filhos.Count > 0)
+    {
+        sideBarItens.Add(relatorios);
+    }
+
+
+}
+
+<body class="hold-transition sidebar-mini layout-fixed layout-navbar-fixed">
+
+    <div class="wrapper">
+        <!-- Navbar -->
+        <nav class="main-header navbar navbar-expand navbar-lightred navbar-dark">
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                    <a class="nav-link" data-widget="pushmenu" href="#"><i class="fas fa-bars"></i></a>
+                </li>
+                 <li class="nav-item">
+                    <a class="nav-link" href="~/Home"><i class="fas fa-home"></i></a>
+                </li>
+            </ul>
+
+            <ul class="navbar-nav ml-auto">
+                <!-- Messages Dropdown Menu -->
+                <li class="nav-item dropdown">
+                    <a class="nav-link" data-toggle="dropdown" href="#" aria-expanded="false">
+                        <div class="user-panel d-flex align-items-center">
+                            <i class="user-image fas fa-user-circle"></i>
+                            <div class="user-name">@ua.NomeAbreviado</div>
+
+                        </div>
+                    </a>
+                    <div class="dropdown-menu dropdown-menu-right pt-0" style="left: inherit; right: 0px;">
+
+                        @* <div class="dropdown-item-text bg-light pt-2">
+                             <div class="small text-bold">@ua.Nome</div>
+                             <div class="small text-gray">@ua.PerfilNome</div>
+                        </div>
+                         *@
+                        <div class="dropdown-divider mt-0"></div>
+
+                        <a href="~/Administrativo/Perfil" class="dropdown-item">
+                            <i class="fas fa-id-card"></i>Perfil
+                        </a>
+                        @* <a href="~/Login/RecuperarSenha" class="dropdown-item">
+                            <i class="fas fa-key"></i>Alterar Senha
+                        </a> *@
+                       
+
+                       
+@*
+                        <div class="dropdown-divider"></div>
+
+                          <a href="http://egestor.egestora.com.br/PreChamado/PreChamadoSuporte" class="dropdown-item" target="_blank">
+                            <i class="fas fa-life-ring"></i>Suporte
+                        </a>
+
+                        <a href="https://academy.egestora.com.br/" class="dropdown-item">
+                            <i class="fas fa-graduation-cap"></i>Materiais Educativos
+                        </a>*@
+                        
+                        <div class="dropdown-divider"></div>
+
+
+                        <a href="~/Login/Sair" class="dropdown-item">
+                            Sair
+                        </a>
+                    </div>
+                </li>
+
+            </ul>
+
+
+        </nav>
+        <!-- /.navbar -->
+        <!-- Main Sidebar Container -->
+        <aside class="main-sidebar sidebar-light-blue">
+            <!-- Brand Logo -->
+            <a href="~/Administrativo/dashboard" class="brand-link">
+                <img src="~/img/logo/logo.png?cache=@appSetting.Version" class="brand-image" />
+                <img src="~/img/logo/logo2.png?cache=@appSetting.Version" class="brand-image brand-image-2" />
+                <div class="backoffice-brand">BackOffice</div>
+            </a>
+
+            <!-- Sidebar -->
+            <div class="sidebar">
+
+                <!-- Sidebar Menu -->
+                <nav class="mt-4">
+                    <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
+                        @foreach (var pai in sideBarItens)
+                        {
+                            string urlAtual = Context.Request.Path.ToString().ToLower().Replace("/", "");
+                            string href = (pai.GetType().GetProperty("HRef") == null) ? "#" : (@pai.HRef);
+
+                            bool isActivedChild = ((IEnumerable<dynamic>)pai.Filhos).Cast<dynamic>().Where(f => f.HRef.ToString().ToLower().Replace("/", "") == urlAtual).ToList().Count() > 0;
+
+                            if ((pai.Titulo == "Gerenciador" && urlAtual.ToLower() == "home") || sideBarItens.Count == 1)
+                            {
+                                isActivedChild = true;
+                            }
+
+                            @* <li class="nav-item nav-item-father has-treeview @(isActivedChild ? "menu-open" : "")"> *@
+                            @*     <a href="~/@href" class="nav-link"> *@
+                            @*         <i class="nav-icon @pai.IconeClass"></i> *@
+                            @*         <p> *@
+                            @*             @pai.Titulo *@
+
+                            @*             @if (pai.GetType().GetProperty("MostrarSeta") == null) *@
+                            @*             { *@
+                            @*                 <i class="arrow-indicator fas fa-angle-left right"></i> *@
+                            @*             } *@
+                            @*         </p> *@
+                            @*     </a> *@
+
+                            @*     @if (pai.Filhos.Count > 0) *@
+                            @*     { *@
+                            @*         if (pai.Titulo == "Relatórios") *@
+                            @*         { *@
+                            @*             <ul class="nav nav-treeview "> *@
+                            @*                 <li class="nav-item nav-item-father has-treeview menu-open"> *@
+                            @*                     <a href="#" class="nav-link"> *@
+                            @*                         <i class="nav-icon fas fa-angle-right"></i> *@
+                            @*                         <p> *@
+                            @*                             Movimento *@
+                            @*                             <i class="arrow-indicator fas fa-angle-left right"></i> *@
+                            @*                         </p> *@
+                            @*                     </a> *@
+                            @*                     <ul class="nav nav-treeview"> *@
+                            @*                         @foreach (var filho in pai.Filhos) *@
+                            @*                         { *@
+                            @*                             if (filho.Tag != "movimento") *@
+                            @*                             { *@
+                            @*                                 continue; *@
+                            @*                             } *@
+
+                            @*                             string hrefFilho = Url.Content("~/" + filho.HRef); *@
+
+                            @*                             <li class="nav-item ml-3"> *@
+                            @*                                 <a href=@hrefFilho class="nav-link @(urlAtual.ToLower().Equals(hrefFilho.ToLower().Replace("/", "")) ? "active" : "")"> *@
+                            @*                                     <i class="nav-icon @filho.IconeClass"></i> *@
+                            @*                                     <p>@filho.Titulo</p> *@
+                            @*                                 </a> *@
+                            @*                             </li> *@
+                            @*                         } *@
+                            @*                     </ul> *@
+                            @*                 </li> *@
+                            @*                 <li class="nav-item nav-item-father has-treeview menu-open"> *@
+                            @*                     <a href="#" class="nav-link"> *@
+                            @*                         <i class="nav-icon fas fa-angle-right"></i> *@
+                            @*                         <p> *@
+                            @*                             Entrada de Estoque *@
+                            @*                             <i class="arrow-indicator fas fa-angle-left right"></i> *@
+                            @*                         </p> *@
+                            @*                     </a> *@
+                            @*                     <ul class="nav nav-treeview"> *@
+                            @*                         @foreach (var filho in pai.Filhos) *@
+                            @*                         { *@
+                            @*                             if (filho.Tag != "entrada-estoque") *@
+                            @*                             { *@
+                            @*                                 continue; *@
+                            @*                             } *@
+
+                            @*                             string hrefFilho = Url.Content("~/" + filho.HRef); *@
+
+                            @*                             <li class="nav-item ml-3"> *@
+                            @*                                 <a href=@hrefFilho class="nav-link @(urlAtual.ToLower().Equals(hrefFilho.ToLower().Replace("/", "")) ? "active" : "")"> *@
+                            @*                                     <i class="nav-icon @filho.IconeClass"></i> *@
+                            @*                                     <p>@filho.Titulo</p> *@
+                            @*                                 </a> *@
+                            @*                             </li> *@
+                            @*                         } *@
+                            @*                     </ul> *@
+                            @*                 </li> *@
+
+                            @*             </ul> *@
+                                        
+                            @*         } *@
+                            @*         else *@
+                            @*         { *@
+                            @*             <ul class="nav nav-treeview"> *@
+                            @*                 @foreach (var filho in pai.Filhos) *@
+                            @*                 { *@
+                            @*                     string hrefFilho = Url.Content("~/" + filho.HRef); *@
+
+                            @*                     <li class="nav-item"> *@
+                            @*                         <a href=@hrefFilho class="nav-link @(urlAtual.ToLower().Equals(hrefFilho.ToLower().Replace("/", "")) ? "active" : "")"> *@
+                            @*                             <i class="nav-icon @filho.IconeClass"></i> *@
+                            @*                             <p>@filho.Titulo</p> *@
+                            @*                         </a> *@
+                            @*                     </li> *@
+                            @*                 } *@
+                            @*             </ul> *@
+                            @*         } *@
+                            @*     } *@
+
+                            @* </li> *@
+                            <li class="nav-item nav-item-father has-treeview @(isActivedChild ? "menu-open" : "")">
+                                <a href="#" class="nav-link">
+                                    <i class="nav-icon @pai.IconeClass"></i>
+                                    <p>
+                                        @pai.Titulo
+                                        <i class="arrow-indicator fas fa-angle-left right"></i>
+                                    </p>
+                                </a>
+
+                                <ul class="nav nav-treeview">
+                                    @foreach (var filho in pai.Filhos)
+                                    {
+                                        <li class="nav-item">
+                                            <a href="~/@filho.HRef" class="nav-link @(urlAtual.ToLower().Equals(filho.HRef.ToLower()) ? "active" : "")">
+                                                <i class="nav-icon @filho.IconeClass"></i>
+                                                <p>@filho.Titulo</p>
+                                            </a>
+                                        </li>
+                                    }
+
+                                </ul>
+
+                            </li>
+                        }
+
+                     
+
+                    </ul>
+                </nav>
+                <!-- /.sidebar-menu -->
+            </div>
+            <!-- /.sidebar -->
+        </aside>
+
+        <!-- Content Wrapper. Contains page content -->
+        <div class="content-wrapper">
+            @if (!string.IsNullOrEmpty(ViewBag.PaginaTitulo))
+            {
+                <!-- Content Header (Page header) -->
+                <div class="content">
+                    <div class="content-header">
+                        <div class="content-fluid">
+                            <div class="col">
+                                <h1 class="m-0">@ViewBag.PaginaTitulo</h1>
+                                @if (ViewBag.Descricao != null)
+                                {
+                                    <div class="text-dark mt-2">
+                                        @ViewBag.Descricao
+                                    </div>
+                                }
+                            </div>
+                        </div><!-- /.container-fluid -->
+                    </div>
+                </div>
+            }
+            <!-- /.content-header -->
+            <!-- Main content -->
+            <div class="content">
+                <div class="container-fluid">
+                    @RenderBody()
+                </div><!-- /.container-fluid -->
+            </div>
+            <!-- /.content -->
+
+        </div>
+        <!-- /.content-wrapper -->
+        <!-- Main Footer -->
+        <footer class="main-footer small d-flex justify-content-between flex-wrap">
+     
+            <div>
+                <strong><a href="#" target="_blank">MRG tech.</a></strong> Todos os direitos reservados.
+            </div>
+
+            <div>
+                Última publicação:
+                <span class="font-weight-bold">
+                    @appSetting.VersionData (@appSetting.Version)
+                </span>
+            </div>
+
+        </footer>
+
+        <!-- Control Sidebar -->
+        <div id="notification-bar"></div>
+        <!-- /.control-sidebar -->
+    </div>
+    <script src="~/template/AdminLTE/plugins/jquery/jquery.min.js"></script>
+    <script src="~/template/AdminLTE/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="~/template/AdminLTE/plugins/inputmask/min/jquery.inputmask.bundle.min.js"></script>
+    <script src="~/template/AdminLTE/plugins/select2/js/select2.min.js"></script>
+    <script src="~/template/AdminLTE/plugins/select2/js/i18n/pt-BR.js"></script>
+    <script src="~/template/AdminLTE/dist/js/adminlte.min.js"></script>
+    <script src="~/lib/sweetalert2-11/sweetalert2.all.min.js"></script>
+    <script src="~/lib/chart.js-4-4-0/chart.js"></script>
+    <script src="~/lib/chart.js-4-4-0/chartjs-plugin-datalabels.min.js"></script>
+
+    @RenderSection("Scripts", required: false)
+
+</body>
+</html>

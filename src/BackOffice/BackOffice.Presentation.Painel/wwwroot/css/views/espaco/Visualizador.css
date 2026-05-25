@@ -1,0 +1,387 @@
+﻿
+.container-doc {
+    display: flex;
+    margin-top: 1.2em;
+}
+
+@media (max-width: 768px) {
+    .container-doc {
+        display: block;
+    }
+}
+
+
+/*Replicar a customização do Gerenciador.css*/
+#viewer .toastui-editor-contents {
+    font-size: 1em;
+}
+
+    #viewer .toastui-editor-contents blockquote {
+        border: 0;
+        border-bottom: 1px solid #d7d6d6;
+        border-radius: 6.4px;
+        box-shadow: 0px 0px 2px 0px #e0dede;
+        color: rgb(57, 58, 52);
+        background: rgb(246, 248, 250);
+        margin-top: 1em;
+        margin-bottom: 1em;
+        padding: 1em;
+        font-size: 0.88em;
+        background: #fcfcfc;
+    }
+
+    #viewer .toastui-editor-contents blockquote ol,
+    #viewer .toastui-editor-contents blockquote p,
+    #viewer .toastui-editor-contents blockquote ul {
+        color: #050505;
+    }
+
+    #viewer .toastui-editor-contents p {
+        margin-top: 0.3em;
+        margin-bottom: 0.6em;
+    }
+
+    #viewer .toastui-editor-contents img {
+        margin-top: 1.5em;
+        margin-bottom: 2.5em;
+        max-width: 65%;
+        display: block;
+        border: 1px solid #dddddd;
+    }
+
+    @media (max-width: 768px) {
+        #viewer .toastui-editor-contents img {
+            max-width: 100%;
+        }
+    }
+
+
+
+    #viewer .toastui-editor-contents ol,
+    #viewer .toastui-editor-contents ul {
+        padding-left: 50px;
+    }
+
+
+    #viewer .toastui-editor-contents ol {
+        list-style-type: decimal;
+    }
+
+    #viewer .toastui-editor-contents ul {
+        list-style-type: disc;
+    }
+
+        #viewer .toastui-editor-contents ol > li:before,
+        #viewer .toastui-editor-contents ul > li:before {
+            display: none;
+        }
+
+        #viewer .toastui-editor-contents ul > li.task-list-item:before {
+            display: block;
+            margin-top: 2px;
+        }
+
+
+        #viewer .toastui-editor-contents h2,
+        #viewer .toastui-editor-contents h3,
+        #viewer .toastui-editor-contents h4,
+        #viewer .toastui-editor-contents h5,
+        #viewer .toastui-editor-contents h6 {
+            margin-top: 2em;
+            margin-bottom: 1em;
+            border-bottom: none;
+        }
+
+    #viewer .toastui-editor-contents h1 {
+        font-size: 2.5em;
+        margin-bottom: 0.9em;
+        border-bottom: none; /*3px solid #e5e5e5;*/
+        line-height: 1em;
+    }
+
+    #viewer .toastui-editor-contents h2 {
+        border-color: #e5e5e5
+    }
+
+.coluna1 {
+    margin-right: 2em;
+    flex: 1;
+    border-right: 1px solid #dedddd;
+    padding-right: 20px;
+    min-width: 200px;
+    max-height: 90vh;
+    overflow: auto;
+    position: sticky;
+    top: 46px;
+}
+
+@media (max-width: 768px) {
+    .coluna1 {
+        min-width: 100%;
+        max-height: auto;
+        border-right: none;
+        padding-right: 0;
+        position: initial;
+    }
+}
+
+
+.coluna2 {
+    flex-grow: 1;
+    flex: 5;
+    min-width: 280px;
+}
+
+.toastui-editor-defaultUI {
+    border: 0;
+}
+
+#editor {
+}
+
+.menu {
+    font-size: 13px;
+    font-weight: 500;
+    line-height: 15px;
+    overflow-y: auto;
+    margin-top: 15px;
+}
+
+.menu-responsivo {
+    width: 100%;
+    display: none;
+}
+
+@media (max-width: 768px) {
+    .menu {
+        display: none;
+    }
+
+    .menu-responsivo {
+        display: block;
+    }
+}
+
+
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: #f1f1f1; /* Cor do fundo da barra de rolagem */
+}
+
+::-webkit-scrollbar-thumb {
+    background-color: #888; /* Cor da alça da barra de rolagem */
+    border-radius: 6px; /* Arredondamento da alça */
+}
+
+    ::-webkit-scrollbar-thumb:hover {
+        background-color: #555; /* Cor da alça ao passar o mouse sobre ela */
+    }
+
+
+.menu ul {
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    font-size: 14px;
+    padding-bottom: 0;
+    position: relative;
+    list-style-type:none;
+}
+
+    .menu ul a {
+        color: rgb(96, 103, 112);
+    }
+
+    .menu ul {
+        padding-left: 0.8em;
+    }
+
+    .menu ul:first-child {
+        padding-left: 0;
+    }
+
+    .menu ul li {
+    }
+
+        .menu ul li a.menu-acao i {
+            font-size: 12px;
+            color: #808080 !important;
+            margin-left: 10px;
+        }
+
+        .menu ul li a.menu-acao i {
+            color: #000;
+        }
+
+        .menu ul li a {
+            display: flex;
+            align-items: baseline;
+            text-decoration: none;
+        }
+
+
+        .menu ul li .menu-item-container {
+            border-radius: 3px;
+            margin-bottom: 2.5px;
+            padding: 5px;
+        }
+
+            .menu ul li .menu-item-container i.situacao {
+                color: #c8c7c7;
+                
+                margin-right: 8px;
+            }
+
+            .menu ul li .menu-item-container i.situacao.disponivel {
+                color: #0cb105;
+                opacity: 0.8;
+            }
+
+                .menu ul li .menu-item-container i.situacao.retirado {
+                    color: #f34f1a;
+                    opacity: 0.8;
+                }
+
+                .menu ul li .menu-item-container i.situacao.em-producao {
+                    color: #081a86;
+                    opacity: 0.8;
+                }
+
+            .menu ul li .menu-item-container.selecionado {
+                background: #e8e8e8
+            }
+
+
+        .menu ul ul::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 5px; /*Ajuste para alinhar com o início da lista */
+            width: 2px;
+            height: 100%;
+            border-left: 1px dashed #dcdcdc; /*Linha tracejada */
+        }
+
+.menu .submenu {
+    display: none;
+}
+
+.menu .parent.expandido > ul {
+    display: block;
+}
+
+
+
+.hierarquia a {
+    color: #2f2e2e;
+}
+
+.hierarquia .badge-light {
+    background: #f5f1f1;
+    font-weight: lighter;
+    padding: 0.8em;
+    margin-block: 0.3em;
+}
+
+
+
+.top-sticky {
+   /* position: sticky;*/
+    top: 0;
+    margin-bottom: 10px;
+    z-index: 100;
+    background: #fff;
+}
+
+
+
+/*CSS referente a trilha de estudo*/
+
+
+/* Estilizando o container do progresso */
+.progress-container {
+    position: relative;
+    width: 100%;
+}
+
+/* Estilizando o progress bar diretamente */
+progress {
+    width: 100%;
+    height: 25px;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    border-radius: 5px;
+    overflow: hidden;
+}
+
+    /* Fundo do progress bar */
+    progress::-webkit-progress-bar {
+        background-color: #f3f3f3;
+        border-radius: 5px;
+    }
+
+    progress::-moz-progress-bar {
+        background-color: #f3f3f3;
+        border-radius: 5px;
+    }
+
+    /* Cor da parte preenchida do progress bar */
+    progress::-webkit-progress-value {
+        background-color: #28a745;
+        border-radius: 5px;
+    }
+
+    progress::-moz-progress-bar {
+        background-color: #28a745;
+        border-radius: 5px;
+    }
+
+/* Cor de aviso para progresso menor que 50% */
+.bg-warning::-webkit-progress-value {
+    background-color: #ffc107;
+}
+
+.bg-warning::-moz-progress-bar {
+    background-color: #ffc107;
+}
+
+/* Cor de sucesso para progresso maior ou igual a 50% */
+.bg-success::-webkit-progress-value {
+    background-color: #28a745;
+}
+
+.bg-success::-moz-progress-bar {
+    background-color: #28a745;
+}
+
+/* Estilizando o texto percentual dentro da barra */
+.progress-text {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    /*color: #284c9c;*/  /*Cor da Porcentagem dentro do Progress*/
+    font-weight: bold;
+    line-height: 1;
+    font-size: 0.875em
+}
+
+
+/*Botao Linkedin*/
+.btn-linkedin {
+    background-color: #0077B5; /* Cor do botão LinkedIn */
+    color: white;  Cor do texto 
+   /* border: none;
+    text-align: center;
+    text-decoration: none;
+    border-radius: 4px;*/
+    cursor: pointer;
+}
+
+    .btn-linkedin:hover {
+        background-color: #006097;
+        /*background-color: rgba(0, 119, 181, 0.8);*/
+        color: white;
+    }

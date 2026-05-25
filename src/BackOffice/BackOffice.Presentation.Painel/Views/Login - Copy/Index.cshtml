@@ -1,0 +1,45 @@
+﻿@{
+    Layout = "~/Views/Shared/_LayoutLogin.cshtml";
+}
+
+<p class="text-center">Para ter acesso ao <b>Portal E-Academy</b>, informe os dados abaixo.</p>
+
+<form>
+    <div class="input-group mb-3">
+        <input type="text" class="form-control" placeholder="Usuário" name="nome" maxlength="50">
+        <div class="input-group-append">
+            <div class="input-group-text">
+                <span class="fas fa-user"></span>
+            </div>
+        </div>
+    </div>
+    <div class="input-group mb-3">
+        <input type="password" class="form-control" placeholder="Senha" name="senha" maxlength="20">
+        <div class="input-group-append">
+            <div class="input-group-text">
+                <span class="fas fa-lock"></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-8">
+            <div class="icheck-primary">
+                <input type="checkbox" id="manter-autenticado" name="autenticado">
+                <label for="manter-autenticado">
+                    Manter autenticado
+                </label>
+            </div>
+        </div>
+        <div class="col-4">
+            <button type="submit" class="btn btn-primary btn-block" onclick="index.entrar(event)">Entrar</button>
+        </div>
+    </div>
+
+
+    <div class="row mt-4">
+        <u><a class="small" href="~/Login/RecuperarSenha">Recuperar Senha</a></u>
+    </div>
+
+</form>
+

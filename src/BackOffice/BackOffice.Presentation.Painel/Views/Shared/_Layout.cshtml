@@ -1,0 +1,389 @@
+﻿@inject IAppSettings appSetting
+@inject UsuarioAutenticado ua;
+@inject Configuracao configuracao;
+
+@{
+    var permissoes = ua.Permissoes;
+}
+
+<!DOCTYPE html>
+
+<html>
+
+<head lang="pt-br">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+
+    <title>@(!string.IsNullOrEmpty(ViewData["Title"].ToString().Trim()) ? ViewData["Title"].ToString().Trim() + " - " : "")@appSetting.Nome</title>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <meta content="Psicologia Psicóloga Terapia Saúde Mental Atendimento Psicológico Ansiedade Depressão Bem-Estar Autoconhecimento Sessões Online Desenvolvimento Emocional" name="keywords">
+    <meta content="Portal oficial da psicóloga com conteúdos, atendimentos, agendamentos e informações sobre saúde emocional e bem-estar." name="description">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="~/img/favicon.png">
+
+
+    <!-- Google Web Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,400;0,600;1,400;1,600&family=Poppins:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&display=swap" rel="stylesheet">
+
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
+
+    <!-- Libraries Stylesheet -->
+    <link href="~/template/online-education-website-template/plugins/select2/css/select2.min.css" rel="stylesheet" />
+    <link href="~/template/online-education-website-template/lib/owlcarousel/assets/owl.carousel.min.css" rel="stylesheet">
+
+    <!-- Customized Bootstrap Stylesheet -->
+    <link href="~/template/online-education-website-template/custom.css?cache=@appSetting.Version" rel="stylesheet">
+    <link href="~/template/online-education-website-template/css/style.css?cache=@appSetting.Version" rel="stylesheet">
+
+    <link href="~/css/offcanvas.css?cache=@appSetting.Version" rel="stylesheet" />
+
+
+    @RenderSection("Styles", required: false)
+
+    @* //Deve ser importado no início *@
+    <script>
+        const BASE_URL = "@appSetting.BaseURL";
+    </script>
+    <script src="~/js/site.js?cache=@appSetting.Version"></script>
+    <link href="~/css/site.css?cache=@appSetting.Version" rel="stylesheet" />
+    <link href="~/css/loading.css?cache=@appSetting.Version" rel="stylesheet" />
+    <script src="~/js/HTTPClient.js?cache=@appSetting.Version"></script>
+
+</head>
+
+
+
+<body>
+    <!-- Topbar Start -->
+    <div class="container-fluid bg-dark">
+        <div class="row" style="height: 5px">
+           
+        </div>
+    </div>
+    <!-- Topbar End -->
+
+
+    <!-- Navbar Start -->
+    <div class="container-fluid p-0">
+        <nav class="navbar navbar-expand-lg bg-white navbar-light py-3 py-lg-0 px-lg-5">
+            <a href="/" class="navbar-brand top ml-lg-3">
+                @* <img src="~/template/online-education-website-template/img/logo.png" alt="Logo"> *@
+                <img src="~/img/logo/logo.png" alt="Logo">
+            </a>
+            <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#navbarCollapse">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse px-lg-3" id="navbarCollapse">
+                <div class="navbar-nav py-0" style="width: 100%;">
+                    <a href="/Home" class="nav-item nav-link">Início</a>
+                    @* <a href="/ConsultarCategoria#cursos" class="nav-item nav-link">Capacitações</a> *@
+                    @* <a href="https://www.egestora.com.br" class="nav-item nav-link">E-Gestora</a> *@
+                    <a href="/Servico" class="nav-item nav-link">Serviços</a>
+                    <a href="/Blog" class="nav-item nav-link">Blogs</a>
+                    @* <a href="/Home#emailContato" class="nav-item nav-link">Contato</a> *@
+                    <a href="/#emailContato" class="nav-item nav-link">Contato</a>
+
+                    
+
+                    @* <a href="/UltimasVersoes" class="nav-item nav-link">Últimas Versões</a> *@
+
+                </div>
+
+                @if (ua.Autenticado)
+                {
+                    <ul class="navbar-nav ml-auto">
+                        <!-- Messages Dropdown Menu -->
+                        <li class="nav-item dropdown">
+                            <a class="nav-link" data-toggle="dropdown" href="#" aria-expanded="false">
+                                <div class="user-panel d-flex align-items-center">
+                                    <i class="user-image fas fa-user-circle"></i>
+                                    <div class="d-flex flex-column">
+                                        <span class="user-name text-bold">@ua.NomeAbreviado</span>
+                                        <div class="user-role text-gray"> @ua.PerfilNome</div>
+                                    </div>
+
+                                </div>
+                            </a>
+                            <div class="dropdown-menu dropdown-menu-right" style="left: inherit; right: 0px;">
+                                <a href="~/Administrativo/dashboard" class="dropdown-item">
+                                    <i class="fas fa-home"></i>BackOffice
+                                </a>
+                                <div class="dropdown-divider"></div>
+                               <a href="~/Administrativo/Perfil" class="dropdown-item"> <i class="fas fa-id-card"></i>Perfil</a>
+                                @* <a href="~/Login/RecuperarSenha" class="dropdown-item">
+                                    <i class="fas fa-key"></i>Alterar Senha
+                                </a> *@
+                                <div class="dropdown-divider"></div>
+                                <a href="~/Login/Sair" class="dropdown-item">
+                                    Sair
+                                </a>
+                            </div>
+                        </li>
+
+                    </ul>
+                }
+                else
+                {
+                    <a href="~/Login" class="btn btn-primary py-2 px-4">Entrar</a>
+                }
+            </div>
+        </nav>
+    </div>
+    <!-- Navbar End -->
+
+    <!-- Header Start-->
+    @if (ViewData["MostrarTopo"] == null)
+{
+        bool topoExpandido =
+        ViewData["TopoExpandido"] != null &&
+        (bool)ViewData["TopoExpandido"] == true;
+
+        bool exibirTopo =
+        ViewData["ExibirTopo"] != null &&
+        (bool)ViewData["ExibirTopo"] == true;
+
+        @if (exibirTopo)
+        {
+
+            <section class="hero-psicologia @(topoExpandido ? "hero-expanded" : "hero-simple")">
+
+                <div class="container">
+
+                    <div class="hero-content text-center">
+
+                        @if (topoExpandido)
+                        {
+                            <span class="hero-badge">Cuidado emocional e bem-estar</span>
+                            <h1 class="hero-title">@ViewData["PaginaTitulo"]</h1>
+                            <p class="hero-subtitle">@ViewData["PaginaTituloMenor"]</p>
+                            <p class="hero-description">@ViewData["Descricao"]</p>
+                        }
+                        else
+                        {
+                            <h1 class="hero-title hero-title-small">@ViewData["PaginaTitulo"]</h1>
+                            @if (ViewData["PaginaTituloMenor"] != null)
+                            {
+                                <p class="hero-subtitle-small">@ViewData["PaginaTituloMenor"]</p>
+                            }
+                        }
+
+                        @if (ViewData["ApenasTitulo"] == null)
+                        {
+                            <div class="hero-search">
+                                <form method="get" action="~/Consultar">
+                                    <div class="search-box">
+                                        <i class="fas fa-search search-icon"></i>
+                                        <input type="text" name="q" placeholder="Buscar conteúdos, artigos ou serviços" />
+                                        <button type="submit">Buscar</button>
+                                    </div>
+                                </form>
+                            </div>
+                        }
+
+                    </div>
+
+                </div>
+
+            </section>
+        }
+}
+    <!-- Header End-->
+
+
+    <!-- Main content -->
+        @if (ViewData["MenuMigalhaItem"] != null)
+        {
+            <a name="conteudoSelecionado"></a>
+
+            @await Html.PartialAsync("~/Views/Shared/_MenuMigalha.cshtml", (List<MenuMigalhaItem>)ViewData["MenuMigalhaItem"])
+            
+        }
+
+    @if(ViewData["BodyPadrao"] == null)
+    {
+        <div class="content-fluid py-5">
+            <div class="container py-4">
+
+                @if (ViewData["PaginaSubtitulo"] != null)
+                {
+                    <div class="row mx-0 justify-content-center">
+                        <div class="col-lg-8">
+                            <div class="section-title text-center position-relative mb-5">
+                                <h1 class="pb-3">@ViewData["PaginaSubtitulo"]</h1>
+                            </div>
+                        </div>
+                    </div>
+                }
+
+                @RenderBody()
+
+            </div>
+        </div>
+    }
+    else if (ViewData["BodyPadrao"] == "Espaco")
+    {
+        <div class="container-fluid">
+            <div>
+                @RenderBody()
+            </div>
+        </div>
+    }
+    else
+    {
+        @RenderBody()
+    }
+
+
+    <!-- /.content -->
+    <!-- Footer Start -->
+    <footer class="ps-footer">
+
+        <div class="container">
+
+            <div class="row align-items-center">
+
+                <div class="col-lg-5 mb-5 mb-lg-0">
+
+                    <img src="~/img/logo/Psicologa-branco.png"
+                         class="ps-footer-logo"
+                         alt="Psicóloga" />
+
+                    @if (!string.IsNullOrWhiteSpace(configuracao.Slogan))
+                    {
+                        <p class="ps-footer-text">
+                            @configuracao.Slogan
+                        </p>
+                    }
+                    else
+                    {
+                        <p class="ps-footer-text">
+                            Cuidado emocional, acolhimento e bem-estar
+                            para ajudar você a encontrar equilíbrio,
+                            autoconhecimento e qualidade de vida.
+                        </p>
+                    }
+
+
+                </div>
+
+                <div class="col-lg-3 col-md-6 mb-4 mb-md-0">
+
+                    <h5 class="ps-footer-title">
+                        Contato
+                    </h5>
+
+                    <ul class="ps-footer-list">
+
+                       @if(@configuracao.Whatsapp != "")
+                        {
+                            <li>
+                                <i class="fas fa-phone-alt"></i>
+                                @configuracao.Whatsapp
+                            </li>
+                        }
+
+                        @if (@configuracao.Email != "")
+                        {
+                            <li>
+                                <i class="fas fa-envelope"></i>
+                                @* contato@psicologa.com.br *@
+                                @configuracao.Email
+                            </li>
+                        }
+
+                        @if (configuracao.Endereco != "")
+                        {
+                            <li>
+                                <i class="fas fa-map-marker-alt"></i>
+                                @configuracao.Cidade - @configuracao.Estado
+                            </li>
+                        }
+
+                    </ul>
+
+                </div>
+
+                <div class="col-lg-4 col-md-6">
+
+                    <h5 class="ps-footer-title">
+                        Redes sociais
+                    </h5>
+
+                    <div class="ps-socials">
+
+                        @if(@configuracao.Whatsapp != "")
+                        {
+                            <a href="@configuracao.LinkWhatsapp" target="_blank">
+                                <i class="fab fa-whatsapp"></i>
+                            </a>
+                        }
+
+                        @if (@configuracao.Instagram != "")
+                        {
+                            <a href="@configuracao.Instagram" target="_blank">
+                                <i class="fab fa-instagram"></i>
+                            </a>
+
+
+                        }
+                        @if(@configuracao.Facebook != "")
+                        {
+                            <a href="@configuracao.Facebook" target="_blank">
+                            <i class="fab fa-facebook-f"></i>
+                        </a>
+                        
+                        }
+                        @if (@configuracao.Linkedin != "")
+                        {
+                            <a href="@configuracao.Linkedin" target="_blank">
+                                <i class="fab fa-linkedin-in"></i>
+                            </a>
+                        }
+                    </div>
+
+                </div>
+
+            </div>
+
+            <div class="ps-footer-bottom">
+
+                <p>
+                    © @DateTime.Now.Year @appSetting.Nome — Todos os direitos reservados.
+                </p>
+
+                <span>
+                    Desenvolvido por MRG tech
+                </span>
+
+            </div>
+
+        </div>
+
+    </footer>
+    <!-- Footer End -->
+
+    <!-- Back to Top -->
+    <a href="#" class="btn btn-lg btn-primary rounded-0 btn-lg-square back-to-top"><i class="fa fa-angle-double-up"></i></a>
+
+    <!-- JavaScript Libraries -->
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.bundle.min.js"></script>
+    <script src="~/template/online-education-website-template/lib/easing/easing.min.js"></script>
+    <script src="~/template/online-education-website-template/lib/waypoints/waypoints.min.js"></script>
+    <script src="~/template/online-education-website-template/lib/counterup/counterup.min.js"></script>
+    <script src="~/template/online-education-website-template/lib/owlcarousel/owl.carousel.min.js"></script>
+    <script src="~/template/online-education-website-template/plugins/select2/js/select2.min.js"></script>
+    <script src="~/template/online-education-website-template/plugins/select2/js/i18n/pt-BR.js"></script>
+    <script src="~/lib/sweetalert2-11/sweetalert2.all.min.js"></script>
+
+    <!--CRM-->
+    <script type="text/javascript" async src="https://d335luupugsy2.cloudfront.net/js/loader-scripts/e6dbd664-91fd-49ff-a2f0-b7016da58c77-loader.js" ></script>
+
+    @RenderSection("Scripts", required: false)
+</body>
+</html>

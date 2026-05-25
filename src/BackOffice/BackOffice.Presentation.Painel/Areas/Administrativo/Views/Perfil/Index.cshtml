@@ -1,0 +1,20 @@
+﻿@{
+    ViewData["Title"] = "Meu Perfil";
+    ViewData["PaginaTitulo"] = "Perfil";
+    ViewData["Descricao"] = "Gerencie suas informações pessoais, contatos e segurança da conta.";
+}
+
+@inject IAppSettings appSetting
+
+@section Styles {
+    <link href="~/css/views/dashboard/Index.css?cache=@appSetting.Version" rel="stylesheet" />
+}
+
+
+@section Scripts {
+
+    <script src="~/clientapp/dist/views/perfil/Index.js?cache=@appSetting.Version"></script>
+}
+
+
+<div id="root"></div>

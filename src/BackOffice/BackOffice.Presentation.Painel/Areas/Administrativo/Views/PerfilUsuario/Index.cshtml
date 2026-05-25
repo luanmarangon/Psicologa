@@ -1,0 +1,14 @@
+﻿@{
+    ViewData["Title"] = "Permissões de Perfis de Usuário";
+    ViewData["PaginaTitulo"] = "Permissões de Perfis de Usuário";
+    ViewData["Descricao"] = "Configuração das permissão dos Perfis de Usuário ";
+}
+
+@inject IAppSettings appSetting
+
+@section Scripts{
+
+    <script src="~/clientapp/dist/views/perfilUsuario/Index.js?cache=@appSetting.Version"></script>
+}
+
+<div id="root"></div>

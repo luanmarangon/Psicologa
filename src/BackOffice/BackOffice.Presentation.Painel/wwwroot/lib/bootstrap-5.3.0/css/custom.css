@@ -1,0 +1,285 @@
+.btn-secondary {
+    --bs-btn-color: #fff;
+    --bs-btn-bg: #0096C7;
+    --bs-btn-border-color: #0096C7;
+    --bs-btn-hover-color: #fff;
+    --bs-btn-hover-bg: #037dbe;
+    --bs-btn-hover-border-color: #0077B6;
+    --bs-btn-focus-shadow-rgb: 130, 138, 145;
+    --bs-btn-active-color: #fff;
+    --bs-btn-active-bg: #0077B6;
+    --bs-btn-active-border-color: #037dbe;
+    --bs-btn-active-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
+    --bs-btn-disabled-color: #fff;
+    --bs-btn-disabled-bg: #0096C7;
+    --bs-btn-disabled-border-color: #0096C7;
+}
+
+.destaque-item-adicionado {
+    background-color: #CAF0F8 !important;
+    /* box-shadow: 0px 0px 0px 3px #037dbe inset; */
+    outline: 2px solid #037dbe;
+    border-radius: 12px;
+    scroll-margin-top: 74px;
+}
+
+.texto-sucesso {
+    color: #88B04B;
+    font-weight: 900;
+    font-size: 40px;
+    margin-bottom: 10px;
+}
+
+.texto-warning {
+    color: #dc3545;
+    font-weight: 900;
+    font-size: 40px;
+    margin-bottom: 10px;
+}
+
+.titulo-cupom-fiscal {
+    font-weight: 900;
+    font-size: 42px;
+    margin-bottom: 12px;
+}
+
+
+/* --------- ANIMAÇÃO ÍCONE SUCESSO --------- */
+.checkmark__circle {
+    stroke-dasharray: 166;
+    stroke-dashoffset: 166;
+    stroke-width: 2;
+    stroke-miterlimit: 10;
+    stroke: #7ac142;
+    fill: none;
+    animation: stroke 0.6s cubic-bezier(0.65, 0, 0.45, 1) forwards
+}
+
+.checkmark {
+    width: 280px;
+    height: 280px;
+    border-radius: 50%;
+    display: block;
+    stroke-width: 2;
+    stroke: #fff;
+    stroke-miterlimit: 10;
+    margin: 5% auto;
+    box-shadow: inset 0px 0px 0px #7ac142;
+    animation: fill .4s ease-in-out .4s forwards, scale .3s ease-in-out .9s both
+}
+
+.checkmark__check {
+    transform-origin: 50% 50%;
+    stroke-dasharray: 48;
+    stroke-dashoffset: 48;
+    animation: stroke 0.3s cubic-bezier(0.65, 0, 0.45, 1) 0.8s forwards
+}
+
+/* --------- ANIMAÇÃO ÍCONE EXCLAMATION --------- */
+.exclamation__circle {
+    stroke-dasharray: 166;
+    stroke-dashoffset: 166;
+    stroke-width: 2;
+    stroke-miterlimit: 10;
+    stroke: #dc3545;
+    fill: none;
+    animation: stroke 0.6s cubic-bezier(0.65, 0, 0.45, 1) forwards
+}
+
+.exclamation {
+    width: 280px;
+    height: 280px;
+    border-radius: 50%;
+    display: block;
+    stroke-width: 2;
+    stroke: #fff;
+    stroke-miterlimit: 10;
+    margin: 5% auto;
+    box-shadow: inset 0px 0px 0px #dc3545;
+    animation: fill-exclamation .4s ease-in-out .4s forwards, scale .3s ease-in-out .9s both
+}
+
+.exclamation__check {
+    transform-origin: 50% 50%;
+    stroke-dasharray: 48;
+    stroke-dashoffset: 48;
+    animation: stroke 0.3s cubic-bezier(0.65, 0, 0.45, 1) 0.8s forwards
+}
+
+
+@keyframes stroke {
+    100% {
+        stroke-dashoffset: 0
+    }
+}
+
+@keyframes scale {
+
+    0%,
+    100% {
+        transform: none
+    }
+
+    50% {
+        transform: scale3d(1.1, 1.1, 1)
+    }
+}
+
+@keyframes fill {
+    100% {
+        box-shadow: inset 0px 0px 0px 140px #7ac142
+    }
+}
+
+@keyframes fill-exclamation {
+    100% {
+        box-shadow: inset 0px 0px 0px 140px #dc3545
+    }
+}
+
+.scroll-custom::-webkit-scrollbar-track {
+	-webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.1);
+	border-radius: 4px;
+	background-color: #F5F5F5;
+}
+
+.scroll-custom::-webkit-scrollbar {
+	width: 25px;
+    height: 20px;
+}
+
+.scroll-custom::-webkit-scrollbar-thumb {
+	border-radius: 4px;
+	-webkit-box-shadow: inset 0 0 6px rgba(0,0,0,.1);
+	background-color: #c0bbbb;
+}
+
+
+.custom-row .col-md-4 {
+    margin-bottom: 1rem;
+    margin-right: 1rem;
+    margin-left: 1rem;
+}
+
+@media (min-width: 992px) {
+    .custom-row .col-md-4 {
+        flex: 0 0 30%;
+        max-width: 30%;
+    }
+}
+
+.max-lines-3 {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+}
+
+.tamanho-botoes {
+    height: 50px !important;
+}
+
+.tamanho-botoes-medio {
+    height: 40px !important;
+}
+
+@keyframes blink {
+    0% {
+        opacity: 1;
+    }
+
+    50% {
+        opacity: 0;
+    }
+
+    100% {
+        opacity: 1;
+    }
+}
+
+.blinking-text {
+    animation: blink 1.6s infinite;
+}
+
+.texto-alert-balanca {
+    font-size: 1.7em;
+    line-height: 1.2em;
+    font-weight: bold;
+}
+
+.btn-lg-custom {
+
+    font-size: 1.4em;
+    padding-left: 1em;
+    padding-right: 1em;
+}
+
+.pre-iniciar .opcoes .itens {
+    display: flex;
+    align-items: start;
+    flex-wrap: wrap;
+    user-select: none;
+    padding-top: 1.5em;
+}
+
+.pre-iniciar .opcoes .itens .item {
+    margin: 0.5em 2.5em;
+    display: flex;
+    font-size: 1em;
+    line-height: 1.1em;
+    overflow: hidden;
+    padding: 0.5em 0.9em;
+    border-radius: 15px;
+    background: #0353a3;
+    color: #fff;
+    
+}
+
+.pre-iniciar .opcoes .itens .item i 
+{
+    font-size: 2.8em;
+    margin-bottom: 0em;
+    line-height: 0;
+    color: #fff;
+}
+
+.pre-iniciar .opcoes .itens .titulo
+{
+    margin-left: 1em;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    line-height: 1.3em;
+    font-size: 1em;
+    font-weight: 300;
+    color: #fff;
+}
+
+
+.pre-iniciar .rodape {
+    padding: 1em;
+    background-color: #023E8A
+}
+
+.pre-iniciar .rodape button {
+    display: flex;
+    align-items: center;
+    margin-left: 0.5em;
+    margin-right: 0.5em;
+}
+
+.pre-iniciar .rodape button i {
+    font-size: 1.1em;
+    margin-right: 0.5em;
+
+  }
+
+  .pre-iniciar .rodape button span {
+    font-size: 0.9em;
+    font-weight: 300;
+    line-height: 1em;
+    text-transform: uppercase;
+  }
+
+

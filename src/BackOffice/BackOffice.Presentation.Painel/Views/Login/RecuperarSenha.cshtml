@@ -1,0 +1,127 @@
+﻿@{
+    Layout = "~/Views/Shared/_LayoutLogin.cshtml";
+}
+
+@if (ViewBag.Logado != null && Context.Request.Query["forcar"] == "true")
+{
+    <p id="msg" style="font-size: 14px; color: #64748b; margin-bottom: 1.6rem; line-height: 1.6;">
+        Foi solicitado uma definição de senha para seu usuário.
+        Confirme seu usuário para criar uma nova senha.
+    </p>
+}
+else if (ViewBag.Logado != null)
+{
+    <p id="msg" style="font-size: 14px; color: #64748b; margin-bottom: 1.6rem; line-height: 1.6;">
+        Forneça seu usuário para iniciar a troca de senha.
+    </p>
+}
+else
+{
+    <p id="msg" style="font-size: 14px; color: #64748b; margin-bottom: 1.6rem; line-height: 1.6;">
+        Informe seu usuário abaixo e enviaremos um código de segurança para recuperação.
+    </p>
+}
+
+<form>
+    <!-- Campo Usuário -->
+    <div class="academy-form-group">
+        <label class="academy-form-label" for="nome">Usuário</label>
+        <div class="academy-input-wrap">
+            <input type="text"
+                   id="nome"
+                   class="form-control"
+                   placeholder="Informe seu usuário"
+                   name="nome"
+                   maxlength="50"
+                   autocomplete="username">
+            <div class="input-group-append">
+                <div class="input-group-text">
+                    <span class="fas fa-user"></span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Campos de código e nova senha (ocultos até solicitar e-mail) -->
+    <div id="divCodigoSeguranca" class="d-none">
+
+        <div class="academy-form-group">
+            <label class="academy-form-label">Código de segurança</label>
+            <div class="academy-input-wrap">
+                <input type="text"
+                       class="form-control"
+                       placeholder="Digite o código recebido por e-mail"
+                       name="codigoSeguranca"
+                       maxlength="20">
+                <div class="input-group-append">
+                    <div class="input-group-text">
+                        <span class="fas fa-key"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="academy-form-group">
+            <label class="academy-form-label">Nova senha</label>
+            <div class="academy-input-wrap">
+                <input type="password"
+                       class="form-control"
+                       placeholder="Digite sua nova senha"
+                       name="senha"
+                       maxlength="20"
+                       autocomplete="new-password">
+                <div class="input-group-append">
+                    <div class="input-group-text">
+                        <span class="fas fa-lock"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="academy-form-group">
+            <label class="academy-form-label">Confirme a nova senha</label>
+            <div class="academy-input-wrap">
+                <input type="password"
+                       class="form-control"
+                       placeholder="Confirme sua nova senha"
+                       name="senhaConfirmar"
+                       maxlength="20"
+                       autocomplete="new-password">
+                <div class="input-group-append">
+                    <div class="input-group-text">
+                        <span class="fas fa-lock"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Ações -->
+    <div style="display: flex; gap: 10px; margin-top: 0.5rem;">
+        <button type="submit"
+                class="academy-btn-primary"
+                id="btnEnviarEmail"
+                onclick="index.enviarEmailRecuperarSenha(event)"
+                style="flex: 1;">
+            <i class="fas fa-envelope"></i>
+            Enviar e-mail
+        </button>
+
+        <button type="submit"
+                class="academy-btn-primary d-none"
+                id="btnTrocar"
+                onclick="index.trocarSenha(event)"
+                style="flex: 1;">
+            <i class="fas fa-key"></i>
+            Trocar senha
+        </button>
+
+        <button type="button"
+                class="academy-btn-secondary"
+                onclick="window.history.back()">
+            <i class="fas fa-arrow-left"></i>
+            Voltar
+        </button>
+    </div>
+</form>

@@ -1,0 +1,15 @@
+﻿@{
+    ViewData["Title"] = "Cliente";
+    ViewData["PaginaTitulo"] = "Cliente";
+    ViewData["Descricao"] = "Meus Dados (Cliente)";
+}
+
+@inject IAppSettings appSetting
+
+@section Scripts{
+
+    <script src="~/clientapp/dist/views/cliente/Index.js?cache=@appSetting.Version"></script>
+}
+
+
+<div id="root"></div>

@@ -1,0 +1,34 @@
+﻿@inject IAppSettings appSetting
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+    ViewData["Title"] = "Psicologa";
+    ViewData["PaginaTitulo"] = "Pesquisar";
+    ViewData["PaginaTituloMenor"] = "Seu espaço de acolhimento, equilíbrio e desenvolvimento emocional";
+    ViewData["Descricao"] = "Portal dedicado ao cuidado com a saúde emocional, atendimentos psicológicos e conteúdos para bem-estar e qualidade de vida.";
+    ViewData["BodyPadrao"] = false;
+    ViewData["TopoExpandido"] = false;
+    ViewData["ExibirTopo"] = true;
+}
+
+<!-- 🔥 ENTREGA DADOS PARA O REACT -->
+<script>
+
+    window.dadosConsulta =
+        @Html.Raw(
+            Newtonsoft.Json.JsonConvert.SerializeObject(ViewBag.Dados)
+                );
+
+    window.textoPesquisa =
+        "@ViewBag.Pesquisa";
+
+</script>
+
+@section Scripts {
+
+    <script src="~/clientapp/dist/views/consultar/Index.js?cache=@appSetting.Version"></script>
+
+}
+
+<div id="root"></div>

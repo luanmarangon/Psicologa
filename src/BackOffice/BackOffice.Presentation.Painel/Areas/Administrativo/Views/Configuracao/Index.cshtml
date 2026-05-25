@@ -1,0 +1,15 @@
+﻿@{
+    ViewData["Title"] = "Configurações";
+    ViewData["PaginaTitulo"] = "Configurações";
+    ViewData["Descricao"] = "Gerencie os registros e configurações do sistema.";
+}
+
+@inject IAppSettings appSetting
+
+@section Scripts{
+
+    <script src="~/clientapp/dist/views/configuracao/Index.js?cache=@appSetting.Version"></script>
+}
+
+
+<div id="root"></div>

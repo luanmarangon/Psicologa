@@ -1,0 +1,14 @@
+﻿@{
+    ViewData["Title"] = "Blog";
+    ViewData["PaginaTitulo"] = "Novo Post";
+    ViewData["Descricao"] = "Criação de Novo Post";
+}
+
+@inject IAppSettings appSetting
+
+@section Scripts{
+
+    <script src="~/clientapp/dist/views/blogPost/NovoPost.js?cache=@appSetting.Version"></script>
+}
+
+<div id="root"></div>

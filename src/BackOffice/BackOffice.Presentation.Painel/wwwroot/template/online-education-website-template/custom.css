@@ -1,0 +1,280 @@
+﻿.nav-link-dropdown {
+    padding-bottom: 5px !important;
+}
+
+.sweetalert2-title {
+    font-size: 1.2em !important;
+}
+
+.sweetalert2-icon {
+    font-size: 0.5em !important;
+}
+
+.btn.table-action {
+    border: 0;
+    background: none;
+    padding-left: 1.5em;
+    color: #464646;
+}
+
+    .btn.table-action .action-icon {
+        color: #605f5f;
+    }
+
+        .btn.table-action .action-icon:hover {
+            color: #000;
+        }
+
+
+/*.video-yt {
+    width: 97%;
+    height: 480px
+}
+
+    .video-yt > iframe {
+        width: 100%;
+        height: 100%;
+    }
+*/
+
+.visualizar-video-container {
+    overflow: hidden;
+    position: relative;
+    width: 100%;
+    height: 500px;
+}
+
+@media (max-width: 576px) {
+    .visualizar-video-container {
+        height: auto;
+        max-height: 500px;
+        margin-bottom: 2rem;
+    }
+}
+
+    .visualizar-video-container::after {
+        padding-top: 56.25%;
+        display: block;
+        content: '';
+    }
+
+    .visualizar-video-container iframe {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+    }
+
+    /* - Dropdown espaçamento - */
+.dropdown-menu .dropdown-item i {
+    width: 30px;
+    color: #333;
+}
+
+
+/* Footer Custom */
+#footer .copyright {
+    border-top: 2px solid #2878EB;
+    padding-top: 10px;
+    color: #fff;
+    text-align: center;
+}
+
+    #footer .copyright a {
+        color: #fff;
+    }
+
+#footer .footer-logo {
+    margin-bottom: 10px;
+    padding: 5px;
+    max-height: 70px;
+    color: #fff;
+}
+
+#footer .slogan {
+    font-size: 1.1em !important;
+    font-weight: bold;
+    padding-bottom: 20px;
+}
+
+.poweredby {
+    display: flex;
+    justify-content: center;
+    margin-top: 15px;
+}
+
+    .poweredby span.title {
+        font-size: 0.8em;
+        margin-right: 15px;
+    }
+
+    .poweredby img {
+        margin-bottom: 5px;
+        max-height: 30px;
+        color: #fff;
+    }
+
+.cursor-padrao {
+    cursor: default;
+}
+
+/*------------------- To-Do -------------------*/
+.step {
+    padding: 10px;
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    background-color: cream;
+}
+
+.v-stepper {
+    position: relative;
+    /*   visibility: visible; */
+}
+
+
+/* regular step */
+.step .circle {
+    background-color: white;
+    border: 3px solid gray;
+    border-radius: 100%;
+    width: 20px; /* +6 for border */
+    height: 20px;
+    display: inline-block;
+    cursor: pointer;
+}
+
+.step .line {
+    top: 20px;
+    left: 9px;
+    /*   height: 120px; */
+    height: 100%;
+    position: absolute;
+    border-left: 3px solid gray;
+}
+
+.step.completed .circle {
+    visibility: visible;
+    background-color: rgb(6,150,215);
+    border-color: rgb(6,150,215);
+}
+
+.step.completed .line {
+    border-left: 3px solid rgb(6,150,215);
+}
+
+.step-active {
+    background: #dddee5;
+    border-radius: 7px;
+}
+
+.step.step-active .circle {
+    visibility: visible;
+    border-color: rgb(6,150,215);
+}
+
+.step.empty .circle {
+    visibility: hidden;
+}
+
+.step.empty .line {
+    /*     visibility: hidden; */
+    /*   height: 150%; */
+    top: 0;
+    height: 150%;
+}
+
+
+.step:last-child .line {
+    border-left: 3px solid white;
+    z-index: -1; /* behind the circle to completely hide */
+}
+
+.content {
+    margin-left: 20px;
+    display: inline-block;
+}
+/*------------------- Fim To-Do -------------------*/
+
+
+
+
+.texto-data-publicacao {
+    font-size: 10px;
+    color: #2d285c !important;
+}
+
+
+
+
+.badge {
+    border-radius: 8px;
+    padding: 0.9em 1.3em;
+}
+    .badge.badge-success {
+        background: #e2ffe2;
+        color: #259d17;
+    }
+
+    .badge.badge-success {
+        background: #e2ffe2;
+        color: #259d17;
+    }
+
+    .badge.badge-danger {
+        background: #ffeae6;
+        color: #d05f4d;
+    }
+
+    .badge.badge-warning {
+        background: #fff8d5;
+        color: #998520;
+    }
+
+    .badge.badge-info {
+        background: #e2f2ff;
+        color: #3171a9;
+    }
+
+.badge {
+    padding-top: .50em;
+    padding-bottom: .50em;
+    padding-right: .8em;
+    padding-left: .8em;
+    font-size: 10px;
+    font-weight: 400;
+    line-height: 1em;
+    text-align: center;
+    white-space: nowrap;
+    vertical-align: baseline;
+    border-radius: 20px;
+}
+
+
+.input-group-search 
+{
+
+}
+
+    .input-group-search .input-group-text {
+        background-color: #fff;
+        border: none;
+        padding: 0.5rem 0.3rem 0.5rem 1rem;
+    }
+
+    .input-group-search .form-control {
+        border: none;
+        box-shadow: none;
+    }
+
+        .input-group-search .form-control:focus {
+            box-shadow: none;
+            border-color: #ccc;
+        }
+
+    .input-group-search .input-group {
+        border: 1px solid #ccc;
+        border-radius: 0.25rem;
+        overflow: hidden;
+    }

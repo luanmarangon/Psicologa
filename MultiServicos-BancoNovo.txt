@@ -1,0 +1,270 @@
+DROP DATABASE IF EXISTS `MultiServicos`;
+CREATE DATABASE `MultiServicos`
+  CHARACTER SET utf8mb4
+  COLLATE utf8mb4_unicode_ci;
+
+USE `MultiServicos`;
+
+SET FOREIGN_KEY_CHECKS = 0;
+SET UNIQUE_CHECKS = 0;
+SET SQL_MODE = 'STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION';
+
+
+CREATE TABLE `Usuario` (
+  `UsuarioId` int NOT NULL AUTO_INCREMENT,
+  `Nome` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `Senha` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `DtCadastro` datetime NOT NULL,
+  `DtSenha` datetime NOT NULL,
+  `PessoaId` int NOT NULL,
+  `Perfil` smallint NOT NULL,
+  `CodigoSeguranca` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  PRIMARY KEY (`UsuarioId`),
+  KEY `FK_Usuario_Pessoa_idx` (`PessoaId`),
+  CONSTRAINT `FK_Usuario_Pessoa` FOREIGN KEY (`PessoaId`) REFERENCES `Pessoa` (`PessoaId`)
+) ENGINE=InnoDB AUTO_INCREMENT=19 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+
+CREATE TABLE `Pessoa` (
+  `PessoaId` int NOT NULL AUTO_INCREMENT,
+  `Nome` varchar(150) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `DocIdNro` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `DocIdTipo` smallint DEFAULT NULL,
+  `DtCadastro` datetime NOT NULL,
+  PRIMARY KEY (`PessoaId`)
+) ENGINE=InnoDB AUTO_INCREMENT=253 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE `PessoaContato` (
+  `PessoaContatoId` int NOT NULL AUTO_INCREMENT,
+  `Tipo` smallint NOT NULL,
+  `Contato` varchar(80) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `Observacao` varchar(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `PessoaId` int NOT NULL,
+  PRIMARY KEY (`PessoaContatoId`,`PessoaId`),
+  KEY `FK_PessoaContato_Pessoa_idx` (`PessoaId`),
+  CONSTRAINT `FK_PessoaContato_Pessoa` FOREIGN KEY (`PessoaId`) REFERENCES `Pessoa` (`PessoaId`) ON DELETE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=459 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE `PessoaEndereco` (
+  `PessoaEnderecoId` int NOT NULL AUTO_INCREMENT,
+  `Logradouro` varchar(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `Numero` varchar(14) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `Bairro` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `Cep` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `Complemento` varchar(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `CidadeId` int DEFAULT NULL,
+  `PessoaId` int DEFAULT NULL,
+  PRIMARY KEY (`PessoaEnderecoId`),
+  KEY `FK_PessoaEndereco_Cidade_idx` (`CidadeId`),
+  KEY `FK_PessoaEndereco_Pessoa_idx` (`PessoaId`),
+  CONSTRAINT `FK_PessoaEndereco_Cidade` FOREIGN KEY (`CidadeId`) REFERENCES `Cidade` (`CidadeId`),
+  CONSTRAINT `FK_PessoaEndereco_Pessoa` FOREIGN KEY (`PessoaId`) REFERENCES `Pessoa` (`PessoaId`) ON DELETE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=253 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+
+CREATE TABLE `PessoaFisica` (
+  `PessoaId` int NOT NULL,
+  `DtNasc` datetime DEFAULT NULL,
+  PRIMARY KEY (`PessoaId`),
+  CONSTRAINT `FK_PessoaFisica_Pessoa` FOREIGN KEY (`PessoaId`) REFERENCES `Pessoa` (`PessoaId`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE `PessoaJuridica` (
+  `PessoaId` int NOT NULL,
+  `RazaoSocial` varchar(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
+  PRIMARY KEY (`PessoaId`),
+  CONSTRAINT `FK_PessoaJuridica_Pessoa` FOREIGN KEY (`PessoaId`) REFERENCES `Pessoa` (`PessoaId`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE `PessoaSegmentoComercial` (
+  `PessoaSegmentoComercialId` int NOT NULL AUTO_INCREMENT,
+  `PessoaId` int NOT NULL,
+  `SegmentoComercialId` int NOT NULL,
+  PRIMARY KEY (`PessoaSegmentoComercialId`),
+  KEY `FK_PessoaSegmentoComercial_Pessoa_idx` (`PessoaId`),
+  KEY `FK_PessoaSegmentoComercial_SegmentoComercial_idx` (`SegmentoComercialId`),
+  CONSTRAINT `FK_PessoaSegmentoComercial_Pessoa` FOREIGN KEY (`PessoaId`) REFERENCES `Pessoa` (`PessoaId`) ON DELETE CASCADE,
+  CONSTRAINT `FK_PessoaSegmentoComercial_SegmentoComercial` FOREIGN KEY (`SegmentoComercialId`) REFERENCES `SegmentoComercial` (`SegmentoComercialId`)
+) ENGINE=InnoDB AUTO_INCREMENT=250 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE `PessoaTipo` (
+  `PessoaTipoId` int NOT NULL AUTO_INCREMENT,
+  `Tipo` smallint NOT NULL,
+  `PessoaId` int NOT NULL,
+  PRIMARY KEY (`PessoaTipoId`),
+  KEY `FK_PESSOATIPO_PESSOA_idx` (`PessoaId`),
+  CONSTRAINT `FK_PESSOATIPO_PESSOA` FOREIGN KEY (`PessoaId`) REFERENCES `Pessoa` (`PessoaId`) ON DELETE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=258 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE `PerfilUsuario` (
+  `PerfilUsuarioId` int NOT NULL,
+  `Nome` varchar(45) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  PRIMARY KEY (`PerfilUsuarioId`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE `PerfilUsuarioPermissao` (
+  `PerfilUsuarioId` int NOT NULL,
+  `Permissao` smallint NOT NULL,
+  PRIMARY KEY (`Permissao`,`PerfilUsuarioId`),
+  KEY `FK_PerfilUsuarioPermissao_PerfilUsuario_idx` (`PerfilUsuarioId`),
+  CONSTRAINT `FK_PerfilUsuarioPermisao_PerfilUsuario` FOREIGN KEY (`PerfilUsuarioId`) REFERENCES `PerfilUsuario` (`PerfilUsuarioId`) ON DELETE CASCADE,
+  CONSTRAINT `FK_PerfilUsuarioPermissao_PerfilUsuario` FOREIGN KEY (`PerfilUsuarioId`) REFERENCES `PerfilUsuario` (`PerfilUsuarioId`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE `Cidade` (
+  `CidadeId` int NOT NULL,
+  `Nome` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `IBGEMunicipio` int NOT NULL,
+  `IBGEMunicipioCompleto` int NOT NULL,
+  `CidadeUFId` int NOT NULL,
+  `Latitude` varchar(15) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `Longitude` varchar(15) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
+  PRIMARY KEY (`CidadeId`),
+  KEY `FK_Cidade_CidadeUF_idx` (`CidadeUFId`),
+  CONSTRAINT `FK_Cidade_CidadeUF` FOREIGN KEY (`CidadeUFId`) REFERENCES `CidadeUF` (`CidadeUFId`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE `CidadeUF` (
+  `CidadeUFId` int NOT NULL,
+  `Nome` varchar(25) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `Sigla` char(2) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  PRIMARY KEY (`CidadeUFId`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE `SegmentoComercial` (
+  `SegmentoComercialId` int NOT NULL AUTO_INCREMENT,
+  `Nome` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `Observacao` varchar(1000) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `ImagemNome` varchar(45) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  PRIMARY KEY (`SegmentoComercialId`)
+) ENGINE=InnoDB AUTO_INCREMENT=19 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE `Cliente` (
+  `ClienteId` int NOT NULL AUTO_INCREMENT,
+  `PessoaId` int NOT NULL,
+  `DataExclusao` datetime DEFAULT NULL,
+  `PossuiSuperOraculo` tinyint NOT NULL DEFAULT '0',
+  `LiberarPortalCliente` tinyint NOT NULL DEFAULT '0',
+  `AssinouTermoConsentimento` tinyint NOT NULL DEFAULT '0',
+  `MinutosAutoatualizacaoDashboard` smallint NOT NULL DEFAULT '5',
+  `MinutosNovaSincronizacaoMovimento` smallint NOT NULL DEFAULT '60',
+  `UltimaAtualizacao` datetime DEFAULT NULL,
+  PRIMARY KEY (`ClienteId`),
+  KEY `FK_Cliente_Pessoa_idx` (`PessoaId`),
+  CONSTRAINT `FK_Cliente_Pessoa` FOREIGN KEY (`PessoaId`) REFERENCES `Pessoa` (`PessoaId`) ON DELETE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=1616 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE `Prestador` (
+  `PrestadorId` int NOT NULL AUTO_INCREMENT,
+  `PessoaId` int NOT NULL,
+  `DataExclusao` datetime DEFAULT NULL,
+  PRIMARY KEY (`PrestadorId`),
+  KEY `FK_Prestador_Pessoa_idx` (`PessoaId`),
+  CONSTRAINT `FK_Prestador_Pessoa` FOREIGN KEY (`PessoaId`) REFERENCES `Pessoa` (`PessoaId`) ON DELETE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=1616 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+
+-- ==============================================================
+-- TABELA: servicos
+-- ==============================================================
+-- CREATE TABLE `Servicos` (
+  -- `ServicoId`             INT           NOT NULL AUTO_INCREMENT,
+  -- `PrestadorId`   INT           NOT NULL,
+  -- `Nome`           VARCHAR(100)  NOT NULL,
+  -- `Descricao`      TEXT          DEFAULT NULL,
+  -- `Preco`          DECIMAL(10,2) NOT NULL DEFAULT 0.00,
+  -- `TempoExecucao` INT UNSIGNED  NOT NULL DEFAULT 60,
+  -- `Ativo`          TINYINT(1)    NOT NULL DEFAULT 1,
+  -- `DataCriacao`      DATETIME      NOT NULL,
+  -- `DataAtualizacao`  DATETIME      NOT NULL,
+  -- PRIMARY KEY (`ServicoId`),
+  -- KEY `idx_servicos_prestador` (`PrestadorId`),
+  -- KEY `idx_servicos_ativo` (`Ativo`),
+  -- CONSTRAINT `fk_servicos_prestador`
+    -- FOREIGN KEY (`PrestadorId`) REFERENCES `Prestador` (`PrestadorId`)
+    -- ON DELETE CASCADE ON UPDATE CASCADE
+-- ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
+  -- COMMENT='Servicos oferecidos por cada prestador com preco e duracao em minutos';
+
+CREATE TABLE `Servicos` (
+  `ServicoId`             INT           NOT NULL AUTO_INCREMENT,
+  `PrestadorId`   INT           NOT NULL,
+  `Nome`           VARCHAR(100)  NOT NULL,
+  `Descricao`      TEXT          DEFAULT NULL,
+  `Preco`          DECIMAL(10,2) NOT NULL DEFAULT 0.00,
+  `TempoExecucao` INT UNSIGNED  NOT NULL DEFAULT 60,
+  `Ativo`          TINYINT(1)    NOT NULL DEFAULT 1,
+  `DataCriacao`      DATETIME      NOT NULL,
+  `DataAtualizacao`  DATETIME      NOT NULL,
+  PRIMARY KEY (`ServicoId`),
+  KEY `idx_servicos_prestador` (`PrestadorId`),
+  KEY `idx_servicos_ativo` (`Ativo`),
+  CONSTRAINT `fk_servicos_prestador`
+    FOREIGN KEY (`PrestadorId`) REFERENCES `Prestador` (`PrestadorId`)
+    ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
+  COMMENT='Servicos oferecidos por cada prestador com preco e duracao em minutos';
+
+CREATE TABLE Log (
+    LogId            INT AUTO_INCREMENT PRIMARY KEY,
+    DataCriacao      DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    -- Quem
+    UsuarioId        INT NOT NULL,
+    UsuarioNome      VARCHAR(150),
+
+    -- De onde
+    Dispositivo      VARCHAR(50),
+    IP               VARCHAR(45),
+    UserAgent        VARCHAR(300),
+
+    -- O quê
+    Entidade         VARCHAR(100),
+    EntidadeId       INT,
+    Operacao         TINYINT,              -- 1=Insert, 2=Update, 3=Delete
+
+    -- Onde
+    Aplicacao        VARCHAR(100),
+    Metodo           VARCHAR(200),
+
+    -- Antes e depois
+    DadosAntes       JSON,
+    DadosDepois      JSON,
+    DadosAlterados   JSON,
+
+    -- Status
+    Sucesso          TINYINT(1) NOT NULL,
+    MensagemErro     VARCHAR(500)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+
+CREATE TABLE servicoImagem (
+    ServicoImagemId INT NOT NULL AUTO_INCREMENT,
+    ServicoId       INT NOT NULL,
+    Imagem          LONGBLOB NULL,
+    ImagemUrl       VARCHAR(500) NULL,
+    Nome            VARCHAR(150) NULL,
+    Principal       TINYINT(1) NOT NULL DEFAULT 0,
+    Ordem           INT NOT NULL DEFAULT 0,
+    Ativo			TINYINT(1) NOT NULL DEFAULT 1,
+    DataCriacao     DATETIME NOT NULL,
+    DataAtualizacao DATETIME NULL,
+    PRIMARY KEY (ServicoImagemId),
+    INDEX idx_servicos (ServicoId),
+    CONSTRAINT fk_servicoimagem_servico
+        FOREIGN KEY (ServicoId) REFERENCES servicos (ServicoId)
+);
+
+-- ==============================================================
+-- RESTAURAR CONFIGURACOES
+-- ==============================================================
+SET FOREIGN_KEY_CHECKS = 1;
+SET UNIQUE_CHECKS = 1;
+
+-- ==============================================================
+-- VERIFICACAO FINAL
+-- ==============================================================
+SELECT TABLE_NAME AS 'Tabela', TABLE_COMMENT AS 'Descricao'
+FROM information_schema.TABLES
+WHERE TABLE_SCHEMA = 'MultServicos'
+ORDER BY TABLE_NAME;

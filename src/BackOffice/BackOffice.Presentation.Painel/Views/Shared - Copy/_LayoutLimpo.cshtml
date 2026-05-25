@@ -1,0 +1,59 @@
+﻿@inject IAppSettings appSetting
+
+<!DOCTYPE html>
+
+<html lang="pt-br">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <title>@(!string.IsNullOrEmpty(ViewData["Title"].ToString().Trim()) ? ViewData["Title"].ToString().Trim() + " - " : "")Portal E-Academy - E-Gestora</title>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <meta content="Treinamento Capacitação Loja Virtual E-Commerce Delivery Varejo Mercado Sistema Tabela de Preço Super Painel Digital ERP Retaguardar PDV Frente de Caixa" name="keywords">
+    <meta content="O Portal oficial de capacitação da E-Gestora Sistemas e Soluções" name="description">
+
+    <link rel="icon" type="image/png" href="~/img/favicon.png">
+    <link rel="stylesheet" href="~/template/AdminLTE/plugins/fontawesome-free/css/all.min.css">
+    <link href="~/template/AdminLTE/plugins/select2/css/select2.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="~/template/AdminLTE/dist/css/adminlte.min.css">
+    <link href="~/lib/chart.js/Chart.min.css" rel="stylesheet" />
+
+    <link href="~/template/AdminLTE/custom.css?cache=@appSetting.Version" rel="stylesheet" />
+    <link href="~/css/site.css?cache=@appSetting.Version" rel="stylesheet" />
+    <link href="~/css/loading.css?cache=@appSetting.Version" rel="stylesheet" />
+
+    @RenderSection("Styles", required: false)
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" crossorigin="anonymous"></script>
+
+    @* //Deve ser importado no início *@
+    <script>
+        const BASE_URL = "@appSetting.BaseURL";
+    </script>
+
+    <script src="~/js/site.js?cache=@appSetting.Version"></script>
+    <script src="~/js/HTTPClient.js?cache=@appSetting.Version"></script>
+
+
+</head>
+
+
+<body style="margin:0; padding: 0">
+    <div>
+        @RenderBody()
+    </div>
+    <script src="~/template/AdminLTE/plugins/jquery/jquery.min.js"></script>
+    <script src="~/template/AdminLTE/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="~/template/AdminLTE/plugins/inputmask/min/jquery.inputmask.bundle.min.js"></script>
+    <script src="~/template/AdminLTE/plugins/select2/js/select2.min.js"></script>
+    <script src="~/template/AdminLTE/plugins/select2/js/i18n/pt-BR.js"></script>
+    <script src="~/template/AdminLTE/dist/js/adminlte.min.js"></script>
+    <script src="~/lib/sweetalert2-11/sweetalert2.all.min.js"></script>
+
+    @RenderSection("Scripts", required: false)
+
+</body>
+</html>
+
+
+
+

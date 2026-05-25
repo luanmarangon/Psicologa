@@ -1,0 +1,1 @@
+﻿Classes de interface retiradas para facilitar a implementação ao projeto. Não interfere na arquitetura DDD.

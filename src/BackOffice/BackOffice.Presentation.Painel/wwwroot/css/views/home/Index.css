@@ -1,0 +1,216 @@
+﻿
+.dashboard-wrapper {
+    margin-bottom: 10px;
+}
+
+    .dashboard-wrapper .element-content .item {
+        padding: 6px 12px;
+    }
+
+    .dashboard-wrapper .element-content .row-title {
+        padding: 15px 10px 5px 10px;
+        font-weight: bold;
+    }
+
+
+    .dashboard-wrapper .element-header {
+        border-bottom: 1px solid rgba(0,0,0,0.05);
+        padding-bottom: 0.7em;
+        margin-bottom: 1em;
+        position: relative;
+        z-index: 1;
+        font-weight: 700;
+        font-size: 1.25em;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+        .dashboard-wrapper .element-header .tool {
+            font-weight: normal;
+            font-size: 0.8em;
+            position: relative;
+            top: 18px;
+            right: -11px;
+        }
+
+        .dashboard-wrapper .element-header:after {
+            content: "";
+            background-color: #047bf8;
+            width: 100px;
+            height: 4px;
+            border-radius: 0px;
+            display: block;
+            position: absolute;
+            bottom: -3px;
+            left: 0px;
+        }
+
+    .dashboard-wrapper a.element-box {
+        text-decoration: none;
+        display: block;
+        color: #3E4B5B;
+    }
+
+    .dashboard-wrapper .element-box.hover:hover {
+        background: #f3f2f2 !important
+    }
+
+.element-box {
+    padding: 1.5em 2em;
+    margin-bottom: 1em;
+    border-radius: 5px;
+    background-color: #fff;
+    border: 1px solid #edf2f9;
+    box-shadow: 0 0.75rem 1.5rem rgb(18 38 63 / 3%) !important;
+    min-width: 200px;
+    height: 115px;
+}
+
+a .label {
+    display: block;
+    font-size: 1em;
+    text-transform: uppercase;
+    color: rgb(29 29 29 / 80%);
+    letter-spacing: 0.2px;
+    width: 190px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-weight: 600;
+}
+
+.dashboard-wrapper .label-box-material-educativo {
+    display: block;
+    font-size: .80em;
+    text-transform: uppercase;
+    color: rgb(29 29 29 / 80%);
+    letter-spacing: 0.2px;
+    width: 190px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-weight: 600;
+}
+
+.value-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    color: rgba(0, 0, 0, 0.85);
+    margin-top: 8px;
+    min-height: 40px;
+}
+
+    .value-container i {
+        font-size: 32px;
+    }
+
+.dashboard-wrapper .footer {
+    font-size: 0.7em;
+}
+
+.dashboard-wrapper .value {
+    font-size: 2.3em;
+    font-weight: 500;
+    letter-spacing: 1px;
+    line-height: 1.2;
+    display: inline-block;
+    vertical-align: middle;
+}
+
+.element-box-kpi {
+    padding: 1.5em 2em;
+    margin-bottom: 1em;
+    border-radius: 5px;
+    background-color: #fff;
+    box-shadow: 0 0.75rem 1.5rem rgb(18 38 63 / 3%) !important;
+    min-height: 350px;
+    width: 100%;
+}
+
+    .element-box-kpi .title {
+        font-weight: bold;
+        font-size: 1.5em;
+    }
+
+    .element-box-kpi .subtitle {
+        margin-top: 10px;
+        color: #333232;
+    }
+
+.dashboard-wrapper .filter {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    background-color: #fff;
+    width: 100%;
+    padding: 10px;
+    box-shadow: 0 0.75rem 1.5rem rgb(18 38 63 / 3%) !important;
+    border-radius: 5px;
+}
+
+    .dashboard-wrapper .filter input,
+    .dashboard-wrapper .filter select,
+    .dashboard-wrapper .filter .select2-selection {
+        font-size: 0.8em;
+        padding: 5px;
+        border-radius: 2px;
+        border: 1px solid #d9dce0;
+        margin-right: 5px;
+        margin-bottom: 2.5px;
+        margin-top: 2.5px;
+    }
+
+    .dashboard-wrapper .filter .select2-selection__rendered {
+        padding: 5px;
+        padding: 2px;
+    }
+
+.element-chart .myChart {
+    height: 400px;
+    width: 400px;
+}
+
+
+.element-box-kpi {
+}
+
+    .element-box-kpi .body {
+        margin-top: 30px;
+        overflow-x: auto;
+    }
+
+        .element-box-kpi .body .chart {
+            min-width: 500px;
+        }
+
+        .element-box-kpi .body.chart-center {
+            display: flex;
+            justify-content: center;
+        }
+
+    .element-box-kpi .footer {
+        margin-top: 15px;
+        font-size: 0.7em;
+    }
+
+
+
+@media (min-width: 600px) {
+    .element-content .kpi-simple .item {
+        max-width: 250px;
+    }
+
+}
+
+
+@media (max-width: 600px) {
+
+    .element-box-kpi .body .chart {
+        min-width: 300px;
+    }
+}
+
+
+

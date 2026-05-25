@@ -1,0 +1,15 @@
+﻿@{
+    ViewData["Title"] = "Usuários";
+    ViewData["PaginaTitulo"] = "Usuários";
+    ViewData["Descricao"] = "Usuários do BackOffice (Colaboradores)";
+}
+
+@inject IAppSettings appSetting
+
+@section Scripts{
+
+    <script src="~/clientapp/dist/views/usuario/Index.js?cache=@appSetting.Version"></script>
+}
+
+
+<div id="root"></div>

@@ -1,0 +1,65 @@
+﻿@{
+    Layout = "~/Views/Shared/_LayoutLogin.cshtml";
+}
+
+
+@if (ViewBag.Logado != null && Context.Request.Query["forcar"] == "true")
+{
+    <p class="login-box-msg" id="msg">Foi solicitado uma definição de senha para seu usuário. Confirme seu usuário para criar uma senha</p>
+}
+else if (ViewBag.Logado != null)
+{
+    <p class="text-center" id="msg">Forneça seu usuário para iniciar troca da senha</p>
+}
+else
+{
+    <p class="text-center" id="msg">Forneça seu o usuário para recuperar a senha</p>
+}
+
+<form>
+    <div class="input-group mb-3">
+        <input type="text" class="form-control" placeholder="Usuário" name="nome" id="nome" maxlength="50">
+        <div class="input-group-append">
+            <div class="input-group-text">
+                <span class="fas fa-user"></span>
+            </div>
+        </div>
+    </div>
+
+    <div id="divCodigoSeguranca" class="d-none">
+
+        <div class="input-group mb-3">
+            <input type="text" class="form-control" placeholder="Código de Segurança" name="codigoSeguranca" maxlength="20">
+            <div class="input-group-append">
+                <div class="input-group-text">
+                    <span class="fas fa-key"></span>
+                </div>
+            </div>
+        </div>
+
+        <div class="input-group mb-3">
+            <input type="password" class="form-control" placeholder="Nova Senha" name="senha" maxlength="20">
+            <div class="input-group-append">
+                <div class="input-group-text">
+                    <span class="fas fa-lock"></span>
+                </div>
+            </div>
+        </div>
+
+        <div class="input-group mb-3">
+            <input type="password" class="form-control" placeholder="Confirmação da Nova Senha" name="senhaConfirmar" maxlength="20">
+            <div class="input-group-append">
+                <div class="input-group-text">
+                    <span class="fas fa-lock"></span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row justify-content-end">
+        <button type="submit" class="btn btn-primary" onclick="index.enviarEmailRecuperarSenha(event)" id="btnEnviarEmail">Enviar e-mail</button>
+        <button type="submit" class="btn btn-primary d-none" onclick="index.trocarSenha(event)" id="btnTrocar">Trocar Senha</button>
+        <button type="button" class="btn btn-secondary text-white ml-2" onclick="window.history.back()"><i class="fas fa-arrow-left mr-2"></i>Voltar</button>
+    </div>
+</form>
+

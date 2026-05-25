@@ -1,0 +1,15 @@
+﻿@{
+    ViewData["Title"] = "Agendamentos";
+    ViewData["PaginaTitulo"] = "Agendamentos";
+    ViewData["Descricao"] = "Gerencie os Agendamentos.";
+}
+
+@inject IAppSettings appSetting
+
+@section Scripts{
+
+    <script src="~/clientapp/dist/views/agendamento/Index.js?cache=@appSetting.Version"></script>
+}
+
+
+<div id="root"></div>
