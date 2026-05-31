@@ -317,7 +317,7 @@ namespace Psicologa.Application.Pessoa.Services
 
             usuarioCriar.Senha = _usuarioService.GerarSenhaUsuario();
 
-            usuarioCriar.Perfil = pessoa.Tipos[0].Tipo == PessoaTipo.TpPessoa.Cliente
+            usuarioCriar.Perfil = pessoa.Tipos[0].Tipo == PessoaTipo.TpPessoa.Paciente
                                                         ? PerfilUsuario.TpPerfil.Administrativo    // substituir pelo valor correto do enum
                                                         : PerfilUsuario.TpPerfil.Psicologo; // substituir pelo valor correto do enum
             usuarioCriar.Pessoa = new Domain.Pessoa.Entities.Pessoa()

@@ -237,7 +237,7 @@ namespace Psicologa.Application.Agendamento.Services
                 Ativo = agendamento.Ativo,
 
                 ConfirmouAgendamento = agendamento.ConfirmouAgendamento,
-                DataConfirmacao = agendamento.DataConfirmacao ?? (DateTime?)null,
+                DataConfirmacao = agendamento.DataConfirmacao != null ? agendamento.DataConfirmacao : (DateTime?)null,
 
                 StatusAgendamentoDescricao = agendamento.StatusAgendamento.ToString(),
                 TipoAgendamentoDescricao = agendamento.TipoAgendamento.ToString(),

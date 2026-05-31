@@ -45,6 +45,8 @@ namespace Psicologa.Infra.CrossCutting.IOC
             services.AddScoped(typeof(Domain.Agendamento.Services.AgendamentoService));
             services.AddScoped<Domain.Agendamento.Interfaces.Repositories.IAgendamentoRepository, Infra.Data.Repository.Agendamento.AgendamentoRepository>();
 
+            services.AddScoped(typeof(Domain.Paciente.Services.PacienteService));
+            services.AddScoped<Domain.Paciente.Interfaces.Repositories.IPacienteRepository, Infra.Data.Repository.Paciente.PacienteRepository>();
 
             #endregion
         }
@@ -68,7 +70,7 @@ namespace Psicologa.Infra.CrossCutting.IOC
             services.AddScoped(typeof(Application.ServicoContato.Services.ApplicationServicoContatoService));
             
             services.AddScoped(typeof(Application.Agendamento.Services.ApplicationAgentamentoService));
-
+            services.AddScoped(typeof(Application.Paciente.Services.ApplicationPacienteService));
 
 
             #endregion

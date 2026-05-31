@@ -21,6 +21,7 @@ namespace Psicologa.Application.Agendamento.ViewsModel
         [JsonConverter(typeof(EncryptIdJSONConverter))]
         public int ServicoId { get; set; }
         public string ServicoNome { get; set; }
+        [JsonConverter(typeof(DateTimeJSONConverter))]
         public DateTime DataConsulta { get; set; }
         public string HoraInicio { get; set; }
         public string HoraFim { get; set; }
@@ -54,6 +55,7 @@ namespace Psicologa.Application.Agendamento.ViewsModel
         [JsonConverter(typeof(EncryptIdJSONConverter))]
         public int ServicoId { get; set; }
         public string ServicoNome { get; set; }
+        [JsonConverter(typeof(DateTimeJSONConverter))]
         public DateTime DataConsulta { get; set; }
         public string HoraInicio { get; set; }
         public string HoraFim { get; set; }

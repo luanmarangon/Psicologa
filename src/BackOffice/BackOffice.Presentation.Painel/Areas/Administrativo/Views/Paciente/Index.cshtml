@@ -1,0 +1,15 @@
+﻿@{
+    ViewData["Title"] = "Pacientes";
+    ViewData["PaginaTitulo"] = "Pacientes";
+    ViewData["Descricao"] = "Gerenciar Pacientes";
+}
+
+@inject IAppSettings appSetting
+
+@section Scripts{
+
+    <script src="~/clientapp/dist/views/paciente/Index.js?cache=@appSetting.Version"></script>
+}
+
+
+<div id="root"></div>

@@ -47,13 +47,14 @@
 
     if(permissoes.Contains(PerfilUsuarioViewModel.TpPermissao.GerenciarServicos))
     {
-                cadastros.Filhos.Add(new { Titulo = "Serviços", HRef = "Administrativo/Servico", IconeClass = "fas fa-brain", Tag = "" });
+        cadastros.Filhos.Add(new { Titulo = "Serviços", HRef = "Administrativo/Servico", IconeClass = "fas fa-brain", Tag = "" });
     }
 
     if(permissoes.Contains(PerfilUsuarioViewModel.TpPermissao.GerenciarConvenios))
     {
         cadastros.Filhos.Add(new { Titulo = "Convênios", HRef = "Administrativo/Convenio", IconeClass = "fas fa-handshake", Tag = "" });
     }
+
 
     if (permissoes.Contains(PerfilUsuarioViewModel.TpPermissao.GerenciarUsuarios))
     {
@@ -93,6 +94,20 @@
     {
         sideBarItens.Add(leads);
     }
+
+    var pacientes = new { Titulo = "Pacientes", IconeClass = "fas fa-procedures", Filhos = new List<dynamic>() };
+
+    if (permissoes.Contains(PerfilUsuarioViewModel.TpPermissao.GerenciarPacientes))
+    {
+        pacientes.Filhos.Add(new { Titulo = "Pacientes", HRef = "Administrativo/Paciente", IconeClass = "fas fa-procedures", Tag = "" });
+        pacientes.Filhos.Add(new { Titulo = "Prontuário", HRef = "Administrativo/Paciente", IconeClass = "fas fa-notes-medical", Tag = "" });
+    }
+    
+    if (pacientes.Filhos.Count > 0)
+    {
+        sideBarItens.Add(pacientes);
+    }
+
 
     var agendamentos = new { Titulo = "Agendamentos", IconeClass = "fas fa-calendar-alt", Filhos = new List<dynamic>() };
 

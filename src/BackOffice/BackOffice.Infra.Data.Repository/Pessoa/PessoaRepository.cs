@@ -191,57 +191,6 @@ namespace Psicologa.Infra.Data.Repository.Pessoa
                                 cmd.ExecuteNonQuery();
                             }
 
-                            ////Teste Luan
-                            //if (pessoa.Endereco != null)
-                            //{
-                            //    //Validar se os campos estão nulos.
-                            //    if (!string.IsNullOrEmpty(pessoa.Endereco.CEP) && pessoa.Endereco.Cidade.Id > 0)
-                            //    {
-                            //        cmd.ParametersClear();
-
-                            //        // Caso pessoa.Endereco.Id vier igual 0, pessoa sem endereço cadastrado
-                            //        if (pessoa.Endereco.Id == 0)
-                            //        {
-                            //            cmd.CommandText = @"insert into PessoaEndereco
-                            //                            (PessoaId, Logradouro, Numero, Bairro, Cep, Complemento, CidadeId, PontoReferencia, Latitude, Longitude)
-                            //                            values
-                            //                            (@PessoaId, @Logradouro, @Numero, @Bairro, @Cep, @Complemento, @CidadeId, @PontoReferencia, @Latitude, @Longitude)";
-
-                            //            cmd.ParameterAdd("@PessoaId", pessoa.Id);
-                            //        }
-                            //        else
-                            //        {
-                            //            cmd.CommandText = @"update PessoaEndereco
-                            //                            set Logradouro = @Logradouro,
-                            //                                Numero = @Numero,
-                            //                                Bairro = @Bairro,
-                            //                                Cep = @Cep,
-                            //                                Complemento = @Complemento,
-                            //                                CidadeId = @CidadeId,
-                            //                                PontoReferencia = @PontoReferencia,
-                            //                                Latitude = @Latitude,
-                            //                                Longitude = @Longitude
-                            //                            where PessoaId = @PessoaId and PessoaEnderecoId = @Id";
-
-                            //            cmd.ParameterAdd("@PessoaId", pessoa.Id);
-                            //            cmd.ParameterAdd("@Id", pessoa.Endereco.Id);
-                            //        }
-
-                            //        //Paramentros para o Insert ou Update
-                            //        cmd.ParameterAdd("@Logradouro", DBUtils.ConvertEmptyStringToNull(pessoa.Endereco.Logradouro));
-                            //        cmd.ParameterAdd("@Numero", DBUtils.ConvertEmptyStringToNull(pessoa.Endereco.Numero));
-                            //        cmd.ParameterAdd("@Bairro", DBUtils.ConvertEmptyStringToNull(pessoa.Endereco.Bairro));
-                            //        cmd.ParameterAdd("@Cep", DBUtils.ConvertEmptyStringToNull(pessoa.Endereco.CEP));
-                            //        cmd.ParameterAdd("@Complemento", DBUtils.ConvertEmptyStringToNull(pessoa.Endereco.Complemento));
-                            //        cmd.ParameterAdd("@CidadeId", DBUtils.ConvertIntZeroToNull(pessoa.Endereco.Cidade.Id));
-                            //        cmd.ParameterAdd("@PontoReferencia", DBUtils.ConvertEmptyStringToNull(pessoa.Endereco.PontoReferencia));
-                            //        cmd.ParameterAdd("@Latitude", DBUtils.ConvertEmptyStringToNull(pessoa.Endereco.Latitude));
-                            //        cmd.ParameterAdd("@Longitude", DBUtils.ConvertEmptyStringToNull(pessoa.Endereco.Longitude));
-
-                            //        cmd.ExecuteNonQuery();
-                            //    }
-                            //}
-
                             //contato
 
                             //deletando os contatos que não estão na lista.
@@ -358,6 +307,43 @@ namespace Psicologa.Infra.Data.Repository.Pessoa
 
                             #endregion Atualiza pessoa
                         }
+
+                        #region Paciente
+                        
+                        int idAux = 0;
+
+                        bool ehPaciente = pessoa.Tipos.Exists(p => p.Tipo == PessoaTipo.TpPessoa.Paciente);
+                        
+                        if(pessoa.Id == 0 && novaPessoaId > 0)
+                            idAux = novaPessoaId;
+                        else 
+                            idAux = pessoa.Id;
+
+                        if(ehPaciente)
+                        {
+                            cmd.CommandText = $@"SELECT COUNT(*) FROM Paciente where PessoaId = @PessoaId";
+                            cmd.ParametersClear();
+                            cmd.ParameterAdd("@PessoaId", idAux);
+
+                            if(Convert.ToInt32(cmd.ExecuteScalar()) == 0)
+                            {
+                                cmd.CommandText = $@"INSERT INTO Paciente (PessoaId, Ativo) VALUES (@PessoaId, @Ativo)";
+                                cmd.ParametersClear();
+                                cmd.ParameterAdd("@PessoaId", idAux);
+                                cmd.ParameterAdd("@Ativo", pessoa.Ativo);
+
+                                cmd.ExecuteNonQuery();
+                                }
+                            else
+                            {
+                                cmd.CommandText = $@"UPDATE Paciente SET Ativo = @Ativo WHERE PessoaId = @PessoaId";
+                                cmd.ParametersClear();
+                                cmd.ParameterAdd("@PessoaId", idAux);
+                                cmd.ParameterAdd("@Ativo", pessoa.Ativo);
+                                cmd.ExecuteNonQuery();
+                            }
+                        }
+                        #endregion
 
                         operacao = true;
 
@@ -583,7 +569,7 @@ namespace Psicologa.Infra.Data.Repository.Pessoa
 
                         int idAux = 0;
 
-                        bool ehCliente = pessoa.Tipos.Exists(p => p.Tipo == PessoaTipo.TpPessoa.Cliente);
+                        bool ehCliente = pessoa.Tipos.Exists(p => p.Tipo == PessoaTipo.TpPessoa.Paciente);
                         if (pessoa.Id == 0 && novaPessoaId > 0)
                         {
                             idAux = novaPessoaId;
@@ -914,7 +900,7 @@ namespace Psicologa.Infra.Data.Repository.Pessoa
                             left outer join PessoaContato pc on p.PessoaId = pc.PessoaId
                             left outer join PessoaTipo pt on p.PessoaId = pt.PessoaId
                             left outer join PessoaEndereco e on p.PessoaId = e.PessoaId
-                            where p.Ativo and pt.Tipo = {(int)PessoaTipo.TpPessoa.Cliente}
+                            where p.Ativo and pt.Tipo = {(int)PessoaTipo.TpPessoa.Paciente}
                         order by p.PessoaId desc";
 
                     cmd.ParametersClear();

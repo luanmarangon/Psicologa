@@ -10,8 +10,8 @@ namespace Psicologa.Domain.Pessoa.Entities
             [Description("Indefinido")]
             Indefinido = 0,
 
-            [Description("Cliente")]
-            Cliente = 1,
+            [Description("Paciente")]
+            Paciente = 1,
             [Description("Colaborador")]
             Colaborador = 2,
             [Description("Psicologo")]

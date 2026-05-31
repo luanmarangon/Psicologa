@@ -117,7 +117,7 @@ export default class CadastroTipo extends Component {
                                     onChange={(e) => this.setState({tipo: {...this.state.tipo, tipo: e.target.value}})}
                                     ref="selTp">
                                     <option value="0"></option>
-                                    <option value="1">Cliente</option>
+                                    <option value="1">Paciente</option>
                                     <option value="2">Colaborador</option>
                                     <option value="3">Psicologo</option>
                                 </select>   

@@ -20,9 +20,11 @@
     <Content Remove="Areas\Administrativo\Views\Cliente\Index.cshtml" />
     <Content Remove="Areas\Administrativo\Views\Cliente\Servicos.cshtml" />
     <Content Remove="Areas\Administrativo\Views\Agendamento\Index.cshtml" />
+    <Content Remove="Areas\Administrativo\Views\Paciente\Prontuario.cshtml" />
     <Content Remove="Areas\Administrativo\Views\Perfil\Index.cshtml" />
     <Content Remove="Areas\Administrativo\Views\Leads\Index.cshtml" />
     <Content Remove="Areas\Administrativo\Views\Configuracao\Index.cshtml" />
+    <Content Remove="Areas\Administrativo\Views\Paciente\Index.cshtml" />
     <Content Remove="Areas\Administrativo\Views\Servico\Index.cshtml" />
     <Content Remove="Areas\Administrativo\Views\Convenio\Index.cshtml" />
   </ItemGroup>
@@ -33,12 +35,14 @@
     <None Include="Areas\Administrativo\Views\BlogPost\Index.cshtml" />
     <None Include="Areas\Administrativo\Views\Cliente\Servicos.cshtml" />
     <None Include="Areas\Administrativo\Views\Agendamento\Index.cshtml" />
+    <None Include="Areas\Administrativo\Views\Paciente\Prontuario.cshtml" />
     <None Include="Areas\Administrativo\Views\Perfil\Index.cshtml" />
     <None Include="Areas\Administrativo\Views\Leads\Index.cshtml" />
     <None Include="Areas\Administrativo\Views\Dashboard\Error.cshtml" />
     <None Include="Areas\Administrativo\Views\Dashboard\Index.cshtml" />
     <None Include="Areas\Administrativo\Views\PerfilUsuario\Index.cshtml" />
     <None Include="Areas\Administrativo\Views\Cliente\Index.cshtml" />
+    <None Include="Areas\Administrativo\Views\Paciente\Index.cshtml" />
     <None Include="Areas\Administrativo\Views\Pessoa\Index.cshtml" />
     <None Include="Areas\Administrativo\Views\Shared\_Layout.cshtml" />
     <None Include="Areas\Administrativo\Views\Shared\_LayoutLimpo.cshtml" />

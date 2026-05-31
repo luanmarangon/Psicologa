@@ -32,11 +32,14 @@ namespace Psicologa.Application.Usuario.ViewsModel
             GerenciarLeads = 9,
             [Description("Gerenciar Agendamentos")]
             GerenciarAgendamentos = 10,
+            [Description("Gerenciar Pacientes")]
+            GerenciarPacientes = 11,
+
 
 
 
             [Description("Gerenciar Categorias/Subcategorias Materiais Educativos")]
-            GerenciarCategoriasMateriaisEducativos = 11,
+            GerenciarCategoriasMateriaisEducativos = 100,
             [Description("Relatórios")]
             Relatorios = 20,
             [Description("Acessar Conteúdo Restrito Materiais Educativos")]

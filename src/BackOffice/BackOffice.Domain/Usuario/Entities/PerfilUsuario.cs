@@ -47,15 +47,17 @@ namespace Psicologa.Domain.Usuario.Entities
             GerenciarLeads = 9,
             [Description("Gerenciar Agendamentos")]
             GerenciarAgendamentos = 10,
+            [Description("Gerenciar Pacientes")]
+            GerenciarPacientes = 11,
 
 
 
             [Description("Gerenciar Categorias/Subcategorias Materiais Educativos")]
-            GerenciarCategoriasMateriaisEducativos = 11,
+            GerenciarCategoriasMateriaisEducativos = 100,
             [Description("Relatórios")]
-            Relatorios = 12,
+            Relatorios = 20,
             [Description("Acessar Conteúdo Restrito Materiais Educativos")]
-            AcessarConteudoRestritoMateriaisEducativos = 16,
+            AcessarConteudoRestritoMateriaisEducativos = 21,
 
 
         }

@@ -13,6 +13,8 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="ProntuarioSessao\Interfaces\Repositories\" />
+    <Folder Include="ProntuarioSessao\Services\" />
     <Folder Include="ModeloPastas\Entities\" />
     <Folder Include="ModeloPastas\Interfaces\Repositories\" />
     <Folder Include="ModeloPastas\Services\" />

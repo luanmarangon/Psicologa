@@ -274,7 +274,7 @@ export default class Cadastro extends Component {
 
     salvar = () => {
         const { dados: form } = this.state;
- console.log('payload:', form); // ← adicione isso
+
         if (!form.pacienteId) return showToastr({ type: "warning", text: "Selecione o paciente." });
         if (!form.psicologoId) return showToastr({ type: "warning", text: "Selecione o psicólogo." });
         if (!form.servicoId) return showToastr({ type: "warning", text: "Selecione o serviço." });
@@ -492,7 +492,7 @@ export default class Cadastro extends Component {
                                         <input
                                             type="date"
                                             className="form-control"
-                                            value={form.dataConsulta ? form.dataConsulta.split('T')[0] : ''}
+                                            value={form.dataConsulta ? formatarDataPtBrToInputDate(form.dataConsulta) : ''}
                                             disabled={!form.psicologoId}
                                             onChange={(e) => {
                                                 const dataConsulta = e.target.value;

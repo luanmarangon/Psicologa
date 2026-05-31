@@ -141,7 +141,7 @@ export default class Index extends Component {
                             <div className="d-flex align-items-center">
                                 <i className="fas fa-calendar-alt text-primary mr-2" style={{ width: '16px' }}></i>
                                 <span className="small">
-                                    <strong>Consulta:</strong> {formatarDataInputDateToPtBr(item.dataConsulta)} às {item.horaInicio}
+                                    <strong>Consulta:</strong> {item.dataConsulta} às {item.horaInicio}
                                 </span>
                             </div>
 

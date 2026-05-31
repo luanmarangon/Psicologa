@@ -137,7 +137,7 @@ namespace Psicologa.Areas.Administrativo.Presentation.Painel.Controllers
 
             if (!string.IsNullOrEmpty(q) && q.Trim() != "")
             {
-                var tp = (Domain.Pessoa.Entities.PessoaTipo.TpPessoa)TpPessoa.Cliente;
+                var tp = (Domain.Pessoa.Entities.PessoaTipo.TpPessoa)TpPessoa.Paciente;
                 clientes = _pessoaService.Consultar(q, new PaginacaoDados { TamanhoPagina = 20 }, tp);
             }
 
@@ -157,6 +157,19 @@ namespace Psicologa.Areas.Administrativo.Presentation.Painel.Controllers
             return Json(clientes);
         }
 
+        [HttpGet]
+        public IActionResult ConsultarPessoaAutoComplete(string q)
+        {
+            IEnumerable<PessoaConsultaViewModel> clientes = new List<PessoaConsultaViewModel>();
+
+            if (!string.IsNullOrEmpty(q) && q.Trim() != "")
+            {
+                var tp = (Domain.Pessoa.Entities.PessoaTipo.TpPessoa)TpPessoa.Indefinido;
+                clientes = _pessoaService.Consultar(q, new PaginacaoDados { TamanhoPagina = 20 }, tp);
+            }
+
+            return Json(clientes);
+        }
 
     }
 }

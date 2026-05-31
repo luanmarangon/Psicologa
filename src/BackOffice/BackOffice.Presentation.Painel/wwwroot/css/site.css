@@ -1096,4 +1096,130 @@ textarea.ps-input {
     }
 }
 /*PERFIL*/
+.modal-modern .modal-content {
+    border: 0;
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 10px 35px rgba(0,0,0,.12);
+}
 
+.modal-modern .modal-header {
+    border-bottom: 1px solid #f1f1f1;
+    padding: 20px 24px;
+    background: #fff;
+}
+
+.modal-modern .modal-title {
+    font-size: 22px;
+    font-weight: 600;
+    color: #2b2b2b;
+}
+
+.modal-modern .modal-body {
+    padding: 24px;
+    background: #fafafa;
+}
+
+.modal-modern .modal-footer {
+    border-top: 1px solid #f1f1f1;
+    padding: 18px 24px;
+    background: #fff;
+}
+
+.card-modern {
+    border: 0;
+    border-radius: 14px;
+    box-shadow: 0 2px 10px rgba(0,0,0,.05);
+    overflow: hidden;
+    margin-bottom: 20px;
+}
+
+    .card-modern .card-header {
+        background: #fff;
+        border-bottom: 1px solid #f3f3f3;
+        padding: 16px 20px;
+    }
+
+    .card-modern .card-title {
+        margin: 0;
+        font-size: 16px;
+        font-weight: 600;
+        color: #333;
+    }
+
+    .card-modern .card-body {
+        padding: 20px;
+    }
+
+.form-control {
+    height: 44px;
+    border-radius: 10px;
+    border: 1px solid #dcdcdc;
+    box-shadow: none !important;
+}
+
+textarea.form-control {
+    height: auto;
+    min-height: 110px;
+}
+
+.form-control:focus {
+    border-color: #6c63ff;
+}
+
+label {
+    font-size: 13px;
+    font-weight: 600;
+    color: #555;
+    margin-bottom: 6px;
+}
+
+.btn-modern {
+    height: 44px;
+    border-radius: 10px;
+    padding: 0 22px;
+    font-weight: 600;
+}
+
+.btn-salvar {
+    background: #6c63ff;
+    border-color: #6c63ff;
+}
+
+    .btn-salvar:hover {
+        background: #5a52e8;
+        border-color: #5a52e8;
+    }
+
+.paciente-box {
+    background: #fff;
+    border-radius: 14px;
+    padding: 18px 20px;
+    margin-bottom: 20px;
+    border: 1px solid #ececec;
+}
+
+.paciente-nome {
+    font-size: 20px;
+    font-weight: 700;
+    color: #222;
+}
+
+.paciente-subtitulo {
+    font-size: 13px;
+    color: #777;
+}
+
+.section-title {
+    font-size: 14px;
+    font-weight: 700;
+    color: #666;
+    margin-bottom: 14px;
+    text-transform: uppercase;
+    letter-spacing: .4px;
+}
+
+/*PACIENTE*/
+
+
+/*PACIENTE*/
