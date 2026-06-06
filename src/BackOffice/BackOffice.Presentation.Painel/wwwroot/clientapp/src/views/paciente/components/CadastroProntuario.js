@@ -13,7 +13,8 @@ export default class CadastroProntuario extends Component {
             aguarde: false,
 
             trocarResponsavel: false,
-
+            pacienteNome: '',
+            pacienteMatricula: '',
             dados: {
 
                 id: 0,
@@ -41,20 +42,20 @@ export default class CadastroProntuario extends Component {
     componentDidMount = () => {
 
         let promiseEdicao = null;
-
+        let promisePaciente = null;
         if (!isEmpty(this.props.idEdicao)) {
 
             promiseEdicao = this.obter(this.props.idEdicao);
-
+            promisePaciente = this.obterPaciente(this.props.idEdicao);
         }
 
-        Promise.all([promiseEdicao]).then(() => {
+        Promise.all([promiseEdicao, promisePaciente]).then(() => {
 
             this.setState({
                 iniciando: false
             }, () => {
 
-                this.inicializarSelect2Responsavel();
+                // this.inicializarSelect2Responsavel();
 
             });
 
@@ -87,232 +88,187 @@ export default class CadastroProntuario extends Component {
     }
 
     obter = (id) => {
-
-        let p = HTTPClient.get("Administrativo/Protocolo/Obter?id=" + id)
-
+        let p = HTTPClient.get("Administrativo/Prontuario/Obter?id=" + id)
             .then(r => r.json())
-
             .then(r => {
-
                 this.setState({
-
                     dados: {
-
                         ...this.state.dados,
                         ...r.data
-
                     }
-
                 });
-
             })
-
             .catch(() => {
-
                 showToastr({
                     type: "error",
                     text: "Um erro ocorreu."
                 });
-
             });
-
         return p;
     }
 
-    inicializarSelect2Responsavel = () => {
-
-        if (!$("#selResponsavel").length) return;
-
-        if ($("#selResponsavel").hasClass("select2-hidden-accessible")) {
-
-            $("#selResponsavel").select2("destroy");
-
-        }
-
-        $("#selResponsavel").select2({
-
-            language: "pt-BR",
-
-            placeholder: "Digite para buscar o responsável...",
-
-            minimumInputLength: 2,
-
-            ajax: {
-
-                url: (params) =>
-                    resolveClientURL(
-                        "Administrativo/Pessoa/ConsultarPessoaAutoComplete?q=" +
-                        encodeURIComponent(params.term)
-                    ),
-
-                dataType: 'json',
-
-                delay: 300,
-
-                processResults: (data) => ({
-
-                    results: data.map(item => ({
-
-                        id: item.dados.id,
-                        text: item.dados.nome.toUpperCase(),
-                        nome: item.dados.nome.toUpperCase(),
-                        documento: item.dados.docIdNro || '',
-                        cidade: item.dados.cidade || ''
-
-                    }))
-
-                })
-
-            },
-
-            templateResult: (data) => {
-
-                if (!data.id) return data.text;
-
-                return $(
-
-                    '<div>' +
-                    '<div><strong>' + data.nome + '</strong></div>' +
-                    (data.documento
-                        ? '<div class="small ">' + data.documento + '</div>'
-                        : '') +
-                    // (data.cidade
-                    //     ? '<div class="small text-muted">' + data.cidade + '</div>'
-                    //     : '') +
-                    '</div>'
-
-                );
-
-            },
-
-            templateSelection: (data) => data.nome || data.text
-
-        });
-
-        $("#selResponsavel")
-            .off("select2:select")
-            .on("select2:select", (e) => {
-
-                const item = e.params.data;
-
-                this.setState(prev => ({
-
-                    trocarResponsavel: false,
-
-                    dados: {
-
-                        ...prev.dados,
-
-                        responsavelId: item.id,
-                        responsavelNome: item.nome
-
-                    }
-
-                }));
-
+    obterPaciente = (id) => {
+        console.log(id);
+        let p = HTTPClient.get("Administrativo/Paciente/Obter?id=" + id)
+            .then(r => r.json())
+            .then(r => {
+                this.setState({
+                    pacienteNome: r.data.pessoaNome,
+                    pacienteMatricula: r.data.matricula
+                });
+                console.log(r.data.pessoaNome);
+            })
+            .catch(() => {
+                showToastr({
+                    type: "error",
+                    text: "Um erro ocorreu."
+                });
             });
-
-        if (
-            this.state.dados.responsavelId > 0 &&
-            this.state.dados.responsavelNome
-        ) {
-
-            const option = new Option(
-                this.state.dados.responsavelNome,
-                this.state.dados.responsavelId,
-                true,
-                true
-            );
-
-            $("#selResponsavel")
-                .append(option)
-                .trigger("change");
-
-            $("#selResponsavel")
-                .next(".select2-container")
-                .hide();
-        }
+        return p;
     }
 
-    trocarResponsavelHandler = () => {
+    // inicializarSelect2Responsavel = () => {
 
-        $("#selResponsavel")
-            .val(null)
-            .trigger("change");
+    //     if (!$("#selResponsavel").length) return;
 
-        $("#selResponsavel")
-            .next(".select2-container")
-            .show();
+    //     if ($("#selResponsavel").hasClass("select2-hidden-accessible")) {
 
-        this.setState(prev => ({
+    //         $("#selResponsavel").select2("destroy");
 
-            trocarResponsavel: true,
+    //     }
 
-            dados: {
+    //     $("#selResponsavel").select2({
 
-                ...prev.dados,
+    //         language: "pt-BR",
 
-                responsavelId: 0,
-                responsavelNome: ''
+    //         placeholder: "Digite para buscar o responsável...",
 
-            }
+    //         minimumInputLength: 2,
 
-        }));
+    //         ajax: {
 
-    }
+    //             url: (params) =>
+    //                 resolveClientURL(
+    //                     "Administrativo/Pessoa/ConsultarPessoaAutoComplete?q=" +
+    //                     encodeURIComponent(params.term)
+    //                 ),
 
-    // salvar = () => {
+    //             dataType: 'json',
 
-    //     this.setState({
-    //         aguarde: true
+    //             delay: 300,
+
+    //             processResults: (data) => ({
+
+    //                 results: data.map(item => ({
+
+    //                     id: item.dados.id,
+    //                     text: item.dados.nome.toUpperCase(),
+    //                     nome: item.dados.nome.toUpperCase(),
+    //                     documento: item.dados.docIdNro || '',
+    //                     cidade: item.dados.cidade || ''
+
+    //                 }))
+
+    //             })
+
+    //         },
+
+    //         templateResult: (data) => {
+
+    //             if (!data.id) return data.text;
+
+    //             return $(
+
+    //                 '<div>' +
+    //                 '<div><strong>' + data.nome + '</strong></div>' +
+    //                 (data.documento
+    //                     ? '<div class="small ">' + data.documento + '</div>'
+    //                     : '') +
+    //                 // (data.cidade
+    //                 //     ? '<div class="small text-muted">' + data.cidade + '</div>'
+    //                 //     : '') +
+    //                 '</div>'
+
+    //             );
+
+    //         },
+
+    //         templateSelection: (data) => data.nome || data.text
+
     //     });
 
-    //     var pessoaDados = {
+    //     $("#selResponsavel")
+    //         .off("select2:select")
+    //         .on("select2:select", (e) => {
 
-    //         dados: this.state.dados,
-    //         endereco: this.state.endereco,
-    //         contatos: this.state.contatos,
-    //         tipos: this.state.tipos
+    //             const item = e.params.data;
 
-    //     };
+    //             this.setState(prev => ({
 
-    //     HTTPClient.post("Administrativo/Paciente/Salvar", pessoaDados)
+    //                 trocarResponsavel: false,
 
-    //         .then(r => r.json())
+    //                 dados: {
 
-    //         .then(r => {
+    //                     ...prev.dados,
 
-    //             if (r.success) {
+    //                     responsavelId: item.id,
+    //                     responsavelNome: item.nome
 
-    //                 this.props.onFechar(r.data);
+    //                 }
 
-    //             }
-    //             else {
-
-    //                 showToastr(r.messages);
-
-    //             }
-
-    //         })
-
-    //         .catch(() => {
-
-    //             showToastr({
-    //                 type: "error",
-    //                 text: "Um erro ocorreu."
-    //             });
-
-    //         })
-
-    //         .finally(() => {
-
-    //             this.setState({
-    //                 aguarde: false
-    //             });
+    //             }));
 
     //         });
 
+    //     if (
+    //         this.state.dados.responsavelId > 0 &&
+    //         this.state.dados.responsavelNome
+    //     ) {
+
+    //         const option = new Option(
+    //             this.state.dados.responsavelNome,
+    //             this.state.dados.responsavelId,
+    //             true,
+    //             true
+    //         );
+
+    //         $("#selResponsavel")
+    //             .append(option)
+    //             .trigger("change");
+
+    //         $("#selResponsavel")
+    //             .next(".select2-container")
+    //             .hide();
+    //     }
     // }
+
+    // trocarResponsavelHandler = () => {
+
+    //     $("#selResponsavel")
+    //         .val(null)
+    //         .trigger("change");
+
+    //     $("#selResponsavel")
+    //         .next(".select2-container")
+    //         .show();
+
+    //     this.setState(prev => ({
+
+    //         trocarResponsavel: true,
+
+    //         dados: {
+
+    //             ...prev.dados,
+
+    //             responsavelId: 0,
+    //             responsavelNome: ''
+
+    //         }
+
+    //     }));
+
+    // }
+
 
     salvar = () => {
 
@@ -320,41 +276,65 @@ export default class CadastroProntuario extends Component {
             aguarde: true
         });
 
-        HTTPClient.post("Administrativo/Protocolo/Salvar", this.state.dados)
+        HTTPClient.post("Administrativo/Prontuario/Salvar", this.state.dados)
 
             .then(r => r.json())
 
+            // .then(r => {
+
+            //     if (r.success) {
+
+            //         this.props.onFechar(r.data);
+            //         showToastr(r.messages);
+
+            //     } else {
+
+            //         showToastr(r.messages);
+
+            //     }
+
+            // })
+
+            // .catch(() => {
+
+            //     showToastr({
+            //         type: "error",
+            //         text: "Um erro ocorreu."
+            //     });
+
+            // })
             .then(r => {
 
-                if (r.success) {
+    console.log("SUCCESS:", r.success);
 
-                    this.props.onFechar(r.data);
+    if (r.success) {
 
-                } else {
+        console.log("ANTES onFechar");
 
-                    showToastr(r.messages);
+        this.props.onFechar(r.data);
 
-                }
+        console.log("DEPOIS onFechar");
 
-            })
+        showToastr(r.messages);
+    }
+})
+.catch(e => {
 
-            .catch(() => {
+    console.error("ERRO:", e);
 
-                showToastr({
-                    type: "error",
-                    text: "Um erro ocorreu."
-                });
+});
 
-            })
+            // .finally(() => {
 
-            .finally(() => {
+            //     this.setState({
+            //         aguarde: false
+            //     });
 
-                this.setState({
-                    aguarde: false
-                });
+            // });
 
-            });
+    }
 
+    encerrar = () => {
     }
 
     render() {
@@ -365,121 +345,58 @@ export default class CadastroProntuario extends Component {
 
                 {/* PACIENTE */}
                 <div className="paciente-box mb-4">
-
                     <div className="d-flex justify-content-between align-items-center">
-
                         <div>
-
-                            <div className="paciente-subtitulo">
-                                Paciente
-                            </div>
-
-                            <div className="paciente-nome">
-                                {this.state.dados.pessoaNome || '-'}
-                            </div>
-
+                            <div className="paciente-subtitulo">Paciente</div>
+                            <div className="paciente-nome">{this.state.pacienteNome}</div>
                         </div>
-
                         <div>
-
-                            {
-                                this.state.dados.ativo
-                                    ?
-                                    <span className="badge badge-success p-2">
-                                        <i className="fas fa-check-circle mr-1"></i>
-                                        Ativo
-                                    </span>
-                                    :
-                                    <span className="badge badge-danger p-2">
-                                        <i className="fas fa-ban mr-1"></i>
-                                        Inativo
-                                    </span>
+                            {this.state.dados.ativo ?
+                                <span className="badge badge-success p-2"><i className="fas fa-check-circle mr-1"></i>Ativo</span>
+                                :
+                                <span className="badge badge-danger p-2"><i className="fas fa-ban mr-1"></i>Inativo</span>
                             }
-
                         </div>
-
                     </div>
-
                 </div>
 
                 {/* DADOS GERAIS */}
                 <div className="card card-modern">
                     <div className="card-body">
-                        {/* QUEIJA INICIAL */}
+                        {/* QUEIXA INICIAL */}
                         <div className="form-group mb-0">
 
-                            <label htmlFor="txtQueixaInicial">
-                                Queixa Inicial
-                            </label>
-
-                            <textarea
-                                className="form-control form-control-modern"
-                                rows={2}
-                                id="txtQueixaInicial"
-                                placeholder="Digite a queixa inicial do paciente..."
-                                value={this.state.dados.queixaInicial || ''}
-                                onChange={(e) =>
-                                    this.setState({
-                                        dados: {
-                                            ...this.state.dados,
-                                            queixaInicial: e.target.value
-                                        }
-                                    })
-                                }
-                            />
-
+                            <label htmlFor="txtqueixaPrincipal">Queixa Inicial</label>
+                            <textarea className="form-control form-control-modern" rows={2} id="txtqueixaPrincipal"
+                                placeholder="Digite a queixa inicial do paciente..." value={this.state.dados.queixaPrincipal || ''}
+                                onChange={(e) => this.setState({ dados: { ...this.state.dados, queixaPrincipal: e.target.value } })} />
                         </div>
+
                         {/* OBJETIVO TRATAMENTO */}
                         <div className="form-group mb-0">
 
-                            <label htmlFor="txtObjetivoTratamento">
-                                Objetivo do Tratamento
-                            </label>
-
-                            <textarea
-                                className="form-control form-control-modern"
-                                rows={2}
-                                id="txtObjetivoTratamento"
-                                placeholder="Digite o objetivo do tratamento do paciente..."
-                                value={this.state.dados.objetivoTratamento || ''}
-                                onChange={(e) =>
-                                    this.setState({
-                                        dados: {
-                                            ...this.state.dados,
-                                            objetivoTratamento: e.target.value
-                                        }
-                                    })
-                                }
-                            />
-
+                            <label htmlFor="txtObjetivoTratamento">Objetivo do Tratamento</label>
+                            <textarea className="form-control form-control-modern" rows={2} id="txtObjetivoTratamento"
+                                placeholder="Digite o objetivo do tratamento do paciente..." value={this.state.dados.objetivoTratamento || ''}
+                                onChange={(e) => this.setState({ dados: { ...this.state.dados, objetivoTratamento: e.target.value } })} />
                         </div>
+
                         {/* OBSERVACOES INICIAIS */}
                         <div className="form-group mb-0">
-
-                            <label htmlFor="txtObservacoesIniciais">
-                                Observações Iniciais
-                            </label>
-
-                            <textarea
-                                className="form-control form-control-modern"
-                                rows={2}
-                                id="txtObservacoesIniciais"
-                                placeholder="Digite as observações iniciais do paciente..."
-                                value={this.state.dados.observacoesIniciais || ''}
-                                onChange={(e) =>
-                                    this.setState({
-                                        dados: {
-                                            ...this.state.dados,
-                                            observacoesIniciais: e.target.value
-                                        }
-                                    })
-                                }
-                            />
-
+                            <label htmlFor="txtObservacoesIniciais">Observações Iniciais</label>
+                            <textarea className="form-control form-control-modern" rows={2} id="txtObservacoesIniciais"
+                                placeholder="Digite as observações iniciais do paciente..." value={this.state.dados.observacoesIniciais || ''}
+                                onChange={(e) => this.setState({ dados: { ...this.state.dados, observacoesIniciais: e.target.value } })} />
                         </div>
 
+                        {/* HISTÓRICO FAMILIAR */}
+                        <div className="form-group mb-0">
+                            <label htmlFor="txtHistoricoFamiliar">Histórico Familiar</label>
+                            <textarea className="form-control form-control-modern" rows={2} id="txtHistoricoFamiliar"
+                                placeholder="Digite o histórico familiar do paciente..." value={this.state.dados.historicoFamiliar || ''}
+                                onChange={(e) => this.setState({ dados: { ...this.state.dados, historicoFamiliar: e.target.value } })} />
+                        </div>
                     </div>
-
                 </div>
             </form>;
 
@@ -499,7 +416,7 @@ export default class CadastroProntuario extends Component {
                             <div>
                                 <h4 className="modal-title d-flex align-items-center">
                                     {/* <span className="bg-primary text-white rounded-circle p-2 mr-2"> */}
-                                        <i className="fas fa-brain mr-2 text-primary"></i>
+                                    <i className="fas fa-brain mr-2 text-primary"></i>
                                     {/* </span> */}
                                     <span>Prontuário do Paciente</span>
                                 </h4>
@@ -511,59 +428,24 @@ export default class CadastroProntuario extends Component {
                         </div>
 
                         <div className="modal-body bg-light">
-                            {
-                                !this.state.iniciando
-                                    ? form
-                                    : <LoadingIndicator />
-                            }
-
+                            {!this.state.iniciando ? form : <LoadingIndicator />}
                         </div>
 
-                        <div className={
-                            "modal-footer bg-white border-top-0 " +
-                            (this.state.aguarde ? "site-disabled" : "")
-                        }>
+                        <div className={"modal-footer bg-white border-top-0 " + (this.state.aguarde ? "site-disabled" : "")}>
 
-                            <button
-                                type="button"
-                                className="btn btn-light btn-modern"
-                                data-dismiss="modal"
-                            >
-                                Cancelar
-                            </button>
-
-                            <button
-                                type="button"
-                                className="btn btn-primary btn-modern px-4"
-                                onClick={this.salvar}
-                            >
-
-                                {
-                                    !this.state.aguarde
-                                        ?
-                                        <span>
-
-                                            <i className="fas fa-save mr-2"></i>
-                                            Salvar
-
-                                        </span>
-                                        :
-                                        <span>
-
-                                            <i className="fas fa-circle-notch fa-spin mr-2"></i>
-                                            Salvando
-
-                                        </span>
+                            <button type="button" className="btn btn-warning btn-modern mr-auto" onClick={this.encerrar}>Encerrar</button>
+                            <button type="button" className="btn btn-light btn-modern" data-dismiss="modal">Cancelar</button>
+                            <button type="button" className="btn btn-primary btn-modern px-4" onClick={this.salvar}>
+                                {!this.state.aguarde
+                                    ?
+                                    <span><i className="fas fa-save mr-2"></i>Salvar</span>
+                                    :
+                                    <span><i className="fas fa-circle-notch fa-spin mr-2"></i>Salvando</span>
                                 }
-
                             </button>
-
                         </div>
-
                     </div>
-
                 </div>
-
             </div>;
 
         return modal;

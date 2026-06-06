@@ -99,11 +99,12 @@ namespace Psicologa.Infra.Data.Repository.Paciente
                                 $@"SELECT p.PacienteId, p.PessoaId, p.DataPrimeiraSessao, p.Ativo as PacienteAtivo, p.Observacoes, p.ContatoEmergenciaNome, p.ContatoEmergenciaTelefone, p.Matricula, p.ResponsavelId, p.DataCriacao, p.DataAtualizacao,
                                           pe.Nome, pe.DocIdNro,
                                           pt.Tipo AS PessoaTipo,
-                                          r.PessoaId as ResponsavelPessoaId, r.Nome as ResponsavelPessoaNome
+                                          r.PessoaId as ResponsavelPessoaId, r.Nome as ResponsavelPessoaNome, pr.ProntuarioId as ProntuarioIdPaciente
                                 FROM Paciente p
                                 INNER JOIN Pessoa pe ON pe.PessoaId = p.PessoaId
                                 LEFT JOIN Pessoa r on p.ResponsavelId = r.PessoaId
                                 LEFT JOIN PessoaTipo pt ON pt.PessoaId = pe.PessoaId
+                                LEFT JOIN Prontuario pr ON p.PacienteId = pr.PacienteId
                                 where pe.Nome Like @Nome {sqlFiltroPessoaTipo}
                                 order by pe.Nome desc
                                 #paginacaoFiltro";
@@ -144,11 +145,12 @@ namespace Psicologa.Infra.Data.Repository.Paciente
                     cmd.CommandText = @$"SELECT p.PacienteId, p.PessoaId, p.DataPrimeiraSessao, p.Ativo as PacienteAtivo, p.Observacoes, p.ContatoEmergenciaNome, p.ContatoEmergenciaTelefone, p.Matricula, p.ResponsavelId, p.DataCriacao, p.DataAtualizacao,
                                           pe.Nome, pe.DocIdNro,
                                           pt.Tipo AS PessoaTipo,
-                                          r.PessoaId as ResponsavelPessoaId, r.Nome as ResponsavelPessoaNome
-                                FROM Paciente p
-                                INNER JOIN Pessoa pe ON pe.PessoaId = p.PessoaId
-                                LEFT JOIN Pessoa r on p.ResponsavelId = r.PessoaId
-                                LEFT JOIN PessoaTipo pt ON pt.PessoaId = pe.PessoaId
+                                          r.PessoaId as ResponsavelPessoaId, r.Nome as ResponsavelPessoaNome, pr.ProntuarioId as ProntuarioIdPaciente
+                                        FROM Paciente p
+                                        INNER JOIN Pessoa pe ON pe.PessoaId = p.PessoaId
+                                        LEFT JOIN Pessoa r on p.ResponsavelId = r.PessoaId
+                                        LEFT JOIN PessoaTipo pt ON pt.PessoaId = pe.PessoaId
+                                        LEFT JOIN Prontuario pr ON p.PacienteId = pr.PacienteId
                                         WHERE p.PacienteId = @Id";
 
                     var param = cmd.CreateParameter();
@@ -220,7 +222,13 @@ namespace Psicologa.Infra.Data.Repository.Paciente
                     {
                         Id = Convert.ToInt32(dr["ResponsavelPessoaId"]),
                         Nome = dr["ResponsavelPessoaNome"]?.ToString()
+                    } : null, 
+
+                    Prontuario = dr["ProntuarioIdPaciente"] != DBNull.Value ? new Domain.Prontuario.Entities.Prontuario
+                    {
+                        Id = Convert.ToInt32(dr["ProntuarioIdPaciente"])
                     } : null
+
                 };
 
                 pacientes.Add(paciente);

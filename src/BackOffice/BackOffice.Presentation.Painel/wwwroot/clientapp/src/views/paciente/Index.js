@@ -111,24 +111,13 @@ export default class Index extends Component {
     }
     prontuarioModalFechar = (pessoa) => {
 
-        if (this.state.pacienteIdSelecionado != "" && pessoa != null) {
-            let i = this.state.resultadoPesquisa.findIndex(item => {
-
-                return item.dados.id == this.state.pacienteIdSelecionado;
-            });
-
-            if (i > -1) {
-
-                this.state.resultadoPesquisa[i] = pessoa;
-                this.setState({
-                    resultadoPesquisa: this.state.resultadoPesquisa
-                });
-            }
-        }
-
         this.setState({
             prontuarioModal: false,
             pacienteIdSelecionado: ""
+        }, () => {
+
+            this.pesquisar(true);
+
         });
     }
 
@@ -151,6 +140,9 @@ export default class Index extends Component {
 
     sessao = (item) => {
         window.location.href = `/Administrativo/Paciente/Prontuario?id=${item.id}`;
+    }
+    anexos = (item) => {
+        window.location.href = `/Administrativo/Paciente/Anexos?id=${item.id}`;
     }
 
     listarContatos = (contatos) => {
@@ -296,7 +288,7 @@ export default class Index extends Component {
                         </div>
 
                         <div className="form-group">
-                            <button type="button" className="btn btn-primary" onClick={this.cadastroModalAbrir}>Novo</button>
+                            {/* <button type="button" className="btn btn-primary" onClick={this.cadastroModalAbrir}>Novo</button> */}
                         </div>
                     </div>
 
@@ -326,11 +318,11 @@ export default class Index extends Component {
 
                                             {
                                                 this.state.aguarde ?
-                                                    <tr> <td colSpan="5"> <LoadingIndicator timeWait={500} /> </td> </tr>
+                                                    <tr> <td colSpan="6"> <LoadingIndicator timeWait={500} /> </td> </tr>
                                                     :
                                                     this.state.resultadoPesquisa.length === 0 ?
                                                         <tr>
-                                                            <td colSpan="5" className="no-item" > Nenhum paciente foi encontrado </td>
+                                                            <td colSpan="6" className="no-item" > Nenhum paciente foi encontrado </td>
                                                         </tr>
                                                         :
                                                         this.state.resultadoPesquisa.map(item => {
@@ -361,7 +353,12 @@ export default class Index extends Component {
                                                                             <div className="dropdown-menu">
                                                                                 <a className="dropdown-item" href="#!" onClick={() => this.editar(item)}><i className="fas fa-edit"></i>Editar</a>
                                                                                 <a className="dropdown-item" href="#!" onClick={() => this.editarProntuario(item)}><i className="far fa-file-alt"></i>Prontuário</a>
-                                                                                <a className="dropdown-item" href="#!" onClick={() => this.sessao(item)}><i className="far fa-file-alt"></i>Sessões</a>
+                                                                                {item.protuarioId != null || item.prontuarioId > 0 ? (
+                                                                                    <>
+                                                                                        <a className="dropdown-item" href="#!" onClick={() => this.sessao(item)}><i className="far fa-file-alt"></i>Sessões</a>
+                                                                                        <a className="dropdown-item" href="#!" onClick={() => this.anexos(item)}><i className="far fa-file-alt"></i>Anexos</a>
+                                                                                    </>
+                                                                                ) : null}
                                                                             </div>
                                                                         </div>
                                                                     </td>

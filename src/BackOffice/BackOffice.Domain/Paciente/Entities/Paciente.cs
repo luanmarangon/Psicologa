@@ -20,6 +20,8 @@ namespace Psicologa.Domain.Paciente.Entities
         public DateTime DataCriacao { get; set; }
         public DateTime DataAtualizacao { get; set; }
 
+        public Domain.Prontuario.Entities.Prontuario? Prontuario { get; set; }
+
 
         public override bool Validar()
         {

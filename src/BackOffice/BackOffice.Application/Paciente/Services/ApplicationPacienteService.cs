@@ -108,6 +108,7 @@ namespace Psicologa.Application.Paciente.Services
                 ResponsavelId = ret.Responsavel?.Id,
                 ResponsavelNome = ret.Responsavel?.Nome,
                 Matricula = ret.Matricula,
+                ProntuarioId = ret.Prontuario != null ? ret.Prontuario.Id : 0,
 
             };
 

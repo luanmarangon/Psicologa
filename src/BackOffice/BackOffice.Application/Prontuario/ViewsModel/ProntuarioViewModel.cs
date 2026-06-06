@@ -17,7 +17,7 @@ namespace Psicologa.Application.Prontuario.ViewsModel
         public bool Ativo { get; set; }
         public DateTime DataCriacao { get; set; }
         public DateTime DataAtualizacao { get; set; }
-        public DateTime DataExclusao { get; set; }
+        public DateTime? DataEncerramento { get; set; }
     }
 
     public class ProntuarioConsultaViewModel
@@ -31,6 +31,9 @@ namespace Psicologa.Application.Prontuario.ViewsModel
         public bool Ativo { get; set; }
         public DateTime DataCriacao { get; set; }
         public DateTime DataAtualizacao { get; set; }
-        public DateTime DataExclusao { get; set; }
+        public DateTime? DataEncerramento { get; set; }
+
+
+
     }
 }

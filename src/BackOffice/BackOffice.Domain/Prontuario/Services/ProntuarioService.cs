@@ -16,7 +16,32 @@ namespace Psicologa.Domain.Prontuario.Services
             _repository = repository;
         }
 
+        public bool Salvar(Entities.Prontuario prontuario)
+        {
+            if (prontuario.Id == 0)
+            {
+                prontuario.DataCriacao = DateTime.Now;
+                prontuario.DataAtualizacao = DateTime.Now;
+            }
+            else
+            {
+                prontuario.DataAtualizacao = DateTime.Now;
+            }
 
+
+            return _repository.Salvar(prontuario);
+
+
+        }
+
+        public Domain.Prontuario.Entities.Prontuario Obter(int prontuarioId)
+        {
+            return _repository.Obter(prontuarioId);
+        }
+        public Domain.Prontuario.Entities.Prontuario ObterProntuarioPorPacienteId(int pacienteId)
+        {
+            return _repository.ObterProntuarioPorPacienteId(pacienteId);
+        }
 
     }
 }

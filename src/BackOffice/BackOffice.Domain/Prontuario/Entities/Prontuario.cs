@@ -14,7 +14,7 @@ namespace Psicologa.Domain.Prontuario.Entities
         public bool Ativo {  get; set; }
         public DateTime DataCriacao { get; set; }
         public DateTime DataAtualizacao { get; set; }
-        public DateTime DataExclusao { get; set; }
+        public DateTime? DataEncerramento { get; set; }
 
         public override bool Validar()
         {

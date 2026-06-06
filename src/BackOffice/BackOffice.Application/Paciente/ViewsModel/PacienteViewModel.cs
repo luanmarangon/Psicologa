@@ -41,6 +41,7 @@ namespace Psicologa.Application.Paciente.ViewsModel
         public int? ResponsavelId { get; set; }
         public string? ResponsavelNome { get; set; }
         public string Matricula { get; set; } 
+        public int ProntuarioId { get; set; }
         public DateTime DataCriacao { get; set; }
         public DateTime DataAtualizacao { get; set; }
     }

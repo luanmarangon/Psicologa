@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Psicologa.Application.Prontuario.ViewsModel
 {
-    internal class ModeloViewModel
+    internal class ProntuarioSessaoViewModel
     {
     }
 }

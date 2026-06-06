@@ -60,7 +60,6 @@ namespace Psicologa.Areas.Administrativo.Presentation.Painel.Controllers
             var servico = _pacienteService.Obter(idLimpo);
             return DefaultJSONResponse(true, servico);
         }
-
         [HttpPost]
         public IActionResult Salvar([FromBody] System.Text.Json.JsonElement pacienteDados)
         {
@@ -97,9 +96,6 @@ namespace Psicologa.Areas.Administrativo.Presentation.Painel.Controllers
             return DefaultJSONResponse(operacao, pessoaVM);
         }
 
-
-
-
         //Prontuario
         public IActionResult Prontuario()
         {
@@ -107,22 +103,28 @@ namespace Psicologa.Areas.Administrativo.Presentation.Painel.Controllers
         }
 
 
-        [HttpGet]
-        public IActionResult ObterProntuario(string id)
+        //Anexo
+        public IActionResult Anexos()
         {
-            int idLimpo = Convert.ToInt32(Criptografia.Descriptografar(id));
-            var servico = _pacienteService.Obter(idLimpo);
-            return DefaultJSONResponse(true, servico);
+            return View("Areas/Administrativo/Views/Paciente/Anexos.cshtml");
         }
 
+        //[HttpGet]
+        //public IActionResult ObterProntuario(string id)
+        //{
+        //    int idLimpo = Convert.ToInt32(Criptografia.Descriptografar(id));
+        //    var servico = _pacienteService.Obter(idLimpo);
+        //    return DefaultJSONResponse(true, servico);
+        //}
+
         //Sessões
-        [HttpGet]
-        public IActionResult ObterSessoes(string id)
-        {
-            int idLimpo = Convert.ToInt32(Criptografia.Descriptografar(id));
-            var servico = _pacienteService.Obter(idLimpo);
-            return DefaultJSONResponse(true, servico);
-        }
+        //[HttpGet]
+        //public IActionResult ObterSessoes(string id)
+        //{
+        //    int idLimpo = Convert.ToInt32(Criptografia.Descriptografar(id));
+        //    var servico = _pacienteService.Obter(idLimpo);
+        //    return DefaultJSONResponse(true, servico);
+        //}
 
 
 
