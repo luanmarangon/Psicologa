@@ -1,6 +1,7 @@
 ﻿import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
-import CadastroSessao from './components/CadastroSessao';
+import Cadastro from './components/Cadastro';
+import Visualizar from './components/Visualizar';
 import LoadingIndicator from '../../components/LoadingIndicator';
 import Paginacao from '../../components/Paginacao';
 
@@ -24,7 +25,9 @@ export default class Index extends Component {
             resultadoPesquisa: [],
             legendaResultadoPesquisa: "Últimos registros",
             cadastroModal: false,
+            visualizarModal: false,
             sessaoIdSelecionada: [],
+            filtroTipoAnexo: 0,
             paginacao: { totalPaginas: 0 }
         };
 
@@ -80,10 +83,10 @@ export default class Index extends Component {
 
     obterSessao = (pagina = -1) => {
         let uri =
-            "Administrativo/Prontuario/PesquisarSessao?q=" +
+            "Administrativo/ProntuarioAnexo/Pesquisar?q=" +
             encodeURIComponent(this.state.pesquisar) +
-            "&protocoloId=" + this.state.paciente.prontuarioId +
-            "&filtroTipoAtendimento=" + this.state.filtroTipoAtendimento +
+            "&prontuarioId=" + this.state.paciente.prontuarioId +
+            "&filtroTipoAnexo=" + this.state.filtroTipoAnexo +
             "&pagina=" + pagina +
             "&ordenacao=" + this.state.paginacao.ordenacao;
 
@@ -130,13 +133,35 @@ export default class Index extends Component {
         });
     }
 
+    visualizarModalAbrir = () => {
+        this.setState({
+            visualizarModal: true,
+            sessaoSelecionada: null,
+            sessaoIdSelecionada: ""
+        });
+    }
+
+    visualizarModalFechar = (pessoa) => {
+        this.setState({
+            visualizarModal: false,
+            sessaoIdSelecionada: ""
+        });
+    }
+    visualizar = (itemVisualizar) => {
+        this.setState({
+            visualizarModal: true,
+            sessaoSelecionada: itemVisualizar,
+            pacienteSelecionado: this.state.paciente
+        });
+    }
+
     excluir = (itemExcluir) => {
 
-        if (!confirm(`Confirma a exclusão da sessão de "${formatarDataInputDateToPtBr(itemExcluir.dataSessao)} das ${itemExcluir.horaInicio}"?`)) {
+        if (!confirm(`Confirma a exclusão do anexo de "${itemExcluir.nome} do Paciente ${this.state.paciente.nome}"?`)) {
             return false;
         }
 
-        HTTPClient.delete("Administrativo/Prontuario/ExcluirSessao?id=" + itemExcluir.id)
+        HTTPClient.delete("Administrativo/ProntuarioAnexo/Excluir?id=" + itemExcluir.id)
             .then(r => {
                 return r.json();
             })
@@ -198,8 +223,16 @@ export default class Index extends Component {
                                                 <select className="form-control" value={this.state.filtroTipoAtendimento}
                                                     onChange={(e) => this.setState({ ...this.state, filtroTipoAtendimento: e.target.value })}>
                                                     <option value="0"></option>
-                                                    <option value="1">Presencial</option>
-                                                    <option value="2">Online</option>
+                                                    <option value="1">Documento Pessoal</option>
+                                                    <option value="2">Convênio</option>
+                                                    <option value="3">Termo de Consentimento</option>
+                                                    <option value="4">Contrato</option>
+                                                    <option value="5">Avaliação Psicológica</option>
+                                                    <option value="6">Encaminhamento Médico</option>
+                                                    <option value="7">Receita Médica</option>
+                                                    <option value="8">Exame</option>
+                                                    <option value="9">Relatório</option>
+                                                    <option value="99">Outro</option>
                                                 </select>
                                             </div>
                                         </div>
@@ -228,11 +261,11 @@ export default class Index extends Component {
 
                                         <thead>
                                             <tr>
-                                                <th style={{ width: "20%" }}>Data Sessão</th>
-                                                <th>Atendimento</th>
-                                                <th>Hora Inicio</th>
-                                                <th>Hora Fim</th>
-                                                <th>Psicologo</th>
+                                                <th style={{ width: "20%" }}>Data Anexo</th>
+                                                <th>Nome</th>
+                                                <th>Tipo Anexo</th>
+                                                <th>Tipo Arquivo</th>
+                                                <th>Visualizar</th>
                                                 <th style={{ width: "50px" }}></th>
                                             </tr>
                                         </thead>
@@ -245,18 +278,18 @@ export default class Index extends Component {
                                                     :
                                                     this.state.resultadoPesquisa.length === 0 ?
                                                         <tr>
-                                                            <td colSpan="6" className="no-item" > Nenhum paciente foi encontrado </td>
+                                                            <td colSpan="6" className="no-item" > Nenhum anexo foi encontrado </td>
                                                         </tr>
                                                         :
                                                         this.state.resultadoPesquisa.map(item => {
                                                             return (
                                                                 <tr key={item.id} >
-                                                                    <td>{formatarDataInputDateToPtBr(item.dataSessao) || "-"}</td>
-                                                                    <td>{item.tipoAtendimentoNome || "-"}</td>
-                                                                    <td>{item.horaInicio || "-"}</td>
-                                                                    <td>{item.horaFim || "-"}</td>
-                                                                    <td>{item.psicologaNome || "-"}</td>
+                                                                    <td>{formatarDataInputDateToPtBr(item.dataCriacao) || "-"}</td>
+                                                                    <td>{item.nome || "-"}</td>
+                                                                    <td>{item.tipoAnexoDescricao || "-"}</td>
+                                                                    <td>{item.tipoArquivo || "-"}</td>
                                                                     {/* AÇÕES */}
+                                                                    <td><a className="tex-center" href="#!" onClick={() => this.visualizar(item)}><i className="fas fa-eye"></i></a></td>
                                                                     <td>
                                                                         <div>
                                                                             <a className="btn table-action" href="#!" role="button" data-toggle="dropdown">
@@ -280,7 +313,8 @@ export default class Index extends Component {
                         </div>
                     </div>
 
-                    {this.state.cadastroModal ? <CadastroSessao onFechar={this.cadastroModalFechar} pacienteSelecionado={this.state.paciente} sessaoSelecionada={this.state.sessaoSelecionada} /> : null}
+                    {this.state.cadastroModal ? <Cadastro onFechar={this.cadastroModalFechar} pacienteSelecionado={this.state.paciente} sessaoSelecionada={this.state.sessaoSelecionada} /> : null}
+                    {this.state.visualizarModal ? <Visualizar onFechar={this.visualizarModalFechar} pacienteSelecionado={this.state.paciente} sessaoSelecionada={this.state.sessaoSelecionada} /> : null}
                 </div>
             </div>
         return (saida);

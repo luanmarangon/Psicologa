@@ -89,20 +89,20 @@
     {
         leads.Filhos.Add(new { Titulo = "Gerenciar Leads", HRef = "Administrativo/Leads", IconeClass = "fas fa-address-book", Tag = "" });
     }
-    
+
     if(leads.Filhos.Count > 0)
     {
         sideBarItens.Add(leads);
     }
 
-    var pacientes = new { Titulo = "Pacientes", IconeClass = "fas fa-procedures", Filhos = new List<dynamic>() };
+    var pacientes = new { Titulo = "Pacientes", IconeClass = "fas fa-clinic-medical", Filhos = new List<dynamic>() };
 
     if (permissoes.Contains(PerfilUsuarioViewModel.TpPermissao.GerenciarPacientes))
     {
         pacientes.Filhos.Add(new { Titulo = "Pacientes", HRef = "Administrativo/Paciente", IconeClass = "fas fa-procedures", Tag = "" });
-        pacientes.Filhos.Add(new { Titulo = "Prontuário", HRef = "Administrativo/Paciente", IconeClass = "fas fa-notes-medical", Tag = "" });
+        // pacientes.Filhos.Add(new { Titulo = "Prontuário", HRef = "Administrativo/Paciente", IconeClass = "fas fa-notes-medical", Tag = "" });
     }
-    
+
     if (pacientes.Filhos.Count > 0)
     {
         sideBarItens.Add(pacientes);
@@ -117,7 +117,7 @@
     {
         agendamentos.Filhos.Add(new { Titulo = "Gerenciar Agendamentos", HRef = "Administrativo/Agendamento", IconeClass = "fas fa-calendar-alt", Tag = "" });
     }
-    
+
     if(agendamentos.Filhos.Count > 0)
     {
         sideBarItens.Add(agendamentos);
@@ -140,7 +140,19 @@
     {
         sideBarItens.Add(configs);
     }
-    
+
+    var logs = new { Titulo = "Logs", IconeClass = "fas fa-clipboard-list", Filhos = new List<dynamic>() };
+
+    if(permissoes.Contains(PerfilUsuarioViewModel.TpPermissao.GerenciarLogsAplicacao))
+    {
+        logs.Filhos.Add(new { Titulo = "Logs de Aplicação", HRef = "Administrativo/LogAplicacao", IconeClass = "fas fa-clipboard-list", Tag = "" });
+    }
+
+    if(logs.Filhos.Count > 0)
+    {
+        sideBarItens.Add(logs);
+    }
+
     var relatorios = new { Titulo = "Relatórios", IconeClass = "fas fa-poll", Filhos = new List<dynamic>() };
 
     if (permissoes.Contains(PerfilUsuarioViewModel.TpPermissao.Relatorios))

@@ -15,6 +15,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Content Remove="Areas\Administrativo\Views\LogAplicacao\Index.cshtml" />
     <Content Remove="Areas\Administrativo\Views\BlogPost\Index.cshtml" />
     <Content Remove="Areas\Administrativo\Views\BlogPost\NovoPost.cshtml" />
     <Content Remove="Areas\Administrativo\Views\Cliente\Index.cshtml" />
@@ -32,11 +33,12 @@
   
 
   <ItemGroup>
+    <None Include="Areas\Administrativo\Views\LogAplicacao\Index.cshtml" />
     <None Include="Areas\Administrativo\Views\BlogPost\NovoPost.cshtml" />
     <None Include="Areas\Administrativo\Views\BlogPost\Index.cshtml" />
     <None Include="Areas\Administrativo\Views\Cliente\Servicos.cshtml" />
     <None Include="Areas\Administrativo\Views\Agendamento\Index.cshtml" />
-    <None Include="Areas\Administrativo\Views\Paciente\Anexos.cshtml" />
+    <None Include="Areas\Administrativo\Views\Anexo\Index.cshtml" />
     <None Include="Areas\Administrativo\Views\Paciente\Prontuario.cshtml" />
     <None Include="Areas\Administrativo\Views\Perfil\Index.cshtml" />
     <None Include="Areas\Administrativo\Views\Leads\Index.cshtml" />

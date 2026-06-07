@@ -11,5 +11,8 @@ namespace Psicologa.Domain.LogAplicacao.Interfaces.Repositories
     public interface ILogAplicacaoRepository : IRepositoryBase<Entities.LogAplicacao>
     {
         bool Salvar(Domain.LogAplicacao.Entities.LogAplicacao log);
+        IEnumerable<Entities.LogAplicacao> ObterUltimos(int top);
+        Entities.LogAplicacao Obter(int id);
+        IEnumerable<Domain.LogAplicacao.Entities.LogAplicacao> Consultar(string termo, PaginacaoDados paginacao);
     }
 }

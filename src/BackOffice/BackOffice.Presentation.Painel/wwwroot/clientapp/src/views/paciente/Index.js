@@ -351,12 +351,12 @@ export default class Index extends Component {
                                                                                 <i className="action-icon fas fa-ellipsis-v"></i>
                                                                             </a>
                                                                             <div className="dropdown-menu">
-                                                                                <a className="dropdown-item" href="#!" onClick={() => this.editar(item)}><i className="fas fa-edit"></i>Editar</a>
-                                                                                <a className="dropdown-item" href="#!" onClick={() => this.editarProntuario(item)}><i className="far fa-file-alt"></i>Prontuário</a>
+                                                                                <a className="dropdown-item" href="#!" onClick={() => this.editar(item)}><i className="fas fa-user-edit"></i>Editar</a>
+                                                                                <a className="dropdown-item" href="#!" onClick={() => this.editarProntuario(item)}><i className="fas fa-notes-medical mr-2"></i>Prontuário</a>
                                                                                 {item.protuarioId != null || item.prontuarioId > 0 ? (
                                                                                     <>
-                                                                                        <a className="dropdown-item" href="#!" onClick={() => this.sessao(item)}><i className="far fa-file-alt"></i>Sessões</a>
-                                                                                        <a className="dropdown-item" href="#!" onClick={() => this.anexos(item)}><i className="far fa-file-alt"></i>Anexos</a>
+                                                                                        <a className="dropdown-item" href="#!" onClick={() => this.sessao(item)}><i className="far fa-comments"></i>Sessões</a>
+                                                                                        <a className="dropdown-item" href="#!" onClick={() => this.anexos(item)}><i className="far fa-folder-open"></i>Anexos</a>
                                                                                     </>
                                                                                 ) : null}
                                                                             </div>

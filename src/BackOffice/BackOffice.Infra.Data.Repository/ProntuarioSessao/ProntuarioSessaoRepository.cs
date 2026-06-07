@@ -81,7 +81,7 @@ namespace Psicologa.Infra.Data.Repository.ProntuarioSessao
             return operacao;
         }
 
-        public IEnumerable<Domain.ProntuarioSessao.Entities.ProntuarioSessao> Consultar(string termo, int protocoloId, int filtro, PaginacaoDados paginacao)
+        public IEnumerable<Domain.ProntuarioSessao.Entities.ProntuarioSessao> Consultar(string termo, int prontuarioId, int filtro, PaginacaoDados paginacao)
         {
             IEnumerable<Domain.ProntuarioSessao.Entities.ProntuarioSessao> sessoes = new List<Domain.ProntuarioSessao.Entities.ProntuarioSessao>();
             string filtroConsulta = string.Empty;
@@ -110,14 +110,14 @@ namespace Psicologa.Infra.Data.Repository.ProntuarioSessao
                                     JOIN Pessoa p on ps.PsicologaId = p.PessoaId
                                     LEFT JOIN Agendamento a on ps.AgendamentoId = a.AgendamentoId
                                     WHERE (p.Nome LIKE @Termo || ps.DataSessao LIKE @Termo || ps.HoraInicio LIKE @Termo || ps.HoraFim LIKE @Termo) 
-                                        AND pr.ProntuarioId = @ProtocoloId {filtroConsulta}
+                                        AND pr.ProntuarioId = @ProntuarioId {filtroConsulta}
                                     #paginacaoFiltro";
 
                     cmd.CommandText = $"select count(*) from ({consultaPrincipal.Replace("#paginacaoFiltro", "")}) as t";
 
                     cmd.ParametersClear();
                     cmd.ParameterAdd("@Termo", "%" + termo.Trim() + "%");
-                    cmd.ParameterAdd("@ProtocoloId", protocoloId);
+                    cmd.ParameterAdd("@ProntuarioId", prontuarioId);
 
                     paginacao.TotalItens = Convert.ToInt32(cmd.ExecuteScalar());
                     string paginacaoFiltro = $@" limit {pular},{paginacao.TamanhoPagina}";

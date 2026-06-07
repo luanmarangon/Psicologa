@@ -49,7 +49,10 @@ namespace Psicologa.Domain.Usuario.Entities
             GerenciarAgendamentos = 10,
             [Description("Gerenciar Pacientes")]
             GerenciarPacientes = 11,
-
+            [Description("Gerenciar Psicólogos")]
+            GerenciarPsicologos = 12,
+            [Description("Gerenciar Logs Aplicação")]
+            GerenciarLogsAplicacao = 13,
 
 
             [Description("Gerenciar Categorias/Subcategorias Materiais Educativos")]

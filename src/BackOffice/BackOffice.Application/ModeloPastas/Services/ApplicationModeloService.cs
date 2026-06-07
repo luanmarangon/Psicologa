@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Psicologa.Application.Prontuario.Services
 {
-    public class ApplicationModeloService : IDisposable
+    public class ApplicationLogAplicacaoService : IDisposable
     {
 
 

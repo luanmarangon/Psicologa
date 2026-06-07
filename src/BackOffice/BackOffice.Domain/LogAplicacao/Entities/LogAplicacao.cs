@@ -13,7 +13,7 @@ namespace Psicologa.Domain.LogAplicacao.Entities
         public DateTime DataCriacao { get; set; }
         public int UsuarioId { get; set; }
         public string UsuarioNome { get; set; }
-        public string Dispostivo { get; set; }
+        public string Dispositivo { get; set; }
         public string IP { get; set; }
         public string UserAgent { get; set; }
         public string Entidade { get; set; }

@@ -664,7 +664,7 @@ export default class Cadastro extends Component {
                                                 {form.confirmouAgendamento && form.dataConfirmacao && (
                                                     <small className="text-muted d-block mt-1">
                                                         <i className="fas fa-check-circle text-success mr-1"></i>
-                                                        Confirmado em {form.dataConfirmacao}
+                                                        Confirmado em {formatarDataInputDateToPtBr(form.dataConfirmacao)}
                                                     </small>
                                                 )}
                                             </div>

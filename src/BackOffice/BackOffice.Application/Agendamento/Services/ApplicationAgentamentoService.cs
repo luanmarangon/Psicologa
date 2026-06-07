@@ -1,17 +1,11 @@
 ﻿using Psicologa.Application.Agendamento.ViewsModel;
-using Psicologa.Application.ServicoContato.ViewsModel;
 using Psicologa.Domain.Agendamento.Entities;
-using Psicologa.Domain.Convenio.Services;
-using Psicologa.Domain.Servico.Entities;
-using Psicologa.Domain.Servico.Services;
 using Shared.Infra.CrossCutting;
 using Shared.Infra.CrossCutting.ValidationResult;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 using static Shared.Infra.CrossCutting.PaginacaoDados;
 
 namespace Psicologa.Application.Agendamento.Services

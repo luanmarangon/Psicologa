@@ -34,6 +34,10 @@ namespace Psicologa.Application.Usuario.ViewsModel
             GerenciarAgendamentos = 10,
             [Description("Gerenciar Pacientes")]
             GerenciarPacientes = 11,
+            [Description("Gerenciar Psicólogos")]
+            GerenciarPsicologos = 12,
+            [Description("Gerenciar Logs Aplicação")]
+            GerenciarLogsAplicacao = 13,
 
 
 

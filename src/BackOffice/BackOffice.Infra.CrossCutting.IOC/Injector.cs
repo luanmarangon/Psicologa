@@ -54,6 +54,11 @@ namespace Psicologa.Infra.CrossCutting.IOC
             services.AddScoped(typeof(Domain.ProntuarioSessao.Services.ProntuarioSessaoService));
             services.AddScoped<Domain.ProntuarioSessao.Interfaces.Repositories.IProntuarioSessaoRepository, Infra.Data.Repository.ProntuarioSessao.ProntuarioSessaoRepository>();
 
+            services.AddScoped(typeof(Domain.ProntuarioAnexo.Services.ProntuarioAnexoService));
+            services.AddScoped<Domain.ProntuarioAnexo.Interfaces.Repositories.IProntuarioAnexoRepository, Infra.Data.Repository.ProntuarioAnexo.ProntuarioAnexoRepository>();
+
+            services.AddScoped(typeof(Domain.LogAplicacao.Services.LogAplicacaoService));
+            services.AddScoped<Domain.LogAplicacao.Interfaces.Repositories.ILogAplicacaoRepository, Infra.Data.Repository.LogAplicacao.LogAplicacaoRepository>();
             #endregion
         }
 
@@ -80,6 +85,9 @@ namespace Psicologa.Infra.CrossCutting.IOC
             services.AddScoped(typeof(Application.Prontuario.Services.ApplicationProntuarioService));
 
             services.AddScoped(typeof(Application.ProntuarioSessao.Services.ApplicationProntuarioSessaoService));
+            services.AddScoped(typeof(Application.ProntuarioAnexo.Services.ApplicationProntuarioAnexoService));
+
+            services.AddScoped(typeof(Application.LogAplicacao.Services.ApplicationLogAplicacaoService));
             #endregion
         }
 

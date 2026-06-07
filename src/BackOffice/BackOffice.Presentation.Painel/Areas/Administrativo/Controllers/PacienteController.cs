@@ -106,7 +106,7 @@ namespace Psicologa.Areas.Administrativo.Presentation.Painel.Controllers
         //Anexo
         public IActionResult Anexos()
         {
-            return View("Areas/Administrativo/Views/Paciente/Anexos.cshtml");
+            return View("Areas/Administrativo/Views/Anexo/Index.cshtml");
         }
 
         //[HttpGet]

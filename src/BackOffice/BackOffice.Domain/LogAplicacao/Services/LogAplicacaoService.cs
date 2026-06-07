@@ -1,4 +1,5 @@
 ﻿using Psicologa.Domain;
+using Shared.Infra.CrossCutting;
 using System;
 using System.Collections.Generic;
 using System.Text.Json;
@@ -42,7 +43,7 @@ namespace Psicologa.Domain.LogAplicacao.Services
             UsuarioNome    = requisicao[3],
             IP             = requisicao[0],
             UserAgent      = requisicao[1],
-            Dispostivo     = requisicao[2],
+            Dispositivo     = requisicao[2],
             Entidade       = entidade,
             EntidadeId     = entidadeId,
             Operacao       = operacao,
@@ -110,6 +111,25 @@ namespace Psicologa.Domain.LogAplicacao.Services
             }
 
             return ("Atualização", diferencas);
+        }
+
+        public IEnumerable<Entities.LogAplicacao> ObterUltimos(int top)
+        {
+            return _repository.ObterUltimos(top);
+        }
+        public Entities.LogAplicacao Obter(int id)
+        {
+            return _repository.Obter(id);
+        }
+
+        public IEnumerable<Domain.LogAplicacao.Entities.LogAplicacao> Consultar(string termo, PaginacaoDados paginacao)
+        {
+            if (string.IsNullOrEmpty(termo))
+                termo = "";
+            else
+                termo = termo.Replace("%", "").Replace("_", "");
+
+            return _repository.Consultar(termo, paginacao);
         }
 
         //public Domain.LogAplicacao.Entities.LogAplicacao GerarLog(int entidadeId, string operacao, string metodo, string dadosNovo, string dadosAntes, int usuarioId)
