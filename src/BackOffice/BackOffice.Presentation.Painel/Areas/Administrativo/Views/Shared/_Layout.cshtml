@@ -141,6 +141,17 @@
         sideBarItens.Add(configs);
     }
 
+    var documentos = new { Titulo = "Documentos", IconeClass = "fas fa-file-alt", Filhos = new List<dynamic>() };
+    if(permissoes.Contains(PerfilUsuarioViewModel.TpPermissao.GerenciarDocumentos))
+    {
+        documentos.Filhos.Add(new { Titulo = "Gerenciar Documentos", HRef = "Administrativo/Documentos", IconeClass = "fas fa-file-alt", Tag = "" });
+    }
+
+    if(documentos.Filhos.Count > 0)
+    {
+        sideBarItens.Add(documentos);
+    }
+
     var logs = new { Titulo = "Logs", IconeClass = "fas fa-clipboard-list", Filhos = new List<dynamic>() };
 
     if(permissoes.Contains(PerfilUsuarioViewModel.TpPermissao.GerenciarLogsAplicacao))

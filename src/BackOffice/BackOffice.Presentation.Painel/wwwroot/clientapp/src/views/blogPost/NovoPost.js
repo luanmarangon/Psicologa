@@ -234,36 +234,6 @@ export default class Index extends Component {
                                 data={this.state.dados.conteudo || ''}
                                 config={{
                                     extraPlugins: [this.uploadPlugin],
-                                    // toolbar: [
-                                    //     'heading',
-                                    //     '|',
-                                    //     'bold', 'italic', 'link',
-                                    //     '|',
-                                    //     'bulletedList', 'numberedList',
-                                    //     '|',
-                                    //     'imageUpload', // 🔥 botão imagem
-                                    //     '|',
-                                    //     'insertTable',
-                                    //     '|',
-                                    //     'undo', 'redo'
-                                    // ]
-                                    // toolbar: [
-                                    //     'heading',
-                                    //     '|',
-                                    //     'bold', 'italic', 'underline', 'strikethrough',
-                                    //     '|',
-                                    //     'link',
-                                    //     'bulletedList', 'numberedList',
-                                    //     '|',
-                                    //     'blockQuote',
-                                    //     'code',
-                                    //     'codeBlock',
-                                    //     '|',
-                                    //     'insertTable',
-                                    //     'imageUpload',
-                                    //     '|',
-                                    //     'undo', 'redo'
-                                    // ]
                                     toolbar: [
                                         'heading',
                                         '|',

@@ -53,7 +53,8 @@ namespace Psicologa.Domain.Usuario.Entities
             GerenciarPsicologos = 12,
             [Description("Gerenciar Logs Aplicação")]
             GerenciarLogsAplicacao = 13,
-
+            [Description("Gerenciar Documentos")]
+            GerenciarDocumentos = 14,
 
             [Description("Gerenciar Categorias/Subcategorias Materiais Educativos")]
             GerenciarCategoriasMateriaisEducativos = 100,

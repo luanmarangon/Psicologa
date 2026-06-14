@@ -23,6 +23,7 @@
     <Content Remove="Areas\Administrativo\Views\Agendamento\Index.cshtml" />
     <Content Remove="Areas\Administrativo\Views\Paciente\Anexos.cshtml" />
     <Content Remove="Areas\Administrativo\Views\Paciente\Prontuario.cshtml" />
+    <Content Remove="Areas\Administrativo\Views\Documentos\Index.cshtml" />
     <Content Remove="Areas\Administrativo\Views\Perfil\Index.cshtml" />
     <Content Remove="Areas\Administrativo\Views\Leads\Index.cshtml" />
     <Content Remove="Areas\Administrativo\Views\Configuracao\Index.cshtml" />
@@ -40,6 +41,7 @@
     <None Include="Areas\Administrativo\Views\Agendamento\Index.cshtml" />
     <None Include="Areas\Administrativo\Views\Anexo\Index.cshtml" />
     <None Include="Areas\Administrativo\Views\Paciente\Prontuario.cshtml" />
+    <None Include="Areas\Administrativo\Views\Documentos\Index.cshtml" />
     <None Include="Areas\Administrativo\Views\Perfil\Index.cshtml" />
     <None Include="Areas\Administrativo\Views\Leads\Index.cshtml" />
     <None Include="Areas\Administrativo\Views\Dashboard\Error.cshtml" />
