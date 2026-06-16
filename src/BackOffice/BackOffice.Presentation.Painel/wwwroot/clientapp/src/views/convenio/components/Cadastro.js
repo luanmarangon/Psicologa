@@ -7,7 +7,7 @@ export default class Cadastro extends Component {
         super(props);
         this.state = {
             dados: {
-                id: this.props.usuarioId,
+                id: 0,
                 nome: "",
                 icon: "",
                 destaqueHome: false,
@@ -66,6 +66,7 @@ export default class Cadastro extends Component {
                     ...this.dados,
                     dados: {
                         ...this.state.dados,
+                        id: r.data.id,
                         nome: r.data.nome,
                         icon: r.data.icon,
                         destaqueHome: r.data.destaqueHome,

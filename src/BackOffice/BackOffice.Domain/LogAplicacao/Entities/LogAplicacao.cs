@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Psicologa.Domain.LogAplicacao.Entities
 {
-    public class LogAplicacao
+    public class LogAplicacao: EntityBase
     {
         public int Id { get; set; }
         public DateTime DataCriacao { get; set; }
@@ -26,5 +26,10 @@ namespace Psicologa.Domain.LogAplicacao.Entities
         public string DadosAlterados { get; set; }
         //public bool Sucesso { get; set; }
         //public string MensagemErro { get; set; }
+
+        public override bool Validar()
+        {
+            return base.ValidationResult.Count == 0;
+        }
     }
 }

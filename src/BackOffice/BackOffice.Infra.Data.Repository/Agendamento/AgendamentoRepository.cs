@@ -202,6 +202,40 @@ namespace Psicologa.Infra.Data.Repository.Agendamento
             }
             return agendamento;
         }
+
+        public Domain.Agendamento.Entities.Agendamento ObterAgendamentoPorPaciente(int pacienteId, int psicologoId, DateTime data)
+        {
+            Domain.Agendamento.Entities.Agendamento agendamento = new Domain.Agendamento.Entities.Agendamento();
+            try
+            {
+                using (var cmd = DbContext.CreateCommand())
+                {
+                    cmd.CommandText =
+                                   $@"select a.AgendamentoId, a.PacienteId, a.PsicologoId, a.ServicoId, a.DataConsulta, a.HoraInicio, a.HoraFim,
+                                            a.TempoSessao, a.Online, a.Presencial, a.DataCriacao, a.DataAtualizacao, a.StatusAgendamento, a.TipoAgendamento, a.Ativo,
+                                            a.ConfirmouAgendamento, a.DataConfirmacao,
+                            p.Nome as PacienteNome, ps.Nome as PsicologoNome, s.Nome as ServicoNome
+                            from Agendamento a
+                            inner join Pessoa p on p.PessoaId = a.PacienteId
+                            inner join Pessoa ps on ps.PessoaId = a.PsicologoId
+                            inner join Servico s on a.ServicoId = s.ServicoId
+                            where a.PacienteId = @PacienteId and a.PsicologoId = @PsicologoId and a.DataConsulta = @Data";
+                    cmd.ParameterAdd("@PacienteId", pacienteId);
+                    cmd.ParameterAdd("@PsicologoId", psicologoId);
+                    cmd.ParameterAdd("@Data", data);
+
+                    using (var dr = cmd.ExecuteReader())
+                    {
+                        agendamento = Map(dr).FirstOrDefault();
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Erro ao obter agendamento por id.");
+            }
+            return agendamento;
+        }
         public bool Excluir(int id)
         {
             bool operacao = false;

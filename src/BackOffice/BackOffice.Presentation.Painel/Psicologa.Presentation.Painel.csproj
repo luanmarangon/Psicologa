@@ -192,7 +192,7 @@
   
   <ItemGroup>
     <ProjectReference Include="..\..\Shared\Shared.Infra.CrossCutting\Shared.Infra.CrossCutting.csproj" />
-    <ProjectReference Include="..\BackOffice.Infra.CrossCutting.IOC\MultiServicos.Infra.CrossCutting.IOC.csproj" />
+    <ProjectReference Include="..\BackOffice.Infra.CrossCutting.IOC\Psicologa.Infra.CrossCutting.IOC.csproj" />
   </ItemGroup>
   
   <ItemGroup>

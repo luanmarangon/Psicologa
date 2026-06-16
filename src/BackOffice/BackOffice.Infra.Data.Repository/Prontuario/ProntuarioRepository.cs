@@ -98,7 +98,7 @@ namespace Psicologa.Infra.Data.Repository.Prontuario
                             FROM prontuario pr
                             INNER JOIN Paciente pa on pr.PacienteId = pa.PacienteId
                             INNER JOIN Pessoa p on pa.PessoaId = p.PessoaId
-                            WHERE pa.PacienteId = @Id";
+                            WHERE pr.ProntuarioId = @Id";
                     cmd.ParameterAdd("@Id", prontuarioId);
                     using (var dr = cmd.ExecuteReader())
                     {

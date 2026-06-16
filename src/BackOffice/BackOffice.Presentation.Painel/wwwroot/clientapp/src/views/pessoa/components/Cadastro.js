@@ -7,6 +7,7 @@ export default class Cadastro extends Component {
     constructor(props) {
         super(props);
         this.state = {
+            trocarResponsavel: false,
 
             dados: {
                 id: "0",
@@ -39,123 +40,87 @@ export default class Cadastro extends Component {
                 contato: "",
                 observacao: ""
             },
+            paciente: {
+                contatoEmergenciaNome: '',
+                contatoEmergenciaTelefone: '',
+                responsavelId: null,
+                responsavelNome: '',
+            },
+            psicologo: {
+                crp: '',
+                crpUf: '',
+                dataEmissaoCrp: ''
+            },
             contatos: [],
             tipos: [],
             cidadesOptions: [],
-            // carregandoCidades: true,
             iniciando: true,
-            aguarde: false
+            aguarde: false,
+            select2ResponsavelIniciado: false
         };
-
     }
 
     componentDidMount = () => {
 
-
         let promiseEdicao = null;
         if (!isEmpty(this.props.idEdicao)) {
             promiseEdicao = this.obter(this.props.idEdicao);
-            promiseEdicao.then(() => {
-                // promiseObterCidades = this.obterCidades(this.state.endereco.uf);
-            });
-        }
-        else {
-            // promiseObterCidades = this.obterCidades(this.state.endereco.uf);
         }
 
         Promise.all([promiseEdicao]).then(() => {
-            this.setState({
-                iniciando: false,
-            });
+            this.setState({ iniciando: false });
         });
-
 
         $("#cadastroModal").modal('show');
 
         let that = this;
-
         $('#cadastroModal').on('hidden.bs.modal', function (e) {
             that.props.onFechar();
         });
 
     }
 
-    componentDidUpdate = () => {
+    componentDidUpdate = (prevProps, prevState) => {
 
         let that = this;
 
-        //máscara para CEP
+        // Máscara para CEP
         $("#txtCEP").inputmask("99999-999");
         $("#txtCEP").off('change');
         $("#txtCEP").on('change', function (e) {
-
             that.setState({
-                endereco: {
-                    ...that.state.endereco,
-                    cep: e.target.value
-                }
+                endereco: { ...that.state.endereco, cep: e.target.value }
             });
-
             that.preencherEndereco(e.target.value);
         });
 
-
-        //máscara para Telefone
+        // Máscara para Telefone
         $("#txtContato").off('change');
         if (this.state.contato.tipo == "6" || this.state.contato.tipo == "1") {
             $("#txtContato").inputmask("(99) 99999-9999");
             $("#txtContato").on('change', function (e) {
-
-                that.setState({
-                    contato: {
-                        ...that.state.contato,
-                        contato: e.target.value
-                    }
-                });
+                that.setState({ contato: { ...that.state.contato, contato: e.target.value } });
             });
         }
         else if (this.state.contato.tipo == "2") {
             $("#txtContato").inputmask("(99) 9999-9999");
             $("#txtContato").on('change', function (e) {
-
-                that.setState({
-                    contato: {
-                        ...that.state.contato,
-                        contato: e.target.value
-                    }
-                });
+                that.setState({ contato: { ...that.state.contato, contato: e.target.value } });
             });
         }
         else {
             $("#txtContato").inputmask("");
             $("#txtContato").on('change', function (e) {
-
-                that.setState({
-                    contato: {
-                        ...that.state.contato,
-                        contato: e.target.value
-                    }
-                });
+                that.setState({ contato: { ...that.state.contato, contato: e.target.value } });
             });
-
-
         }
 
-        //máscara para CPF ou CNPJ
-
+        // Máscara para CPF ou CNPJ
         $("#txtDocIdNro").off('change');
-        if (this.state.dados.docIdTipo == "1" || this.state.dados.docIdTipo == "3") //CPF ou CNPJ
-        {
+        if (this.state.dados.docIdTipo == "1" || this.state.dados.docIdTipo == "3") {
             $("#txtDocIdNro").on('change', function (e) {
-
-                that.setState({
-                    dados: {
-                        ...that.state.dados,
-                        docIdNro: e.target.value
-                    }
-                });
+                that.setState({ dados: { ...that.state.dados, docIdNro: e.target.value } });
             });
-
             if (this.state.dados.docIdTipo == "1") {
                 $("#txtDocIdNro").inputmask("999.999.999-99");
             }
@@ -165,145 +130,161 @@ export default class Cadastro extends Component {
         }
         else {
             $("#txtDocIdNro").inputmask("");
-
             $("#txtDocIdNro").on('change', function (e) {
-
-                that.setState({
-                    dados: {
-                        ...that.state.dados,
-                        docIdNro: e.target.value
-                    }
-                });
+                that.setState({ dados: { ...that.state.dados, docIdNro: e.target.value } });
             });
+        }
+
+        // Inicializa Select2 do responsável APENAS quando:
+        // 1. O select está no DOM (render colocou ele lá)
+        // 2. Ainda não foi iniciado nesta "sessão" de exibição do select
+        const selectNoDOM = $("#selResponsavel").length > 0;
+        const naoIniciado = !this.state.select2ResponsavelIniciado;
+
+        if (selectNoDOM && naoIniciado) {
+            this.setState({ select2ResponsavelIniciado: true }, () => {
+                this.inicializarSelect2Responsavel();
+            });
+        }
+
+        // Quando select sai do DOM (responsável selecionado), reseta a flag
+        if (!selectNoDOM && this.state.select2ResponsavelIniciado) {
+            this.setState({ select2ResponsavelIniciado: false });
         }
 
         tableSelectable();
     }
 
     componentWillUnmount = () => {
-
         $('#cadastroModal').modal('hide');
-
     }
 
     obter = (id) => {
 
         let p = HTTPClient.get("Administrativo/Pessoa/Obter?id=" + id)
+            .then(r => r.json())
             .then(r => {
-                return r.json();
-            })
-            .then(r => {
-
                 this.setState({
                     dados: r.data.dados,
                     endereco: r.data.endereco,
                     contatos: r.data.contatos,
-                    tipos: r.data.tipos
+                    tipos: r.data.tipos,
+                    paciente: r.data.paciente,
+                    psicologo: r.data.psicologo
                 });
-
             })
             .catch((e) => {
-                showToastr({
-                    type: "error",
-                    text: "Um erro ocorreu."
-                });
+                showToastr({ type: "error", text: "Um erro ocorreu." });
             });
 
         return p;
     }
 
+    inicializarSelect2Responsavel = () => {
+
+        if (!$("#selResponsavel").length) return;
+
+        if ($("#selResponsavel").hasClass("select2-hidden-accessible")) {
+            $("#selResponsavel").select2("destroy");
+        }
+
+        $("#selResponsavel").select2({
+            language: "pt-BR",
+            placeholder: "Digite para buscar o responsável...",
+            minimumInputLength: 2,
+            ajax: {
+                url: (params) =>
+                    resolveClientURL(
+                        "Administrativo/Pessoa/ConsultarPessoaAutoComplete?q=" +
+                        encodeURIComponent(params.term)
+                    ),
+                dataType: 'json',
+                delay: 300,
+                processResults: (data) => ({
+                    results: data.map(item => ({
+                        id: item.dados.id,
+                        text: item.dados.nome.toUpperCase(),
+                        nome: item.dados.nome.toUpperCase(),
+                        documento: item.dados.docIdNro || '',
+                        cidade: item.dados.cidade || ''
+                    }))
+                })
+            },
+            templateResult: (data) => {
+                if (!data.id) return data.text;
+                return $(
+                    '<div>' +
+                    '<div><strong>' + data.nome + '</strong></div>' +
+                    (data.documento ? '<div class="small">' + data.documento + '</div>' : '') +
+                    '</div>'
+                );
+            },
+            templateSelection: (data) => data.nome || data.text
+        });
+
+        $("#selResponsavel")
+            .off("select2:select")
+            .on("select2:select", (e) => {
+                const item = e.params.data;
+
+                if ($("#selResponsavel").hasClass("select2-hidden-accessible")) {
+                    $("#selResponsavel").select2("destroy");
+                }
+
+                this.setState(prev => ({
+                    trocarResponsavel: false,
+                    select2ResponsavelIniciado: false,
+                    paciente: {
+                        ...prev.paciente,
+                        responsavelId: item.id,
+                        responsavelNome: item.nome
+                    }
+                }));
+            });
+
+    }
+
+    trocarResponsavelHandler = () => {
+        this.setState({
+            trocarResponsavel: true,
+            select2ResponsavelIniciado: false,
+            paciente: {
+                ...this.state.paciente,
+                responsavelId: null,
+                responsavelNome: ''
+            }
+        });
+    }
 
     salvar = () => {
 
-        this.setState({
-            aguarde: true
-        });
+        this.setState({ aguarde: true });
 
         var pessoaDados = {
             dados: this.state.dados,
             endereco: this.state.endereco,
             contatos: this.state.contatos,
-            tipos: this.state.tipos
+            tipos: this.state.tipos,
+            paciente: this.state.paciente, 
+            psicologo: this.state.psicologo
         }
 
         HTTPClient.post("Administrativo/Pessoa/Salvar", pessoaDados)
+            .then(r => r.json())
             .then(r => {
-                return r.json();
-            })
-            .then(r => {
-
                 if (r.success) {
                     this.props.onFechar(r.data);
                 }
                 else showToastr(r.messages);
-
             })
             .catch((e) => {
-                showToastr({
-                    type: "error",
-                    text: "Um erro ocorreu."
-                });
-
+                showToastr({ type: "error", text: "Um erro ocorreu." });
             })
             .finally(() => {
-                this.setState({
-                    aguarde: false
-                });
+                this.setState({ aguarde: false });
             });
 
-
     }
-
-    // obterCidades = (uf, ibge) => {
-
-    //     this.setState({
-    //         ...this.state,
-    //         endereco: { ...this.state.endereco, uf: uf },
-    //         carregandoCidades: true
-    //     });
-
-    //     let cidadeId = "0";
-    //     let p = HTTPClient.get("Administrativo/Pessoa/ObterCidades?uf=" + uf)
-    //         .then(r => {
-    //             return r.json();
-    //         })
-    //         .then(r => {
-
-    //             let cidadesOptions = r.data.map(c => {
-
-    //                 if (ibge != undefined && ibge == c.ibge) {
-    //                     cidadeId = c.id;
-    //                 }
-
-    //                 return <option key={c.id} value={c.id}>{c.nome}</option>
-    //             });
-
-    //             if (cidadeId == "0") {
-    //                 cidadeId = this.state.endereco.cidade;
-    //             }
-
-    //             this.setState({
-    //                 ...this.state,
-    //                 endereco: {
-    //                     ...this.state.endereco,
-    //                     cidadeId: cidadeId
-    //                 },
-    //                 cidadesOptions: cidadesOptions,
-    //                 carregandoCidades: false
-    //             });
-
-    //         })
-    //         .catch((e) => {
-    //             showToastr({
-    //                 type: "error",
-    //                 text: "Um erro ocorreu."
-    //             });
-    //         });
-
-    //     return p;
-    // }
-
-
 
     adicionarContato = () => {
 
@@ -312,9 +293,7 @@ export default class Cadastro extends Component {
             let item = null;
 
             if (this.state.contato.id != "0") {
-                //edição
                 item = contatos.find((item) => { return item.id === this.state.contato.id });
-
                 if (item != null) {
                     item.tipo = this.state.contato.tipo;
                     item.tipoNome = this.refs.selTpContato[this.refs.selTpContato.selectedIndex].innerHTML;
@@ -324,7 +303,6 @@ export default class Cadastro extends Component {
             }
 
             if (item == null) {
-                //novo    
                 contatos.push({
                     id: new Date().getTime() * -1,
                     tipo: this.state.contato.tipo,
@@ -346,7 +324,6 @@ export default class Cadastro extends Component {
         }
     }
 
-
     excluirContato = (itemExcluir) => {
 
         if (!confirm("Confirma a exclusão?")) {
@@ -358,7 +335,6 @@ export default class Cadastro extends Component {
         });
 
     }
-
 
     editarContato = (itemEditar) => {
 
@@ -376,17 +352,11 @@ export default class Cadastro extends Component {
 
     preencherEndereco = (cep) => {
 
-        if (cep == "")
-            return;
+        if (cep == "") return;
 
         fetch("//viacep.com.br/ws/" + cep + "/json/")
+            .then((r) => r.json())
             .then((r) => {
-                return r.json();
-            })
-            .then((r) => {
-
-                r.localidade
-
                 this.setState({
                     endereco: {
                         ...this.state.endereco,
@@ -397,9 +367,6 @@ export default class Cadastro extends Component {
                         cidade: r.localidade
                     }
                 });
-
-                //this.obterCidades(r.uf, r.ibge);
-
             })
             .catch((e) => {
                 console.log("Erro ao obter endereço", e);
@@ -408,13 +375,8 @@ export default class Cadastro extends Component {
     }
 
     setStateTipos = (tipos) => {
-
-        this.setState({
-            tipos: tipos
-        });
+        this.setState({ tipos: tipos });
     }
-
-
 
     render() {
 
@@ -427,9 +389,7 @@ export default class Cadastro extends Component {
                             <label htmlFor="selDocIdTipo">Doc. de Identificação*</label>
                             <select id="selDocIdTipo" className="form-control" value={this.state.dados.docIdTipo} onChange={(e) => this.setState({ dados: { ...this.state.dados, docIdTipo: e.target.value } })}>
                                 <option value="1">CPF</option>
-                                {/*<option value="2">Passaporte</option>*/}
                                 <option value="3">CNPJ</option>
-                                {/*<option value="4">Cadastro Único (PF)</option>*/}
                             </select>
                         </div>
                     </div>
@@ -446,15 +406,12 @@ export default class Cadastro extends Component {
                             <label>Ativo*</label>
                             <select className="form-control"
                                 value={this.state.dados.ativo}
-                                onChange={(e) => this.setState({ dados: { ...this.state.dados, ativo: e.target.value } })} >
+                                onChange={(e) => this.setState({ dados: { ...this.state.dados, ativo: e.target.value } })}>
                                 <option value="true">Sim</option>
                                 <option value="false">Não</option>
                             </select>
                         </div>
                     </div>
-
-
-
                 </div>
 
                 <div className="form-group">
@@ -484,7 +441,6 @@ export default class Cadastro extends Component {
                             </select>
                         </div>
                     </div>
-
                 </div>
 
                 <div className="row" style={this.state.dados.docIdTipo != "3" ? { display: "none" } : null}>
@@ -501,21 +457,18 @@ export default class Cadastro extends Component {
                     </div>
                 </div>
 
-
-
                 <div className="card">
                     <div className="card-header">
                         <h3 className="card-title">Endereço</h3>
                     </div>
                     <div className="card-body">
                         <div className="row">
-
                             <div className="col-sm-3">
                                 <div className="form-group">
                                     <label htmlFor="txtCEP">CEP*</label>
                                     <input type="text" className="form-control" id="txtCEP" autoComplete="off" maxLength="10" value={this.state.endereco.cep}
                                         onChange={(e) => {
-                                            this.setState({ endereco: { ...this.state.endereco, cep: e.target.value } })
+                                            this.setState({ endereco: { ...this.state.endereco, cep: e.target.value } });
                                             this.preencherEndereco(e.target.value);
                                         }} />
                                 </div>
@@ -526,7 +479,6 @@ export default class Cadastro extends Component {
                                     <label htmlFor="txtLogradouro">Logradouro*</label>
                                     <input type="text" className="form-control" id="txtLogradouro" autoComplete="off" maxLength="200" value={this.state.endereco.logradouro}
                                         onChange={(e) => this.setState({ endereco: { ...this.state.endereco, logradouro: e.target.value } })} />
-
                                 </div>
                             </div>
                             <div className="col-sm-2">
@@ -544,7 +496,6 @@ export default class Cadastro extends Component {
                                     <label htmlFor="txtBairro">Bairro*</label>
                                     <input type="text" className="form-control" id="txtBairro" autoComplete="off" maxLength="50" value={this.state.endereco.bairro}
                                         onChange={(e) => this.setState({ endereco: { ...this.state.endereco, bairro: e.target.value } })} />
-
                                 </div>
                             </div>
 
@@ -588,15 +539,8 @@ export default class Cadastro extends Component {
                                 <div className="form-group">
                                     <label htmlFor="selUF">UF*</label>
                                     <select id="selUF" className="form-control"
-                                        // value={this.state.endereco.uf}
-                                        // onChange={(e) => {
-                                        //     this.obterCidades(e.target.value);
-                                        // }}
-
                                         value={this.state.endereco.uf}
-                                        onChange={(e) => { this.setState({ endereco: { ...this.state.endereco, uf: e.target.value } }) }}
-
-                                    >
+                                        onChange={(e) => { this.setState({ endereco: { ...this.state.endereco, uf: e.target.value } }) }}>
                                         <option value="0"></option>
                                         <option value="AC">AC</option>
                                         <option value="AL">AL</option>
@@ -625,26 +569,17 @@ export default class Cadastro extends Component {
                                         <option value="SE">SE</option>
                                         <option value="SP">SP</option>
                                         <option value="TO">TO</option>
-
                                     </select>
                                 </div>
                             </div>
                             <div className="col-sm-6">
                                 <div className="form-group">
-                                    <label htmlFor="selCidade">Cidade*</label>
-                                    {/* <select id="selCidade" className="form-control" value={this.state.endereco.cidade} onChange={(e) => this.setState({ endereco: { ...this.state.endereco, cidadeId: e.target.value } })}>
-                                        <option value="0">{this.state.carregandoCidades ? "carregando..." : ""}</option>
-                                        {!this.state.carregandoCidades ? this.state.cidadesOptions : null}
-                                    </select> */}
-
+                                    <label htmlFor="txtCidade">Cidade*</label>
                                     <input type="text" className="form-control" id="txtCidade" autoComplete="off" maxLength="11" value={this.state.endereco.cidade}
                                         onChange={(e) => this.setState({ endereco: { ...this.state.endereco, cidade: e.target.value } })} />
-
-
                                 </div>
                             </div>
                         </div>
-
                     </div>
                 </div>
 
@@ -689,7 +624,6 @@ export default class Cadastro extends Component {
                                     <div className="input-group">
                                         <input type="text" className="form-control" id="txtContatoObservacao" autoComplete="off" maxLength="200" value={this.state.contato.observacao}
                                             onChange={(e) => this.setState({ contato: { ...this.state.contato, observacao: e.target.value } })} />
-
                                         <span className="ml-3">
                                             <button type="button" className="btn btn-primary" onClick={this.adicionarContato}><i className="fas fa-plus"></i></button>
                                         </span>
@@ -719,7 +653,6 @@ export default class Cadastro extends Component {
                                                             </div>
                                                         </div>
                                                     </td>
-
                                                 </tr>);
                                         })}
                                     </tbody>
@@ -727,14 +660,182 @@ export default class Cadastro extends Component {
                             </div>
                         </div>
                     </div>
-
                 </div>
-
 
                 <CadastroTipo atualizarState={this.setStateTipos} tipos={this.state.tipos} />
 
-            </form>
+                {this.state.tipos.length > 0 && this.state.tipos.some(t => t.tipo == "1") &&
+                    <div className="card">
+                        <div className="card-header">
+                            <h3 className="card-title">Dados do Paciente</h3>
+                        </div>
+                        <div className="card-body">
 
+                            <div className="form-group text-info">
+                                Essa pessoa é um paciente, portanto, aparecerá na agenda e no prontuário. Preencha os dados abaixo para que ela seja exibida corretamente nessas telas.
+                            </div>
+
+                            {/* CONTATO EMERGÊNCIA */}
+                            <div className="card card-modern mt-4">
+                                <div className="card-header border-0 bg-white">
+                                    <h3 className="card-title">
+                                        <i className="fas fa-phone-alt mr-2 text-danger"></i>
+                                        Contato de Emergência
+                                    </h3>
+                                </div>
+                                <div className="card-body">
+                                    <div className="row">
+                                        <div className="col-md-8">
+                                            <div className="form-group">
+                                                <label htmlFor="txtContatoEmergenciaNome">Nome do Contato</label>
+                                                <input
+                                                    type="text"
+                                                    className="form-control form-control-modern"
+                                                    id="txtContatoEmergenciaNome"
+                                                    autoComplete="off"
+                                                    placeholder="Nome completo"
+                                                    value={this.state.paciente.contatoEmergenciaNome || ''}
+                                                    onChange={(e) => this.setState({ paciente: { ...this.state.paciente, contatoEmergenciaNome: e.target.value } })}
+                                                />
+                                            </div>
+                                        </div>
+                                        <div className="col-md-4">
+                                            <div className="form-group">
+                                                <label htmlFor="txtContatoEmergenciaTelefone">Telefone</label>
+                                                <input
+                                                    type="text"
+                                                    className="form-control form-control-modern"
+                                                    id="txtContatoEmergenciaTelefone"
+                                                    autoComplete="off"
+                                                    placeholder="(00) 00000-0000"
+                                                    value={this.state.paciente.contatoEmergenciaTelefone || ''}
+                                                    onChange={(e) => this.setState({ paciente: { ...this.state.paciente, contatoEmergenciaTelefone: e.target.value } })}
+                                                />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* RESPONSÁVEL */}
+                            <div className="card card-modern mt-4">
+                                <div className="card-header border-0 bg-white">
+                                    <h3 className="card-title">
+                                        <i className="fas fa-user-shield mr-2 text-info"></i>
+                                        Responsável
+                                    </h3>
+                                </div>
+                                <div className="card-body">
+                                    <div className="form-group mb-0">
+
+                                        <label htmlFor="selResponsavel">
+                                            Responsável pelo paciente
+                                        </label>
+
+                                        {
+                                            this.state.paciente.responsavelId && !this.state.trocarResponsavel
+                                                ? (
+                                                    <div className="responsavel-box">
+                                                        <div className="d-flex justify-content-between align-items-center">
+                                                            <div>
+                                                                <div className="responsavel-label">
+                                                                    Responsável selecionado
+                                                                </div>
+                                                                <div className="responsavel-nome">
+                                                                    {this.state.paciente.responsavelNome}
+                                                                </div>
+                                                            </div>
+                                                            <button
+                                                                type="button"
+                                                                className="btn btn-outline-primary btn-modern"
+                                                                onClick={this.trocarResponsavelHandler}
+                                                            >
+                                                                <i className="fas fa-sync-alt mr-1"></i>
+                                                                Trocar
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                )
+                                                : (
+                                                    <select
+                                                        id="selResponsavel"
+                                                        className="form-control"
+                                                        style={{ width: '100%' }}
+                                                    />
+                                                )
+                                        }
+
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                }
+
+                {this.state.tipos.length > 0 && this.state.tipos.some(t => t.tipo == "3") &&
+                    <div className="card">
+                        <div className="card-header">
+                            <h3 className="card-title">Dados do Psicólogo</h3>
+                        </div>
+                        <div className="card-body">
+                            <div className="form-group text-info">
+                                Essa pessoa é um psicólogo, portanto, aparecerá na agenda e no prontuário. Preencha os dados abaixo para que ela seja exibida corretamente nessas telas.
+                            </div>
+
+                            <div className="row">
+                                <div className="col-sm">
+                                    <label htmlFor="txtCRP">Número do CRP</label>
+                                    <input type="text" className="form-control form-control-modern" id="txtCRP" autoComplete="off" maxLength="20" value={this.state.psicologo.crp}
+                                        onChange={(e) => this.setState({ psicologo: { ...this.state.psicologo, crp: e.target.value } })} />
+                                </div>
+                                <div className="col-sm">
+                                    <label htmlFor="txtCRP">UF CRP</label>
+                                    <select id="selUF" className="form-control"
+                                        value={this.state.psicologo.crpUf}
+                                        onChange={(e) => { this.setState({ psicologo: { ...this.state.psicologo, crpUf: e.target.value } }) }}>
+                                        <option value="0"></option>
+                                        <option value="AC">AC</option>
+                                        <option value="AL">AL</option>
+                                        <option value="AM">AM</option>
+                                        <option value="AP">AP</option>
+                                        <option value="BA">BA</option>
+                                        <option value="CE">CE</option>
+                                        <option value="DF">DF</option>
+                                        <option value="ES">ES</option>
+                                        <option value="GO">GO</option>
+                                        <option value="MA">MA</option>
+                                        <option value="MG">MG</option>
+                                        <option value="MS">MS</option>
+                                        <option value="MT">MT</option>
+                                        <option value="PA">PA</option>
+                                        <option value="PB">PB</option>
+                                        <option value="PE">PE</option>
+                                        <option value="PI">PI</option>
+                                        <option value="PR">PR</option>
+                                        <option value="RJ">RJ</option>
+                                        <option value="RN">RN</option>
+                                        <option value="RO">RO</option>
+                                        <option value="RR">RR</option>
+                                        <option value="RS">RS</option>
+                                        <option value="SC">SC</option>
+                                        <option value="SE">SE</option>
+                                        <option value="SP">SP</option>
+                                        <option value="TO">TO</option>
+                                    </select>
+                                </div>
+                                <div className="col-sm">
+                                    <label htmlFor="txtCRP">Data Emissão CRP</label>
+                                    <input type="date" className="form-control form-control-modern" id="txtCRP" autoComplete="off" maxLength="20" value={formatarDataPtBrToInputDate(this.state.psicologo.dataEmissaoCrp)}
+                                        onChange={(e) => this.setState({ psicologo: { ...this.state.psicologo, dataEmissaoCrp: e.target.value } })} />
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                }
+
+            </form>
 
         let modal =
             <div className="modal fade" id="cadastroModal" data-keyboard="true" tabIndex="-1">
@@ -749,19 +850,14 @@ export default class Cadastro extends Component {
                         <div className="modal-body">
                             {!this.state.iniciando ? form : <LoadingIndicator />}
                         </div>
-
                         <div className={"modal-footer " + (this.state.aguarde ? "site-disabled" : "")}>
                             <button type="button" className="btn btn-primary" onClick={this.salvar}>
                                 {!this.state.aguarde ? "Salvar" : <span><i className="fas fa-circle-notch fa-spin mr-1"></i>Salvando</span>}
                             </button>
                         </div>
-
                     </div>
                 </div>
             </div>
-
-
-
 
         return (modal);
     }

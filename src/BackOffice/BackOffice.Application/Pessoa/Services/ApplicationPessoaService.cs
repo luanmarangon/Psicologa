@@ -22,13 +22,20 @@ namespace Psicologa.Application.Pessoa.Services
 
         private readonly IAppSettings _appSettings;
 
+        private readonly Paciente.Services.ApplicationPacienteService _applicationPacienteService;
+        private readonly Psicologo.Services.ApplicationPsicologoService _applicationPsicologoService;
+
         public ApplicationPessoaService(Domain.Pessoa.Services.PessoaService pessoaService, Shared.Domain.Cidade.Services.CidadeService cidadeService, Domain.LogAplicacao.Services.LogAplicacaoService logAplicacaoService,
-            IAppSettings appSettings, Domain.Usuario.Services.UsuarioService usuarioService)
+            IAppSettings appSettings, Domain.Usuario.Services.UsuarioService usuarioService, 
+            Paciente.Services.ApplicationPacienteService applicationPacienteService,
+            Psicologo.Services.ApplicationPsicologoService applicationPsicologoService)
         {
             _pessoaService = pessoaService;
             _cidadeService = cidadeService;
             _logAplicacaoService = logAplicacaoService;
             _appSettings = appSettings;
+            _applicationPacienteService = applicationPacienteService;
+            _applicationPsicologoService = applicationPsicologoService;
             _usuarioService = usuarioService;
         }
 
@@ -114,6 +121,40 @@ namespace Psicologa.Application.Pessoa.Services
                 if (operacao)
                 {
                     pessoaVM.Dados.Id = pessoa.Id;
+
+                    //Criar o Paciente
+
+                    if (pessoa.Tipos.Any(t => t.Tipo == PessoaTipo.TpPessoa.Paciente))
+                    {
+                        var paciente = _applicationPacienteService.ObterPorPessoaId(pessoa.Id);
+
+                        var pacienteVM = new Application.Paciente.ViewsModel.PacienteViewModel()
+                        {
+                            Id = paciente.Id,
+                            Ativo = pessoa.Ativo,
+                            PessoaId = pessoa.Id,
+                            ContatoEmergenciaNome = pessoaVM.Paciente?.ContatoEmergenciaNome,
+                            ContatoEmergenciaTelefone = pessoaVM.Paciente?.ContatoEmergenciaTelefone,
+                            ResponsavelId = pessoaVM.Paciente?.ResponsavelId,
+                        };
+                        (operacao, _) = _applicationPacienteService.Salvar(pacienteVM, requisicao);
+                    }
+
+                    //Criar o Psicologo
+                    if (pessoa.Tipos.Any(t => t.Tipo == PessoaTipo.TpPessoa.Psicologo))
+                    {
+
+                        var psicologoVM = new Application.Psicologo.ViewsModel.PsicologoViewModel()
+                        {
+                            Id = 0,
+                            PessoaId = pessoa.Id,
+                            Ativo = pessoa.Ativo, 
+                            Crp = pessoaVM.Psicologo?.Crp,
+                            CrpUf = pessoaVM.Psicologo?.CrpUf,
+                            DataEmissaoCrp = pessoaVM.Psicologo?.DataEmissaoCrp ?? DateTime.MinValue
+                        };
+                        (operacao, _) = _applicationPsicologoService.Salvar(psicologoVM, requisicao);
+                    }
                 }
             }
 
@@ -398,13 +439,48 @@ namespace Psicologa.Application.Pessoa.Services
                 });
             }
 
+            var pacienteVM = (PessoaViewModel.PessoaPaciente?)null;
+
+            if (pessoa.Tipos.Any(t => t.Tipo == PessoaTipo.TpPessoa.Paciente))
+            {
+                var paciente = _applicationPacienteService.ObterPorPessoaId(pessoa.Id);
+                if (paciente != null)
+                {
+                    pacienteVM = new PessoaViewModel.PessoaPaciente()
+                    {
+                        ContatoEmergenciaNome = paciente.ContatoEmergenciaNome,
+                        ContatoEmergenciaTelefone = paciente.ContatoEmergenciaTelefone,
+                        ResponsavelId = paciente.ResponsavelId,
+                        ResponsavelNome = paciente.ResponsavelNome
+                    };
+                }
+            }
+
+            var psicologoVM = (PessoaViewModel.PessoaPsicologo?)null;
+            if(pessoa.Tipos.Any(t => t.Tipo == PessoaTipo.TpPessoa.Psicologo))
+            {
+                var psicologo = _applicationPsicologoService.ObterPorPessoaId(pessoa.Id);
+                if(psicologo != null)
+                {
+                    psicologoVM = new PessoaViewModel.PessoaPsicologo()
+                    {
+                        Crp = psicologo.Crp,
+                        CrpUf = psicologo.CrpUf,
+                        DataEmissaoCrp = psicologo.DataEmissaoCrp
+                    };
+                }
+            }
+
+
             var pessoaRetorno = new PessoaViewModel()
             {
                 DataAlteracao = pessoa.DataAlteracao,
                 Dados = dados,
                 Endereco = endereco,
                 Contatos = contatos,
-                Tipos = tipos
+                Tipos = tipos,
+                Paciente = pacienteVM, 
+                Psicologo = psicologoVM
             };
 
             return pessoaRetorno;

@@ -21,7 +21,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Data", "Data", "{BFDE54DF-F
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "CrossCutting", "CrossCutting", "{0C58D1A9-ADC4-475C-BF6F-BDDC4F1660B1}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MultiServicos.Infra.CrossCutting.IOC", "BackOffice\BackOffice.Infra.CrossCutting.IOC\MultiServicos.Infra.CrossCutting.IOC.csproj", "{50288F56-AC78-4B25-BD4D-2332E5D2FCFC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Psicologa.Infra.CrossCutting.IOC", "BackOffice\BackOffice.Infra.CrossCutting.IOC\Psicologa.Infra.CrossCutting.IOC.csproj", "{50288F56-AC78-4B25-BD4D-2332E5D2FCFC}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Psicologa.Infra.Data.Repository", "BackOffice\BackOffice.Infra.Data.Repository\Psicologa.Infra.Data.Repository.csproj", "{7B7A7A37-3002-479E-996A-BC8AFCFFA3A6}"
 EndProject

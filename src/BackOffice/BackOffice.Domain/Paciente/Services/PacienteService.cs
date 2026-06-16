@@ -27,7 +27,6 @@ namespace Psicologa.Domain.Paciente.Services
 
             return _repository.Consultar(nome, paginacao, tpPessoa);
         }
-
         public bool Salvar(Psicologa.Domain.Paciente.Entities.Paciente paciente)
         {
             bool operacao = false;
@@ -44,10 +43,13 @@ namespace Psicologa.Domain.Paciente.Services
             operacao = _repository.Salvar(paciente);
             return operacao;
         }
-
         public Entities.Paciente Obter(int id)
         {
             return _repository.Obter(id);
+        }
+        public Entities.Paciente ObterPorPessoaId(int pessoaId)
+        {
+            return _repository.ObterPorPessoaId(pessoaId);
         }
     }
 }

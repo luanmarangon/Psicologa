@@ -2,9 +2,7 @@
 import ReactDOM from 'react-dom';
 import Cadastro from './components/Cadastro';
 import LoadingIndicator from '../../components/LoadingIndicator';
-
-import { CKEditor } from '@ckeditor/ckeditor5-react';
-import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
+import CardEditorTexto from '../../components/CardEditorTexto';
 
 export default class Index extends Component {
 
@@ -229,7 +227,7 @@ export default class Index extends Component {
                         <div className="col-md-12">
                             <label className="form-label">Conteúdo</label>
 
-                            <CKEditor
+                            {/* <CKEditor
                                 editor={ClassicEditor}
                                 data={this.state.dados.conteudo || ''}
                                 config={{
@@ -263,6 +261,28 @@ export default class Index extends Component {
                                 onChange={(event, editor) => {
                                     const data = editor.getData();
                                     this.setState({ dados: { ...this.state.dados, conteudo: data } });
+                                }}
+                            /> */}
+                            {/* <CardEditorText
+                                value={this.state.dados.conteudo}
+                                onChange={(conteudo) => {
+                                    this.setState({
+                                        dados: {
+                                            ...this.state.dados,
+                                            conteudo
+                                        }
+                                    });
+                                }}
+                            /> */}
+                            <CardEditorTexto
+                                value={this.state.dados.conteudo}
+                                onChange={(conteudo) => {
+                                    this.setState({
+                                        dados: {
+                                            ...this.state.dados,
+                                            conteudo
+                                        }
+                                    });
                                 }}
                             />
                         </div>

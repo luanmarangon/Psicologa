@@ -86,9 +86,9 @@ namespace Psicologa.Presentation.Painel.Areas.Administrativo.Controllers
             var servico = _prontuarioService.ObterProntuarioPorPacienteId(idLimpo);
             return DefaultJSONResponse(true, servico);
         }
-        
-        
+
         #region ProntuarioSessao
+
         [HttpPost]
         public IActionResult EvoluirSessao([FromBody] System.Text.Json.JsonElement dados)
         {
@@ -101,7 +101,17 @@ namespace Psicologa.Presentation.Painel.Areas.Administrativo.Controllers
             try
             {
                 prontuario = dados.Deserialize<ProntuarioSessaoViewModel>();
-                prontuario.PsicologaId = _ua.PessoaId;
+
+                if (prontuario.PsicologaId > 0 && prontuario.PsicologaId != _ua.PessoaId)
+                {
+                    AddUserMessageError("Você não tem permissão para evoluir esta sessão.");
+                    return DefaultJSONResponse(false);
+                }
+                if(prontuario.Id == 0)
+                {
+                    prontuario.PsicologaId = _ua.PessoaId;
+                }
+                
                 (operacao, vr) = _prontuarioSessaoService.EvoluirSessao(prontuario, requisicao);
 
                 if (!operacao)
@@ -123,22 +133,25 @@ namespace Psicologa.Presentation.Painel.Areas.Administrativo.Controllers
 
             return DefaultJSONResponse(operacao, prontuarioVM);
         }
+
         [HttpGet]
         public IActionResult ObterSessao(string id)
         {
+            var requisicao = _req.ToArray(_ua);
+
             int idLimpo = Convert.ToInt32(id);
-            var servico = _prontuarioSessaoService.ObterSessao(idLimpo);
+            var servico = _prontuarioSessaoService.ObterSessao(idLimpo, requisicao);
             return DefaultJSONResponse(true, servico);
         }
+
         [HttpGet]
         public IActionResult PesquisarSessao(string q, string protocoloId, int filtroTipoAtendimento = 0, int pagina = 0, int ordenacao = 1)
         {
             int idLimpo = Convert.ToInt32((protocoloId));
-            
+
             IEnumerable<object> sessoes = new List<object>();
             PaginacaoDados paginacao = new PaginacaoDados(pagina, 10, (PaginacaoDados.TpOrdenacao)ordenacao);
 
-                        
             sessoes = _prontuarioSessaoService.Consultar(q, idLimpo, filtroTipoAtendimento, paginacao);
 
             var retorno = new
@@ -149,6 +162,7 @@ namespace Psicologa.Presentation.Painel.Areas.Administrativo.Controllers
 
             return DefaultJSONResponse(true, retorno);
         }
+
         [HttpDelete]
         public IActionResult ExcluirSessao(string id)
         {
@@ -160,6 +174,7 @@ namespace Psicologa.Presentation.Painel.Areas.Administrativo.Controllers
                 AddUserMessageError("Não foi possível excluir a sessão. Tente novamente.");
             return DefaultJSONResponse(operacao, null);
         }
+
         #endregion ProntuarioSessao
     }
 }

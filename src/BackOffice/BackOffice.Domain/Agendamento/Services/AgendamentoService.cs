@@ -39,6 +39,11 @@ namespace Psicologa.Domain.Agendamento.Services
         {
             return _repository.ObterPorId(id);
         }
+
+        public Domain.Agendamento.Entities.Agendamento ObterAgendamentoPorPaciente(int pacienteId, int psicologoId, DateTime data)
+        {
+            return _repository.ObterAgendamentoPorPaciente(pacienteId, psicologoId, data);
+        }
         public bool Excluir(int id)
         {
             return _repository.Excluir(id);

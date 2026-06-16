@@ -1,12 +1,6 @@
 import React, { Component } from 'react';
 import LoadingIndicator from '../../../components/LoadingIndicator';
-
-import EditorTexto from '../../../components/EditorTexto';
-// import { CKEditor } from '@ckeditor/ckeditor5-react';
-// import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
-// import { Alignment } from '@ckeditor/ckeditor5-alignment';
-// import { Font } from '@ckeditor/ckeditor5-font';
-// import { Underline, Strikethrough } from '@ckeditor/ckeditor5-basic-styles';
+import CardEditorTexto from '../../../components/CardEditorTexto';
 
 export default class Cadastro extends Component {
 
@@ -19,7 +13,7 @@ export default class Cadastro extends Component {
             dados: {
                 id: this.props.idEdicao,
                 nome: "",
-                categoria: "Declaracao",
+                categoria: 1,
                 ativo: true,
                 conteudo: ""
             },
@@ -151,13 +145,7 @@ export default class Cadastro extends Component {
         if (!this.editor)
             return;
 
-        this.editor.model.change(writer => {
-
-            this.editor.model.insertContent(
-                writer.createText(variavel)
-            );
-
-        });
+        this.editor.insertContent(variavel);
 
     }
 
@@ -236,14 +224,14 @@ export default class Cadastro extends Component {
                                 })
                             }
                         >
-                            <option value="Declaracao">Declaração</option>
-                            <option value="Atestado">Atestado</option>
-                            <option value="Relatorio">Relatório</option>
-                            <option value="Laudo">Laudo</option>
-                            <option value="Parecer">Parecer</option>
-                            <option value="Termo">Termo</option>
-                            <option value="Encaminhamento">Encaminhamento</option>
-                            <option value="Outro">Outro</option>
+                            <option value={1}>Declaração</option>
+                            <option value={2}>Atestado</option>
+                            <option value={3}>Relatório</option>
+                            <option value={4}>Laudo</option>
+                            <option value={5}>Parecer</option>
+                            <option value={6}>Termo</option>
+                            <option value={7}>Encaminhamento</option>
+                            <option value={8}>Outro</option>
                         </select>
                     </div>
 
@@ -302,57 +290,26 @@ export default class Cadastro extends Component {
 
                         <label>Conteúdo</label>
 
-                        {/* <CKEditor
-                            editor={ClassicEditor}
-                            data={this.state.dados.conteudo || ''}
-                            config={{
-                                extraPlugins: [Alignment, Font, Underline, Strikethrough],
-                                toolbar: [
-                                    'heading', '|',
-                                    'bold', 'italic', 'underline', 'strikethrough',
-                                    'fontSize', 'fontColor', 'fontBackgroundColor',
-                                    '|',
-                                    'alignment',
-                                    '|',
-                                    'link',
-                                    'bulletedList', 'numberedList',
-                                    'indent', 'outdent',
-                                    '|',
-                                    'blockQuote',
-                                    '|',
-                                    'uploadImage',
-                                    'imageStyle:inline', 'imageStyle:block', 'imageStyle:side',
-                                    '|',
-                                    'insertTable',
-                                    'tableColumn', 'tableRow', 'mergeTableCells',
-                                    '|',
-                                    'undo', 'redo'
-                                ]
-                            }}
-                            onReady={(editor) => {
+                        <CardEditorTexto
+                            value={this.state.dados.conteudo}
+                            height={650}
+                            onEditorReady={(editor) => {
 
                                 this.editor = editor;
-                                console.log('Plugins disponíveis:', [...editor.ui.componentFactory.names()]);
-                            }}
-                            onChange={(event, editor) => {
 
-                                const data = editor.getData();
+                            }}
+                            onChange={(conteudo) => {
 
                                 this.setState({
                                     dados: {
                                         ...this.state.dados,
-                                        conteudo: data
+                                        conteudo
                                     }
                                 });
 
                             }}
-                        /> */}
-                        <EditorTexto
-                            value={this.state.dados.conteudo || ''}
-                            onChange={(html) => this.setState({
-                                dados: { ...this.state.dados, conteudo: html }
-                            })}
                         />
+
                     </div>
 
                     <div className="col-md-4">

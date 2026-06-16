@@ -15,12 +15,17 @@ namespace Psicologa.Application.ProntuarioSessao.Services
     {
         private readonly Domain.ProntuarioSessao.Services.ProntuarioSessaoService _prontuarioSessao;
         private readonly Domain.LogAplicacao.Services.LogAplicacaoService _logAplicacaoService;
+        private readonly Application.Agendamento.Services.ApplicationAgentamentoService _agendamentoService;
         private readonly IAppSettings _appSettings;
 
-        public ApplicationProntuarioSessaoService(Domain.ProntuarioSessao.Services.ProntuarioSessaoService prontuarioSessao, Domain.LogAplicacao.Services.LogAplicacaoService logAplicacaoService, IAppSettings appSettings)
+        public ApplicationProntuarioSessaoService(Domain.ProntuarioSessao.Services.ProntuarioSessaoService prontuarioSessao,
+            Domain.LogAplicacao.Services.LogAplicacaoService logAplicacaoService,
+            Application.Agendamento.Services.ApplicationAgentamentoService agendamentoService,
+            IAppSettings appSettings)
         {
             _prontuarioSessao = prontuarioSessao;
             _logAplicacaoService = logAplicacaoService;
+            _agendamentoService = agendamentoService;
             _appSettings = appSettings;
         }
 
@@ -29,15 +34,17 @@ namespace Psicologa.Application.ProntuarioSessao.Services
             bool operacao = false;
             Domain.ProntuarioSessao.Entities.ProntuarioSessao sessao = new Domain.ProntuarioSessao.Entities.ProntuarioSessao();
 
+            var agendamento = _agendamentoService.ObterAgendamentoPorPaciente(sessaoVM.ProntuarioId, sessaoVM.PsicologaId, sessaoVM.DataSessao);
+
             sessao.Id = sessaoVM.Id;
             sessao.Prontuario = new Domain.Prontuario.Entities.Prontuario
             {
                 Id = sessaoVM.ProntuarioId,
             };
-            
+
             sessao.Agendamento = new Domain.Agendamento.Entities.Agendamento
             {
-                Id = sessaoVM.AgendamentoId ?? 0,
+                Id = agendamento?.Id ?? 0
             };
 
             sessao.DataSessao = sessaoVM.DataSessao;
@@ -48,12 +55,14 @@ namespace Psicologa.Application.ProntuarioSessao.Services
                 Id = sessaoVM.PsicologaId,
             };
             sessao.TipoAtendimento = (Domain.Agendamento.Entities.Agendamento.tpFiltro)Convert.ToInt32(sessaoVM.TipoAtendimento);
-            sessao.Evolucao = sessaoVM.Evolucao;
 
-            if(sessao.Validar())
+            //sessao.Evolucao = sessaoVM.Evolucao;
+            sessao.Evolucao = CriptografiaSessao.Criptografar(sessaoVM.Evolucao, requisicao[4], requisicao[3]);
+
+            if (sessao.Validar())
             {
                 operacao = _prontuarioSessao.EvoluirSessao(sessao);
-                if(operacao)
+                if (operacao)
                     sessaoVM.Id = sessao.Id;
             }
             //Log da operação
@@ -73,17 +82,20 @@ namespace Psicologa.Application.ProntuarioSessao.Services
             paginacao.OrdenacaoNome = Utils.ObterDescricaoEnum(paginacao.Ordenacao);
             if (paginacao.Ordenacao == PaginacaoDados.TpOrdenacao.Nome)
             {
-                retorno = retorno.OrderBy(o => o.DataSessao).ToList();
+                retorno = retorno.OrderByDescending(o => o.DataSessao).ThenByDescending(o => TimeSpan.Parse(o.HoraInicio)).ToList();
             }
 
             return retorno;
-
         }
 
-
-        public ProntuarioConsultaSessaoViewModel ObterSessao(int id)
+        public ProntuarioConsultaSessaoViewModel ObterSessao(int id, string[] requisicao)
         {
-            return FormatarConsultaViewModel(_prontuarioSessao.ObterSessao(id));
+            var sessao = _prontuarioSessao.ObterSessao(id);
+            if (Convert.ToInt32(requisicao[4]) == sessao.Psicologa.Id)
+            {
+                sessao.Evolucao = CriptografiaSessao.Descriptografar(sessao.Evolucao, requisicao[4], requisicao[3]);
+            }
+            return FormatarConsultaViewModel(sessao);
         }
 
         public bool ExcluirSessao(int id)
@@ -111,10 +123,6 @@ namespace Psicologa.Application.ProntuarioSessao.Services
                 Evolucao = ps.Evolucao
             };
         }
-
-
-
-
 
         public void Dispose()
         {

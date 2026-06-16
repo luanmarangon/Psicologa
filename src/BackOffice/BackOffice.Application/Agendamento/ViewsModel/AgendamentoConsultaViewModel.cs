@@ -36,6 +36,7 @@ namespace Psicologa.Application.Agendamento.ViewsModel
         public int TipoAgendamento { get; set; }
         public bool Ativo { get; set; }
         public bool ConfirmouAgendamento { get; set; }
+        [JsonConverter(typeof(DateTimeJSONConverter))]
         public DateTime? DataConfirmacao { get; set; }
         public DateTime DataCriacao { get; set; }
         public DateTime DataAtualizacao { get; set; }

@@ -15,15 +15,19 @@ namespace Psicologa.Application.Agendamento.Services
         private readonly Domain.LogAplicacao.Services.LogAplicacaoService _logAplicacaoService;
         private readonly Domain.Agendamento.Services.AgendamentoService _servicoAgendamento;
         private readonly Domain.Configuracao.Services.ConfiguracaoService _configuracaoService;
+        private readonly Domain.Prontuario.Services.ProntuarioService _prontuarioService;
         private readonly IAppSettings _appSettings;
 
         public ApplicationAgentamentoService(Domain.LogAplicacao.Services.LogAplicacaoService logAplicacaoService,
-            Domain.Agendamento.Services.AgendamentoService servicoAgendamento, Domain.Configuracao.Services.ConfiguracaoService configuracaoService,
+            Domain.Agendamento.Services.AgendamentoService servicoAgendamento, 
+            Domain.Configuracao.Services.ConfiguracaoService configuracaoService,
+                Domain.Prontuario.Services.ProntuarioService prontuarioService,
             IAppSettings appSettings)
         {
             _logAplicacaoService = logAplicacaoService;
             _servicoAgendamento = servicoAgendamento;
             _configuracaoService = configuracaoService;
+            _prontuarioService = prontuarioService;
             _appSettings = appSettings;
         }
 
@@ -67,10 +71,6 @@ namespace Psicologa.Application.Agendamento.Services
 
             if(agendamento.Validar())
                 operacao = _servicoAgendamento.Salvar(agendamento);
-
-
-
-
 
             if (operacao)
                 RegistrarLog(agendamento.Id, requisicao, dadosExistente, "Agendamento");
@@ -190,6 +190,12 @@ namespace Psicologa.Application.Agendamento.Services
         {
             var agendamento = _servicoAgendamento.ObterPorId(id);
             
+            return FormatarRetornoConsulta(agendamento);
+        }
+        public AgendamentoConsultaViewModel ObterAgendamentoPorPaciente(int prontuarioId, int psicologoId, DateTime data)
+        { 
+            var paciente = _prontuarioService.Obter(prontuarioId);
+            var agendamento = _servicoAgendamento.ObterAgendamentoPorPaciente(paciente.Paciente.Pessoa.Id, psicologoId, data);
             return FormatarRetornoConsulta(agendamento);
         }
         public bool Excluir(int agendamentoId, string[] requisicao)

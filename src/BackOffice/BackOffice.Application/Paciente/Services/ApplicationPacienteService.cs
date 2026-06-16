@@ -26,6 +26,11 @@ namespace Psicologa.Application.Paciente.Services
             var paciente = _pacienteService.Obter(id);
             return FormatarRetornoConsulta(paciente);
         }
+        public PacienteConsultaViewModel ObterPorPessoaId(int id)
+        {
+            var paciente = _pacienteService.ObterPorPessoaId(id);
+            return FormatarRetornoConsulta(paciente);
+        }
 
         public (bool, ValidationResult) Salvar(PacienteViewModel pacienteVM, string[] requisicao)
         {

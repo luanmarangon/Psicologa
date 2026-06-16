@@ -35,7 +35,7 @@ export default class Index extends Component {
 
     pesquisar = (pagina = -1) => {
 
-        let uri = `Administrativo/Servico/Pesquisar?q=${encodeURIComponent(this.state.pesquisar)}&filtro=${this.state.filtro}&pagina=${pagina}`;
+        let uri = `Administrativo/Documentos/Pesquisar?q=${encodeURIComponent(this.state.pesquisar)}&filtro=${this.state.filtro}&pagina=${pagina}`;
 
         this.setState({ aguarde: true });
 
@@ -43,13 +43,13 @@ export default class Index extends Component {
             .then(r => r.json())
             .then(r => {
                 this.setState({
-                    resultadoPesquisa: r.data.servicos,
+                    resultadoPesquisa: r.data.documentos,
                     paginacao: r.data.paginacao,
-                    legendaResultadoPesquisa: `${r.data.paginacao.totalItens} serviço(s)`
+                    legendaResultadoPesquisa: `${r.data.paginacao.totalItens} documento(s)`
                 });
             })
             .catch(() => {
-                showToastr({ type: "error", text: "Erro ao buscar serviços." });
+                showToastr({ type: "error", text: "Erro ao buscar documentos." });
             })
             .finally(() => this.setState({ aguarde: false }));
     }
@@ -151,10 +151,15 @@ export default class Index extends Component {
                                                 <label>Tipo da Pessoa</label>
                                                 <select className="form-control" value={this.state.filtro}
                                                     onChange={(e) => this.setState({ ...this.state, filtro: e.target.value })}>
-                                                    <option value="0"></option>
-                                                    <option value="1">Destaques</option>
-                                                    <option value="2">Presencial</option>
-                                                    <option value="3">Online</option>
+                                                    <option value={0}></option>
+                                                    <option value={1}>Declaração</option>
+                                                    <option value={2}>Atestado</option>
+                                                    <option value={3}>Relatório</option>
+                                                    <option value={4}>Laudo</option>
+                                                    <option value={5}>Parecer</option>
+                                                    <option value={6}>Termo</option>
+                                                    <option value={7}>Encaminhamento</option>
+                                                    <option value={8}>Outro</option>
                                                 </select>
                                             </div>
                                         </div>
@@ -181,17 +186,9 @@ export default class Index extends Component {
                                     <table className="table table-hover table-striped table-selectable">
                                         <thead>
                                             <tr>
-                                                <th>
-                                                    <i className="fas fa-check text-success"></i>
-                                                    /
-                                                    <i className="fas fa-times text-danger"></i>
-
-                                                </th>
-                                                <th style={{ width: "40%" }}>Serviço</th>
-                                                <th>Valor Sessão</th>
-                                                <th>Tempo Sessão</th>
-                                                <th>Online</th>
-                                                <th>Presencial</th>
+                                                <th style={{ width: "40%" }}>Nome</th>
+                                                <th>Categoria</th>
+                                                <th>Ativo</th>
                                                 <th style={{ width: "50px" }}></th>
                                             </tr>
                                         </thead>
@@ -206,26 +203,16 @@ export default class Index extends Component {
                                                 this.state.resultadoPesquisa.length == 0 ?
                                                     <tr>
                                                         <td colSpan="7" className="no-item text-center">
-                                                            Nenhum serviço foi encontrado.
+                                                            Nenhum documento foi encontrado.
                                                         </td>
                                                     </tr>
                                                     :
                                                     this.state.resultadoPesquisa.map(item => {
                                                         return (
                                                             <tr key={item.id}>
-                                                                {/* <td>{item.ativo ? "Sim" : "Não"}</td> */}
-                                                                <td>
-                                                                    {item.ativo ? (
-                                                                        <i className="fas fa-check text-success"></i>
-                                                                    ) : (
-                                                                        <i className="fas fa-times text-danger"></i>
-                                                                    )}
-                                                                </td>
                                                                 <td>{item.nome}</td>
-                                                                <td>{item.valorSessao}</td>
-                                                                <td>{item.tempoSessaoMinutos}</td>
-                                                                <td>{item.online ? "Sim" : "Não"}</td>
-                                                                <td>{item.presencial ? "Sim" : "Não"}</td>
+                                                                <td>{item.categoriaNome}</td>
+                                                                <td>{item.ativo ? "Sim" : "Não"}</td>
                                                                 <td>
                                                                     <div>
                                                                         <a className="btn table-action" href="#" role="button" data-toggle="dropdown">

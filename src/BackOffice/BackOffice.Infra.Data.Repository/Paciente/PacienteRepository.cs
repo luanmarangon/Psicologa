@@ -49,7 +49,7 @@ namespace Psicologa.Infra.Data.Repository.Paciente
                     cmd.ParameterAdd("ContatoEmergenciaNome", paciente.ContatoEmergenciaNome);
                     cmd.ParameterAdd("ContatoEmergenciaTelefone", paciente.ContatoEmergenciaTelefone);
                     cmd.ParameterAdd("Matricula", paciente.Matricula);
-                    cmd.ParameterAdd("ResponsavelId", paciente.Responsavel.Id);
+                    cmd.ParameterAdd("ResponsavelId", paciente.Responsavel?.Id ?? (object)DBNull.Value);
                     cmd.ParameterAdd("DataCriacao", paciente.DataCriacao);
                     cmd.ParameterAdd("DataAtualizacao", paciente.DataAtualizacao);
 
@@ -166,7 +166,40 @@ namespace Psicologa.Infra.Data.Repository.Paciente
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Erro ao obter paciente com ID {Id}", id);
-                throw;
+            }
+            return paciente;
+        }
+        public Domain.Paciente.Entities.Paciente ObterPorPessoaId(int pessoaId)
+        {
+            Domain.Paciente.Entities.Paciente paciente = new Domain.Paciente.Entities.Paciente();
+            try
+            {
+                using (var cmd = DbContext.CreateCommand())
+                {
+                    cmd.CommandText = @$"SELECT p.PacienteId, p.PessoaId, p.DataPrimeiraSessao, p.Ativo as PacienteAtivo, p.Observacoes, p.ContatoEmergenciaNome, p.ContatoEmergenciaTelefone, p.Matricula, p.ResponsavelId, p.DataCriacao, p.DataAtualizacao,
+                                          pe.Nome, pe.DocIdNro,
+                                          pt.Tipo AS PessoaTipo,
+                                          r.PessoaId as ResponsavelPessoaId, r.Nome as ResponsavelPessoaNome, pr.ProntuarioId as ProntuarioIdPaciente
+                                        FROM Paciente p
+                                        INNER JOIN Pessoa pe ON pe.PessoaId = p.PessoaId
+                                        LEFT JOIN Pessoa r on p.ResponsavelId = r.PessoaId
+                                        LEFT JOIN PessoaTipo pt ON pt.PessoaId = pe.PessoaId
+                                        LEFT JOIN Prontuario pr ON p.PacienteId = pr.PacienteId
+                                        WHERE p.PessoaId = @Id";
+
+                    var param = cmd.CreateParameter();
+
+                    cmd.ParameterAdd("Id", pessoaId);
+
+                    using (var dr = cmd.ExecuteReader())
+                    {
+                        paciente = Map(dr).FirstOrDefault();
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Erro ao obter paciente com Pessoa ID {PessoaId}", pessoaId);
             }
             return paciente;
         }

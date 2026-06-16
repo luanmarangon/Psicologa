@@ -14,6 +14,7 @@ namespace Psicologa.Domain.Agendamento.Interfaces.Repositories
         IEnumerable<Domain.Agendamento.Entities.Agendamento> Consultar(string termo, Domain.Agendamento.Entities.Agendamento.tpFiltro filtro, PaginacaoDados paginacao);
         bool Salvar(Entities.Agendamento agendamento);
         Domain.Agendamento.Entities.Agendamento ObterPorId(int id);
+        Domain.Agendamento.Entities.Agendamento ObterAgendamentoPorPaciente(int pacienteId, int psicologoId, DateTime data);
         bool Excluir(int id);
     }
 }
