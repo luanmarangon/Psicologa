@@ -1,6 +1,7 @@
 ﻿using MySqlX.XDevAPI.Common;
 using Psicologa.Application.Prontuario.ViewsModel;
 using Psicologa.Domain.Convenio.Entities;
+using Psicologa.Domain.LogAplicacao.Services;
 using Shared.Infra.CrossCutting;
 using Shared.Infra.CrossCutting.ValidationResult;
 using System;
@@ -15,16 +16,19 @@ namespace Psicologa.Application.Documentos.Services
     public class ApplicationDocumentosService : IDisposable
     {
         private readonly Domain.Documentos.Services.DocumentosService _service;
+        private readonly Domain.LogAplicacao.Services.LogAplicacaoService _logAplicacaoService;
         private readonly IAppSettings _appSettings;
 
-        public ApplicationDocumentosService(Domain.Documentos.Services.DocumentosService service, IAppSettings appSettings)
+        public ApplicationDocumentosService(Domain.Documentos.Services.DocumentosService service, Domain.LogAplicacao.Services.LogAplicacaoService logAplicacaoService, IAppSettings appSettings)
         {
             _service = service;
+            _logAplicacaoService = logAplicacaoService;
             _appSettings = appSettings;
         }
 
         public (bool, ValidationResult) Salvar(DocumentosViewModel documentoVM, string[] requisicao)
         {
+            var dadosExistente = _service.Obter(documentoVM.Id);
             bool operacao = false;
             ValidationResult vr = new ValidationResult();
 
@@ -43,6 +47,10 @@ namespace Psicologa.Application.Documentos.Services
             }
 
 
+            if (operacao)
+            {
+                _logAplicacaoService.Registrar(documentoVM.Id, requisicao, dadosExistente, doc, "Documentos", "ApplicationDocumentosService", "Salvar");
+            }
 
             return (operacao, vr);
         }

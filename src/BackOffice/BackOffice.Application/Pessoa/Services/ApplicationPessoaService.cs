@@ -1,4 +1,5 @@
 ﻿using Psicologa.Application.Pessoa.ViewsModel;
+using Psicologa.Domain.Paciente.Entities;
 using Psicologa.Domain.Pessoa.Entities;
 using Psicologa.Domain.Usuario.Entities;
 using Shared.Infra.CrossCutting;
@@ -160,25 +161,9 @@ namespace Psicologa.Application.Pessoa.Services
 
             if (operacao)
             {
-                var dadosAtualizado = _pessoaService.Obter(pessoaVM.Dados.Id);
-                var (retorno, dadosAlterados) = _logAplicacaoService.ObterDiferencas(dadosExistente, dadosAtualizado);
-
-                if (dadosAlterados.Any())
-                {
-                    var log = _logAplicacaoService.Criar(
-                        requisicao: requisicao,
-                        entidade: nameof(Domain.Pessoa.Entities.Pessoa),
-                        entidadeId: pessoaVM.Dados.Id,
-                        operacao: retorno,
-                        dadosAntes: dadosExistente,
-                        dadosDepois: dadosAtualizado,
-                        dadosAlterados: dadosAlterados,
-                        aplicacao: MethodBase.GetCurrentMethod()?.DeclaringType?.Name,
-                        metodo: MethodBase.GetCurrentMethod()?.Name
-                    );
-                    _logAplicacaoService.Salvar(log);
-                }
+                _logAplicacaoService.Registrar(pessoa.Id, requisicao, dadosExistente, pessoa, "Pessoa", MethodBase.GetCurrentMethod()?.DeclaringType?.Name, MethodBase.GetCurrentMethod()?.Name);
             }
+
 
             return (operacao, pessoa.ValidationResult);
         }
@@ -560,9 +545,21 @@ namespace Psicologa.Application.Pessoa.Services
             return pessoaRetorno;
         }
 
-        public bool Excluir(int id)
+        public bool Excluir(int id, string[] requisicao)
         {
-            return _pessoaService.Excluir(id);
+            bool operacao = false;
+            var dadosExistente = _pessoaService.Obter(id);
+            operacao = _pessoaService.Excluir(id);
+
+            if (operacao)
+            {
+                _logAplicacaoService.Registrar(id, requisicao, dadosExistente, null, "Pessoa", MethodBase.GetCurrentMethod()?.DeclaringType?.Name, MethodBase.GetCurrentMethod()?.Name);
+            }
+            return operacao;
+
+
+
+
         }
 
         public IEnumerable<PessoaConsultaViewModel> Consultar(string nome, PaginacaoDados paginacao, PessoaTipo.TpPessoa tpPessoa = PessoaTipo.TpPessoa.Indefinido)

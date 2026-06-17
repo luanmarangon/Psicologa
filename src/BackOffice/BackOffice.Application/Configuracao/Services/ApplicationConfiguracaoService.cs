@@ -56,7 +56,9 @@ namespace Psicologa.Application.Configuracao.Services
             }
 
             if (operacao)
-                RegistrarLogConfiguracao(config.Id, requisicao, dadosExistente, "Configuração");
+            {
+                _logAplicacaoService.Registrar(configVW.Id, requisicao, dadosExistente, config, "Configuracao", "ApplicationConfiguracaoService", "Salvar");
+            }
 
             return (operacao, config.ValidationResult);
         }
@@ -97,30 +99,11 @@ namespace Psicologa.Application.Configuracao.Services
             return retorno;
         }
 
-        private void RegistrarLogConfiguracao(int servicoId, string[] requisicao, Domain.Configuracao.Entities.Configuracao dadosExistente, string nomeClasse)
-        {
-            var dadosAtualizado = _configuracaoService.ObterConfiguracao(servicoId);
-            var (retorno, dadosAlterados) = _logAplicacaoService.ObterDiferencas(dadosExistente, dadosAtualizado);
-
-            if (dadosAlterados.Any())
-            {
-                var log = _logAplicacaoService.Criar(
-                    requisicao: requisicao,
-                    entidade: nomeClasse,
-                    entidadeId: servicoId,
-                    operacao: retorno,
-                    dadosAntes: dadosExistente,
-                    dadosDepois: dadosAtualizado,
-                    dadosAlterados: dadosAlterados,
-                    aplicacao: MethodBase.GetCurrentMethod()?.DeclaringType?.Name,
-                    metodo: MethodBase.GetCurrentMethod()?.Name
-                );
-                _logAplicacaoService.Salvar(log);
-            }
-        }
 
         public (bool, ValidationResult) SalvarFuncionamento(ConfiguracaoFuncionamentoViewModel configVW, string[] requisicao)
         {
+
+            var dadosExistente = _configuracaoService.ObterFuncionamento();
             bool operacao = false;
 
             ConfiguracaoFuncionamento confFuncionamento = new ConfiguracaoFuncionamento
@@ -155,6 +138,10 @@ namespace Psicologa.Application.Configuracao.Services
 
             //if (operacao)
             //    RegistrarLogConfiguracao(confFuncionamento.Id, requisicao, dadosExistente, "Configuração");
+            if (operacao)
+            {
+                _logAplicacaoService.Registrar(configVW.Id, requisicao, dadosExistente, confFuncionamento, "ConfiguracaoFuncionamento", "ApplicationConfiguracaoService", "Salvar");
+            }
 
             return (operacao, confFuncionamento.ValidationResult);
         }
@@ -191,28 +178,6 @@ namespace Psicologa.Application.Configuracao.Services
             }).ToList();
 
             return retorno;
-        }
-
-        private void RegistrarLogFuncionanmento(int servicoId, string[] requisicao, Domain.Configuracao.Entities.ConfiguracaoFuncionamento dadosExistente, string nomeClasse)
-        {
-            var dadosAtualizado = _configuracaoService.ObterFuncionamento();
-            var (retorno, dadosAlterados) = _logAplicacaoService.ObterDiferencas(dadosExistente, dadosAtualizado);
-
-            if (dadosAlterados.Any())
-            {
-                var log = _logAplicacaoService.Criar(
-                    requisicao: requisicao,
-                    entidade: nomeClasse,
-                    entidadeId: servicoId,
-                    operacao: retorno,
-                    dadosAntes: dadosExistente,
-                    dadosDepois: dadosAtualizado,
-                    dadosAlterados: dadosAlterados,
-                    aplicacao: MethodBase.GetCurrentMethod()?.DeclaringType?.Name,
-                    metodo: MethodBase.GetCurrentMethod()?.Name
-                );
-                _logAplicacaoService.Salvar(log);
-            }
         }
 
         public void Dispose()

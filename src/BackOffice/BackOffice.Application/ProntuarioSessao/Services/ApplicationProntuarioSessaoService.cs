@@ -1,13 +1,9 @@
-﻿using Oci.Common.Auth;
-using Psicologa.Application.ProntuarioSessao.ViewsModel;
+﻿using Psicologa.Application.ProntuarioSessao.ViewsModel;
 using Shared.Infra.CrossCutting;
 using Shared.Infra.CrossCutting.ValidationResult;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using ZstdSharp.Unsafe;
 
 namespace Psicologa.Application.ProntuarioSessao.Services
 {
@@ -31,6 +27,8 @@ namespace Psicologa.Application.ProntuarioSessao.Services
 
         public (bool, ValidationResult) EvoluirSessao(ProntuarioSessaoViewModel sessaoVM, string[] requisicao)
         {
+            var dadosExistente = _prontuarioSessao.ObterSessao(sessaoVM.Id);
+
             bool operacao = false;
             Domain.ProntuarioSessao.Entities.ProntuarioSessao sessao = new Domain.ProntuarioSessao.Entities.ProntuarioSessao();
 
@@ -67,6 +65,10 @@ namespace Psicologa.Application.ProntuarioSessao.Services
             }
             //Log da operação
 
+            if (operacao)
+            {
+                _logAplicacaoService.Registrar(sessaoVM.Id, requisicao, dadosExistente, sessao, "ProntuarioSessao", "ApplicationProntuarioSessaoService", "EvoluirSessao");
+            }
             return (operacao, sessao.ValidationResult);
         }
 
@@ -100,7 +102,14 @@ namespace Psicologa.Application.ProntuarioSessao.Services
 
         public bool ExcluirSessao(int id)
         {
-            return _prontuarioSessao.ExcluirSessao(id);
+            bool operacao = false;
+            var dadosExistente = _prontuarioSessao.ObterSessao(id);
+            operacao = _prontuarioSessao.ExcluirSessao(id);
+            if (operacao)
+            {
+                _logAplicacaoService.Registrar(id, null, dadosExistente, null, "ProntuarioSessao", "ApplicationProntuarioSessaoService", "ExcluirSessao");
+            }
+            return operacao;
         }
 
         internal ProntuarioConsultaSessaoViewModel FormatarConsultaViewModel(Domain.ProntuarioSessao.Entities.ProntuarioSessao ps)

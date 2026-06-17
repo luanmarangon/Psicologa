@@ -35,19 +35,22 @@ namespace Psicologa.Application.Psicologo.Services
                 CrpUf = psicologoVM.CrpUf,
                 DataEmissaoCrp = psicologoVM.DataEmissaoCrp,
                 Ativo = psicologoVM.Ativo
-             };
+            };
 
-            if(psicologo.Validar())
+            if (psicologo.Validar())
             {
                 operacao = _psicologoService.Salvar(psicologo);
-                if(operacao)
+                if (operacao)
                     psicologoVM.Id = psicologo.Id;
             }
 
-            RegistrarLog(psicologo.Id, requisicao, dadosExistente, "Psicologo");
+            //RegistrarLog(psicologo.Id, requisicao, dadosExistente, "Psicologo");
+            if (operacao)
+            {
+                _logAplicacaoService.Registrar(psicologoVM.Id, requisicao, dadosExistente, psicologo, "Psicologo", "ApplicationPsicologoService", "Salvar");
+            }
 
             return (operacao, psicologo.ValidationResult);
-
         }
 
         public PsicologoConsultaViewModel Obter(int id)
@@ -55,6 +58,7 @@ namespace Psicologa.Application.Psicologo.Services
             var psicologo = _psicologoService.Obter(id);
             return FormatarRetornoConsulta(psicologo);
         }
+
         public PsicologoConsultaViewModel ObterPorPessoaId(int pessoaId)
         {
             var psicologo = _psicologoService.ObterPorPessoaId(pessoaId);
@@ -63,7 +67,7 @@ namespace Psicologa.Application.Psicologo.Services
 
         internal PsicologoConsultaViewModel FormatarRetornoConsulta(Domain.Psicologo.Entities.Psicologo psicologo)
         {
-            if(psicologo == null)
+            if (psicologo == null)
                 return null;
 
             PsicologoConsultaViewModel ret = new PsicologoConsultaViewModel
@@ -76,28 +80,6 @@ namespace Psicologa.Application.Psicologo.Services
                 Ativo = psicologo.Ativo
             };
             return ret;
-        }
-
-        private void RegistrarLog(int servicoId, string[] requisicao, Domain.Psicologo.Entities.Psicologo dadosExistente, string nomeClasse)
-        {
-            var dadosAtualizado = _psicologoService.Obter(servicoId);
-            var (retorno, dadosAlterados) = _logAplicacaoService.ObterDiferencas(dadosExistente, dadosAtualizado);
-
-            if (dadosAlterados.Any())
-            {
-                var log = _logAplicacaoService.Criar(
-                    requisicao: requisicao,
-                    entidade: nomeClasse,
-                    entidadeId: servicoId,
-                    operacao: retorno,
-                    dadosAntes: dadosExistente,
-                    dadosDepois: dadosAtualizado,
-                    dadosAlterados: dadosAlterados,
-                    aplicacao: MethodBase.GetCurrentMethod()?.DeclaringType?.Name,
-                    metodo: MethodBase.GetCurrentMethod()?.Name
-                );
-                _logAplicacaoService.Salvar(log);
-            }
         }
 
         public void Dispose()

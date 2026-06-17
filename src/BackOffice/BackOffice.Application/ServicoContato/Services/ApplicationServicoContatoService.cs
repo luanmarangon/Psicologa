@@ -1,4 +1,5 @@
 ﻿using Psicologa.Application.ServicoContato.ViewsModel;
+using Psicologa.Domain.Psicologo.Entities;
 using Shared.Infra.CrossCutting;
 using Shared.Infra.CrossCutting.ValidationResult;
 using System;
@@ -78,7 +79,12 @@ namespace Psicologa.Application.ServicoContato.Services
             servicoVM.Id = servico.Id;
 
             // Log
-            RegistrarLog(servicoVM.Id, requisicao, dadosExistente, "ServicoContato");
+            //RegistrarLog(servicoVM.Id, requisicao, dadosExistente, "ServicoContato");
+
+            if (operacao)
+            {
+                _logAplicacaoService.Registrar(servicoVM.Id, requisicao, dadosExistente, servico, "ServicoContato", "ApplicationServicoContatoService", "Salvar");
+            }
 
             return (true, servico.ValidationResult);
         }
@@ -352,29 +358,7 @@ namespace Psicologa.Application.ServicoContato.Services
 
         //    return textoLimpo.Substring(0, maxLength) + "...";
         //}
-        private void RegistrarLog(int servicoId, string[] requisicao, Domain.ServicoContato.Entities.ServicoContato dadosExistente, string nomeClasse)
-        {
-            var dadosAtualizado = _servicoService.Obter(servicoId);
-            var (retorno, dadosAlterados) = _logAplicacaoService.ObterDiferencas(dadosExistente, dadosAtualizado);
-
-            if (dadosAlterados.Any())
-            {
-                var log = _logAplicacaoService.Criar(
-                    requisicao: requisicao,
-                    entidade: nomeClasse,
-                    entidadeId: servicoId,
-                    operacao: retorno,
-                    dadosAntes: dadosExistente,
-                    dadosDepois: dadosAtualizado,
-                    dadosAlterados: dadosAlterados,
-                    aplicacao: MethodBase.GetCurrentMethod()?.DeclaringType?.Name,
-                    metodo: MethodBase.GetCurrentMethod()?.Name
-                );
-                _logAplicacaoService.Salvar(log);
-            }
-        }
-
-        public void Dispose()
+       public void Dispose()
         {
         }
     }

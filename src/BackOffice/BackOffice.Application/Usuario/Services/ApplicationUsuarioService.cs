@@ -1,6 +1,8 @@
 ﻿using Psicologa.Application.Usuario.ViewsModel;
-using Shared.Infra.CrossCutting.ValidationResult;
+using Psicologa.Domain.LogAplicacao.Services;
+using Psicologa.Domain.Psicologo.Entities;
 using Shared.Infra.CrossCutting;
+using Shared.Infra.CrossCutting.ValidationResult;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,18 +14,20 @@ namespace Psicologa.Application.Usuario.Services
         private readonly Domain.Usuario.Services.UsuarioService _usuarioService;
         private readonly Domain.Pessoa.Services.PessoaService _pessoaService;
         private readonly IAppSettings _appSettings;
+        private readonly Domain.LogAplicacao.Services.LogAplicacaoService _logAplicacaoService;
 
-        public ApplicationUsuarioService(Domain.Usuario.Services.UsuarioService usuarioService, Domain.Pessoa.Services.PessoaService pessoaService, IAppSettings appSettings)
+        public ApplicationUsuarioService(Domain.Usuario.Services.UsuarioService usuarioService, Domain.Pessoa.Services.PessoaService pessoaService, IAppSettings appSettings, Domain.LogAplicacao.Services.LogAplicacaoService logAplicacaoService)
         {
             _usuarioService = usuarioService;
             _pessoaService = pessoaService;
             _appSettings = appSettings;
+            _logAplicacaoService = logAplicacaoService;
         }
 
-        public (bool, ValidationResult) Salvar(UsuarioViewModel uVM)
+        public (bool, ValidationResult) Salvar(UsuarioViewModel uVM, string[] requisicao)
         {
+            var dadosExistente = _usuarioService.Obter(uVM.Id);
             bool operacao = false;
-
             Domain.Usuario.Entities.Usuario u = new Domain.Usuario.Entities.Usuario();
 
             u.Id = uVM.Id;
@@ -39,7 +43,10 @@ namespace Psicologa.Application.Usuario.Services
             operacao = _usuarioService.Salvar(u, uVM.SenhaConfirmacao);
 
             if (operacao)
+            {
                 uVM.Id = u.Id;
+                _logAplicacaoService.Registrar(uVM.Id, requisicao, dadosExistente, u, "Usuario", "ApplicationUsuarioService", "Salvar");
+            }
 
             return (operacao, u.ValidationResult);
         }
@@ -60,7 +67,13 @@ namespace Psicologa.Application.Usuario.Services
 
         public bool Excluir(int id)
         {
-            return _usuarioService.Excluir(id);
+            var dadosExistente = _usuarioService.Obter(id);
+            bool operacao = _usuarioService.Excluir(id);
+            if (operacao)
+            {
+                _logAplicacaoService.Registrar(id, null, dadosExistente, null, "Usuario", "ApplicationUsuarioService", "Excluir");
+            }
+            return operacao;
         }
 
         public IEnumerable<UsuarioConsultaViewModel> Consultar(string nome)
@@ -106,7 +119,6 @@ namespace Psicologa.Application.Usuario.Services
             return retorno;
         }
 
-
         internal UsuarioConsultaViewModel FormatarRetornoConsulta(Domain.Usuario.Entities.Usuario u)
         {
             if (u == null)
@@ -129,7 +141,6 @@ namespace Psicologa.Application.Usuario.Services
         {
             bool ok = false;
             ValidationResult vr = new ValidationResult();
-
 
             var usuario = _usuarioService.ObterPorUsuarioNome(nome.ToLower());
 
@@ -162,7 +173,6 @@ namespace Psicologa.Application.Usuario.Services
 
             return (ok, vr);
         }
-
 
         public (bool, ValidationResult) AlterarSenha(string nome, string codigoSeguranca, string novaSenha, string novaSenhaConfirmar)
         {
@@ -207,7 +217,6 @@ namespace Psicologa.Application.Usuario.Services
                 bool ok = _usuarioService.AlterarSenha(usuario.Id, novaSenha);
                 return (ok, vr);
             }
-
         }
 
         public int ObterQuantidadeUsuariosCadastrados()
@@ -217,8 +226,6 @@ namespace Psicologa.Application.Usuario.Services
 
         public void Dispose()
         {
-
         }
     }
-
 }

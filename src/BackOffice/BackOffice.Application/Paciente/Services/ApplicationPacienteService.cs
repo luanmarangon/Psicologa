@@ -1,4 +1,5 @@
-﻿using Psicologa.Application.Paciente.ViewsModel;
+﻿using Psicologa.Application.Documentos.Services;
+using Psicologa.Application.Paciente.ViewsModel;
 using Shared.Infra.CrossCutting;
 using Shared.Infra.CrossCutting.ValidationResult;
 using System;
@@ -68,7 +69,11 @@ namespace Psicologa.Application.Paciente.Services
                 }
             }
 
-            RegistrarLog(paciente.Id, requisicao, dadosExistente, "Paciente");
+            //RegistrarLog(paciente.Id, requisicao, dadosExistente, "Paciente");'
+            if(operacao)
+            {
+                _logAplicacaoService.Registrar(paciente.Id,requisicao,dadosExistente,paciente,"Paciente", MethodBase.GetCurrentMethod()?.DeclaringType?.Name, MethodBase.GetCurrentMethod()?.Name);
+            }
 
             return (operacao, paciente.ValidationResult);
         }
@@ -118,29 +123,6 @@ namespace Psicologa.Application.Paciente.Services
             };
 
             return retorno;
-        }
-
-
-        private void RegistrarLog(int servicoId, string[] requisicao, Domain.Paciente.Entities.Paciente dadosExistente, string nomeClasse)
-        {
-            var dadosAtualizado = _pacienteService.Obter(servicoId);
-            var (retorno, dadosAlterados) = _logAplicacaoService.ObterDiferencas(dadosExistente, dadosAtualizado);
-
-            if (dadosAlterados.Any())
-            {
-                var log = _logAplicacaoService.Criar(
-                    requisicao: requisicao,
-                    entidade: nomeClasse,
-                    entidadeId: servicoId,
-                    operacao: retorno,
-                    dadosAntes: dadosExistente,
-                    dadosDepois: dadosAtualizado,
-                    dadosAlterados: dadosAlterados,
-                    aplicacao: MethodBase.GetCurrentMethod()?.DeclaringType?.Name,
-                    metodo: MethodBase.GetCurrentMethod()?.Name
-                );
-                _logAplicacaoService.Salvar(log);
-            }
         }
 
         public string GerarMatricula()

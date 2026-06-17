@@ -16,13 +16,20 @@ namespace Psicologa.Areas.Administrativo.Presentation.Painel.Controllers
     {
         ApplicationUsuarioService _uService;
         ApplicationPerfilUsuarioService _puService;
+        
+        UsuarioAutenticado _ua;
+        RequisicaoAtual _req;
         private readonly IAppSettings _appSettings;
 
-        public UsuarioController(ApplicationUsuarioService uService, ApplicationPerfilUsuarioService puService, IAppSettings appSettings)
+
+        public UsuarioController(ApplicationUsuarioService uService, ApplicationPerfilUsuarioService puService, IAppSettings appSettings,
+            UsuarioAutenticado ua, RequisicaoAtual req)
         {
             _uService = uService;
             _puService = puService;
             _appSettings = appSettings;
+            _ua = ua;
+            _req = req;
         }
 
         public IActionResult Index()
@@ -33,6 +40,8 @@ namespace Psicologa.Areas.Administrativo.Presentation.Painel.Controllers
         [HttpPost]
         public IActionResult Salvar([FromBody] System.Text.Json.JsonElement dados)
         {
+            var requisicao = _req.ToArray(_ua);
+
             bool operacao = false;
             ValidationResult vr = new ValidationResult();
 
@@ -41,7 +50,7 @@ namespace Psicologa.Areas.Administrativo.Presentation.Painel.Controllers
             {
                 uVM = dados.Deserialize<UsuarioViewModel>();
 
-                (operacao, vr) = _uService.Salvar(uVM);
+                (operacao, vr) = _uService.Salvar(uVM, requisicao);
 
                 if (!operacao)
                 {

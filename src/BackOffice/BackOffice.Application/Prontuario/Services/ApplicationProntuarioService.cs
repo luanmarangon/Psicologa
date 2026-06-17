@@ -96,23 +96,15 @@ namespace Psicologa.Application.Prontuario.Services
         private void RegistrarLog(int servicoId, string[] requisicao, Domain.Prontuario.Entities.Prontuario dadosExistente, string nomeClasse)
         {
             var dadosAtualizado = _service.Obter(servicoId);
-            var (retorno, dadosAlterados) = _logAplicacaoService.ObterDiferencas(dadosExistente, dadosAtualizado);
-
-            if (dadosAlterados.Any())
-            {
-                var log = _logAplicacaoService.Criar(
-                    requisicao: requisicao,
-                    entidade: nomeClasse,
-                    entidadeId: servicoId,
-                    operacao: retorno,
-                    dadosAntes: dadosExistente,
-                    dadosDepois: dadosAtualizado,
-                    dadosAlterados: dadosAlterados,
-                    aplicacao: MethodBase.GetCurrentMethod()?.DeclaringType?.Name,
-                    metodo: MethodBase.GetCurrentMethod()?.Name
-                );
-                _logAplicacaoService.Salvar(log);
-            }
+            _logAplicacaoService.Registrar(
+                entidadeId: servicoId,
+                requisicao: requisicao,
+                dadosAntes: dadosExistente,
+                dadosDepois: dadosAtualizado,
+                entidade: nomeClasse,
+                aplicacao: MethodBase.GetCurrentMethod()?.DeclaringType?.Name,
+                metodo: MethodBase.GetCurrentMethod()?.Name
+            );
         }
         public void Dispose()
         {

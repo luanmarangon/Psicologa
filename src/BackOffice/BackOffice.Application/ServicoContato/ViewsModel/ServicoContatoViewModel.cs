@@ -14,6 +14,7 @@ namespace Psicologa.Application.ServicoContato.ViewsModel
     {
         [JsonConverter(typeof(EncryptIdJSONConverter))]
         public int Id { get; set; }
+        [JsonConverter(typeof(Int32JSONConverter))]
         public int ServicoId { get; set; }
         public string Nome { get; set; }
         public string Contato { get; set; }
@@ -40,6 +41,7 @@ namespace Psicologa.Application.ServicoContato.ViewsModel
     {
         [JsonConverter(typeof(EncryptIdJSONConverter))]
         public int Id { get; set; }
+        [JsonConverter(typeof(Int32JSONConverter))]
         public int ServicoId { get; set; }
         public string ServicoNome { get; set; }
         public string Nome { get; set; }

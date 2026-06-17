@@ -52,7 +52,11 @@ namespace Psicologa.Application.ProntuarioAnexo.Services
             }
 
             // Log
-            RegistrarLog(anexoVM.Id, requisicao, dadosExistente, "Servico");
+            if(operacao)
+            {
+                _logAplicacaoService.Registrar(anexoVM.Id, requisicao, dadosExistente, anexo, "ProntuarioAnexo", "ApplicationProntuarioAnexoService", "Salvar");
+            }
+
             return (true, vr);
         }
         public IEnumerable<ProntuarioAnexoConsultaViewModel> Consultar(string termo, int prontuarioId, int tpAnexo, PaginacaoDados paginacao)
@@ -83,12 +87,13 @@ namespace Psicologa.Application.ProntuarioAnexo.Services
             var dadosExistente = _anexoService.Obter(id);
             bool operacao = _anexoService.Excluir(id);
          
-            RegistrarLog(id, requisicao, dadosExistente, "Servico");
+            if (operacao)
+            {
+                _logAplicacaoService.Registrar(id, requisicao, dadosExistente, null, "ProntuarioAnexo", "ApplicationProntuarioAnexoService", "Excluir");
+            }
+
             return operacao;
         }
-
-
-
         internal ProntuarioAnexoConsultaViewModel FormatarRetornoConsulta(Domain.ProntuarioAnexo.Entities.ProntuarioAnexo anexo)
         {
             if (anexo == null)
@@ -152,27 +157,6 @@ namespace Psicologa.Application.ProntuarioAnexo.Services
                 _ => "application/octet-stream"
             };
             return mimeType;
-        }
-        private void RegistrarLog(int servicoId, string[] requisicao, Domain.ProntuarioAnexo.Entities.ProntuarioAnexo dadosExistente, string nomeClasse)
-        {
-            var dadosAtualizado = _anexoService.Obter(servicoId);
-            var (retorno, dadosAlterados) = _logAplicacaoService.ObterDiferencas(dadosExistente, dadosAtualizado);
-
-            if (dadosAlterados.Any())
-            {
-                var log = _logAplicacaoService.Criar(
-                    requisicao: requisicao,
-                    entidade: nomeClasse,
-                    entidadeId: servicoId,
-                    operacao: retorno,
-                    dadosAntes: dadosExistente,
-                    dadosDepois: dadosAtualizado,
-                    dadosAlterados: dadosAlterados,
-                    aplicacao: MethodBase.GetCurrentMethod()?.DeclaringType?.Name,
-                    metodo: MethodBase.GetCurrentMethod()?.Name
-                );
-                _logAplicacaoService.Salvar(log);
-            }
         }
         public void Dispose()
         {

@@ -17,12 +17,13 @@ namespace Psicologa.Areas.Administrativo.Presentation.Painel.Controllers
     {
         ApplicationPessoaService _pessoaService;
         UsuarioAutenticado _ua;
+        RequisicaoAtual _req;
 
-
-        public PessoaController(ApplicationPessoaService pessoaService, UsuarioAutenticado ua)
+        public PessoaController(ApplicationPessoaService pessoaService, UsuarioAutenticado ua, RequisicaoAtual req)
         {
             _pessoaService = pessoaService;
             _ua = ua;
+            _req = req;
         }
 
         public IActionResult Index()
@@ -33,7 +34,7 @@ namespace Psicologa.Areas.Administrativo.Presentation.Painel.Controllers
         [HttpPost]
         public IActionResult Salvar([FromBody] System.Text.Json.JsonElement pessoaDados)
         {
-            string[] requisicao = ObterRequisicao();
+            var requisicao = _req.ToArray(_ua);
 
             bool operacao = false;
             ValidationResult vr = new ValidationResult();
@@ -66,21 +67,6 @@ namespace Psicologa.Areas.Administrativo.Presentation.Painel.Controllers
             return DefaultJSONResponse(operacao, pessoaVM);
         }
 
-        private string[] ObterRequisicao()
-        {
-            //Obter Dados de Navegação
-            var ip = HttpContext.Connection.RemoteIpAddress?.ToString();
-            var ipReal = HttpContext.Request.Headers["X-Forwarded-For"].FirstOrDefault()
-                         ?? HttpContext.Connection.RemoteIpAddress?.ToString();
-            var userAgent = HttpContext.Request.Headers["User-Agent"].ToString();
-            var isMobile = userAgent.Contains("Mobile", StringComparison.OrdinalIgnoreCase);
-            var isTablet = userAgent.Contains("Tablet", StringComparison.OrdinalIgnoreCase);
-            var dispositivo = isMobile ? "Mobile" : isTablet ? "Tablet" : "Desktop";
-
-            string[] requisicao = new string[] { ipReal, userAgent, dispositivo, _ua.Nome, _ua.Id.ToString() };
-            return requisicao;
-        }
-
         [HttpGet]
         public IActionResult Obter(string id)
         {
@@ -92,10 +78,11 @@ namespace Psicologa.Areas.Administrativo.Presentation.Painel.Controllers
         [HttpDelete]
         public IActionResult Excluir(string id)
         {
+            var requisicao = _req.ToArray(_ua);
             int idLimpo = Convert.ToInt32(Criptografia.Descriptografar(id));
             bool operacao;
 
-            operacao = _pessoaService.Excluir(idLimpo);
+            operacao = _pessoaService.Excluir(idLimpo, requisicao);
 
             if (operacao)
             {

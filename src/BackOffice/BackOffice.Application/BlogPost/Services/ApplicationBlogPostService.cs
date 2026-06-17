@@ -82,24 +82,7 @@ namespace Psicologa.Application.BlogPost.Services
 
             if (operacao)
             {
-                var dadosAtualizado = _blogPostService.Obter(blogPost.Id);
-                var (retorno, dadosAlterados) = _logAplicacaoService.ObterDiferencas(dadosExistente, dadosAtualizado);
-
-                if (dadosAlterados.Any())
-                {
-                    var log = _logAplicacaoService.Criar(
-                        requisicao: requisicao,
-                        entidade: nameof(Domain.BlogPost.Entities.BlogPost),
-                        entidadeId: blogPost.Id,
-                        operacao: retorno,
-                        dadosAntes: dadosExistente,
-                        dadosDepois: dadosAtualizado,
-                        dadosAlterados: dadosAlterados,
-                        aplicacao: MethodBase.GetCurrentMethod()?.DeclaringType?.Name,
-                        metodo: MethodBase.GetCurrentMethod()?.Name
-                    );
-                    _logAplicacaoService.Salvar(log);
-                }
+                _logAplicacaoService.Registrar(blogPost.Id, requisicao, dadosExistente, blog, "BlogPost", "ApplicationBlogPostService", "Salvar");
             }
 
             return (operacao, blog.ValidationResult);
@@ -135,6 +118,7 @@ namespace Psicologa.Application.BlogPost.Services
             }
             return retorno;
         }
+
         public IEnumerable<BlogPostConsultaViewModel> ObterTodosPublicados()
         {
             List<BlogPostConsultaViewModel> retorno = new List<BlogPostConsultaViewModel>();
@@ -146,10 +130,6 @@ namespace Psicologa.Application.BlogPost.Services
             return retorno;
         }
 
-
-
-
-
         public BlogPostConsultaViewModel Obter(int blogPostId)
         {
             BlogPostConsultaViewModel retorno = new BlogPostConsultaViewModel();
@@ -157,15 +137,12 @@ namespace Psicologa.Application.BlogPost.Services
             return retorno;
         }
 
-
         public BlogPostConsultaViewModel ObterPorUrl(string blogUrl)
         {
             BlogPostConsultaViewModel retorno = new BlogPostConsultaViewModel();
             retorno = FormatarRetornoConsulta(_blogPostService.ObterPorUrl(blogUrl));
             return retorno;
         }
-
-
 
         internal BlogPostConsultaViewModel FormatarRetornoConsulta(Domain.BlogPost.Entities.BlogPost blogPost)
         {

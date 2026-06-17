@@ -1,7 +1,7 @@
-﻿using Psicologa.Domain;
-using Shared.Infra.CrossCutting;
+﻿using Shared.Infra.CrossCutting;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text.Json;
 
 namespace Psicologa.Domain.LogAplicacao.Services
@@ -24,36 +24,53 @@ namespace Psicologa.Domain.LogAplicacao.Services
             return operacao;
         }
 
-        public  Domain.LogAplicacao.Entities.LogAplicacao Criar(
-        string[] requisicao,
-        //int usuarioId,
-        string entidade,
-        int entidadeId,
-        string operacao,
-        object dadosAntes,
-        object dadosDepois,
-        Dictionary<string, object> dadosAlterados,
-        string aplicacao,
-        string metodo)
-    {
-        return new Domain.LogAplicacao.Entities.LogAplicacao
+        public Domain.LogAplicacao.Entities.LogAplicacao Criar(string[] requisicao, string entidade, int entidadeId, 
+                                                               string operacao, object dadosAntes, object dadosDepois, 
+                                                               Dictionary<string, object> dadosAlterados, string aplicacao, 
+                                                               string metodo)
         {
-            DataCriacao    = DateTime.Now,
-            UsuarioId      = Convert.ToInt32(requisicao[4]),
-            UsuarioNome    = requisicao[3],
-            IP             = requisicao[0],
-            UserAgent      = requisicao[1],
-            Dispositivo     = requisicao[2],
-            Entidade       = entidade,
-            EntidadeId     = entidadeId,
-            Operacao       = operacao,
-            Aplicacao      = aplicacao,
-            Metodo         = metodo,
-            DadosAntes     = JsonSerializer.Serialize(dadosAntes),
-            DadosDepois    = JsonSerializer.Serialize(dadosDepois),
-            DadosAlterados = JsonSerializer.Serialize(dadosAlterados)
-        };
-    }
+            Domain.LogAplicacao.Entities.LogAplicacao log = new Domain.LogAplicacao.Entities.LogAplicacao
+            {
+                DataCriacao = DateTime.Now,
+                UsuarioId = Convert.ToInt32(requisicao[4]),
+                UsuarioNome = requisicao[3],
+                IP = requisicao[0],
+                UserAgent = requisicao[1],
+                Dispositivo = requisicao[2],
+                Entidade = entidade,
+                EntidadeId = entidadeId,
+                Operacao = operacao,
+                Aplicacao = aplicacao,
+                Metodo = metodo,
+                DadosAntes = JsonSerializer.Serialize(dadosAntes),
+                DadosDepois = JsonSerializer.Serialize(dadosDepois),
+                DadosAlterados = JsonSerializer.Serialize(dadosAlterados)
+            };
+
+            return log;
+        }
+
+        public void Registrar<T>(int entidadeId, string[] requisicao, T dadosAntes, T dadosDepois, string entidade, string aplicacao, string metodo)
+        {
+            var (operacao, dadosAlterados) = ObterDiferencas(dadosAntes, dadosDepois);
+
+            if (!dadosAlterados.Any())
+                return;
+
+            var log = Criar(
+                requisicao: requisicao,
+                entidade: entidade,
+                entidadeId: entidadeId,
+                operacao: operacao,
+                dadosAntes: dadosAntes,
+                dadosDepois: dadosDepois,
+                dadosAlterados: dadosAlterados,
+                aplicacao: aplicacao,
+                metodo: metodo
+            );
+
+            Salvar(log);
+        }
 
         public (string Operacao, Dictionary<string, object> Diferencas) ObterDiferencas<T>(T existente, T novo)
         {
@@ -89,7 +106,6 @@ namespace Psicologa.Domain.LogAplicacao.Services
                 return ("Exclusão", diferencas);
             }
 
-
             // Atualização — compara os dois estados
             var ignorar = new HashSet<string> { "Id", "DataCadastro", "DataAtualizacao", "DataCriacao", "DtCadastro", "DataAlteracao" };
 
@@ -117,6 +133,7 @@ namespace Psicologa.Domain.LogAplicacao.Services
         {
             return _repository.ObterUltimos(top);
         }
+
         public Entities.LogAplicacao Obter(int id)
         {
             return _repository.Obter(id);
@@ -171,6 +188,5 @@ namespace Psicologa.Domain.LogAplicacao.Services
 
         //    return diff;
         //}
-
     }
 }

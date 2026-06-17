@@ -19,7 +19,7 @@ namespace Psicologa.Application.Agendamento.Services
         private readonly IAppSettings _appSettings;
 
         public ApplicationAgentamentoService(Domain.LogAplicacao.Services.LogAplicacaoService logAplicacaoService,
-            Domain.Agendamento.Services.AgendamentoService servicoAgendamento, 
+            Domain.Agendamento.Services.AgendamentoService servicoAgendamento,
             Domain.Configuracao.Services.ConfiguracaoService configuracaoService,
                 Domain.Prontuario.Services.ProntuarioService prontuarioService,
             IAppSettings appSettings)
@@ -42,16 +42,16 @@ namespace Psicologa.Application.Agendamento.Services
             {
                 Id = dados.Id,
                 Paciente = new Domain.Pessoa.Entities.Pessoa
-                { 
-                    Id = dados.PacienteId 
+                {
+                    Id = dados.PacienteId
                 },
-                Psicologo = new Domain.Pessoa.Entities.Pessoa 
+                Psicologo = new Domain.Pessoa.Entities.Pessoa
                 {
                     Id = dados.PsicologoId
                 },
-                Servico = new Domain.Servico.Entities.Servico 
-                { 
-                    Id = dados.ServicoId 
+                Servico = new Domain.Servico.Entities.Servico
+                {
+                    Id = dados.ServicoId
                 },
                 DataConsulta = dados.DataConsulta,
                 HoraInicio = TimeSpan.Parse(dados.HoraInicio).ToString(@"hh\:mm"),
@@ -60,21 +60,23 @@ namespace Psicologa.Application.Agendamento.Services
 
                 Online = dados.Online,
                 Presencial = !dados.Online, //dados.Presencial, //Não estou usando o Presencial pois se o Online for verdadeiro o Presencial é falso, se o Online for falso o Presencial é verdadeiro
-                
+
                 StatusAgendamento = (Domain.Agendamento.Entities.Agendamento.TpStatusAgendamento)dados.StatusAgendamento,
                 TipoAgendamento = (Domain.Agendamento.Entities.Agendamento.TpTipoAgendamento)dados.TipoAgendamento,
                 Ativo = dados.Ativo,
                 ConfirmouAgendamento = dados.ConfirmouAgendamento,
                 DataConfirmacao = dados.ConfirmouAgendamento ? dados.DataConfirmacao : (DateTime?)null,
-
             };
 
-            if(agendamento.Validar())
+            if (agendamento.Validar())
                 operacao = _servicoAgendamento.Salvar(agendamento);
 
+            //if (operacao)
+            //    RegistrarLog(agendamento.Id, requisicao, dadosExistente, "Agendamento");
             if (operacao)
-                RegistrarLog(agendamento.Id, requisicao, dadosExistente, "Agendamento");
-
+            {
+                _logAplicacaoService.Registrar(dados.Id, requisicao, dadosExistente, agendamento, "Agendamento", "ApplicationAgentamentoService", "Salvar");
+            }
             return (operacao, vr);
         }
         public AgendamentoDisponibilidadeViewModel ObterDisponibilidade(int psicologoId, DateTime dataConsulta)
@@ -189,11 +191,11 @@ namespace Psicologa.Application.Agendamento.Services
         public AgendamentoConsultaViewModel ObterPorId(int id)
         {
             var agendamento = _servicoAgendamento.ObterPorId(id);
-            
+
             return FormatarRetornoConsulta(agendamento);
         }
         public AgendamentoConsultaViewModel ObterAgendamentoPorPaciente(int prontuarioId, int psicologoId, DateTime data)
-        { 
+        {
             var paciente = _prontuarioService.Obter(prontuarioId);
             var agendamento = _servicoAgendamento.ObterAgendamentoPorPaciente(paciente.Paciente.Pessoa.Id, psicologoId, data);
             return FormatarRetornoConsulta(agendamento);
@@ -204,8 +206,10 @@ namespace Psicologa.Application.Agendamento.Services
             var dadosExistente = _servicoAgendamento.ObterPorId(agendamentoId);
             operacao = _servicoAgendamento.Excluir(agendamentoId);
 
-            RegistrarLog(agendamentoId, requisicao, dadosExistente, "Agendamento");
-
+            if (operacao)
+            {
+                _logAplicacaoService.Registrar(agendamentoId, requisicao, dadosExistente, null, "Agendamento", "ApplicationAgentamentoService", "Excluir");
+            }
 
             return operacao;
         }
@@ -245,27 +249,6 @@ namespace Psicologa.Application.Agendamento.Services
                 StatusAgendamento = (int)agendamento.StatusAgendamento,
                 TipoAgendamento = (int)agendamento.TipoAgendamento
             };
-        }
-        private void RegistrarLog(int servicoId, string[] requisicao, Domain.Agendamento.Entities.Agendamento dadosExistente, string nomeClasse)
-        {
-            var dadosAtualizado = _servicoAgendamento.ObterPorId(servicoId);
-            var (retorno, dadosAlterados) = _logAplicacaoService.ObterDiferencas(dadosExistente, dadosAtualizado);
-
-            if (dadosAlterados.Any())
-            {
-                var log = _logAplicacaoService.Criar(
-                    requisicao: requisicao,
-                    entidade: nomeClasse,
-                    entidadeId: servicoId,
-                    operacao: retorno,
-                    dadosAntes: dadosExistente,
-                    dadosDepois: dadosAtualizado,
-                    dadosAlterados: dadosAlterados,
-                    aplicacao: MethodBase.GetCurrentMethod()?.DeclaringType?.Name,
-                    metodo: MethodBase.GetCurrentMethod()?.Name
-                );
-                _logAplicacaoService.Salvar(log);
-            }
         }
         public void Dispose()
         {

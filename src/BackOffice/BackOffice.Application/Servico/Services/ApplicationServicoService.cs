@@ -1,4 +1,5 @@
 ﻿using Psicologa.Application.Servico.ViewsModel;
+using Psicologa.Domain.Psicologo.Entities;
 using Psicologa.Domain.Servico.Entities;
 using Shared.Infra.CrossCutting;
 using Shared.Infra.CrossCutting.ValidationResult;
@@ -99,7 +100,12 @@ namespace Psicologa.Application.Servico.Services
             servicoVM.Id = servico.Id;
 
             // Log
-            RegistrarLog(servicoVM.Id, requisicao, dadosExistente, "Servico");
+            //RegistrarLog(servicoVM.Id, requisicao, dadosExistente, "Servico");
+
+            if (operacao)
+            {
+                _logAplicacaoService.Registrar(servicoVM.Id, requisicao, dadosExistente, servico, "Servico", "ApplicationServicoService", "Salvar");
+            }
 
             return (true, servico.ValidationResult);
         }
@@ -152,9 +158,13 @@ namespace Psicologa.Application.Servico.Services
             bool operacao = false;
             var dadosExistente = _servicoService.Obter(servicoId);
             operacao = _servicoService.Excluir(servicoId);
-            
-            RegistrarLog(servicoId, requisicao, dadosExistente, "Servico");
 
+            //            RegistrarLog(servicoId, requisicao, dadosExistente, "Servico");
+
+            if (operacao)
+            {
+                _logAplicacaoService.Registrar(servicoId, requisicao, dadosExistente, null, "Servico", "ApplicationServicoService", "Excluir");
+            }
 
             return operacao;
         }
@@ -279,23 +289,15 @@ namespace Psicologa.Application.Servico.Services
         private void RegistrarLog(int servicoId, string[] requisicao, Domain.Servico.Entities.Servico dadosExistente, string nomeClasse)
         {
             var dadosAtualizado = _servicoService.Obter(servicoId);
-            var (retorno, dadosAlterados) = _logAplicacaoService.ObterDiferencas(dadosExistente, dadosAtualizado);
-
-            if (dadosAlterados.Any())
-            {
-                var log = _logAplicacaoService.Criar(
-                    requisicao: requisicao,
-                    entidade: nomeClasse,
-                    entidadeId: servicoId,
-                    operacao: retorno,
-                    dadosAntes: dadosExistente,
-                    dadosDepois: dadosAtualizado,
-                    dadosAlterados: dadosAlterados,
-                    aplicacao: MethodBase.GetCurrentMethod()?.DeclaringType?.Name,
-                    metodo: MethodBase.GetCurrentMethod()?.Name
-                );
-                _logAplicacaoService.Salvar(log);
-            }
+            _logAplicacaoService.Registrar(
+                entidadeId: servicoId,
+                requisicao: requisicao,
+                dadosAntes: dadosExistente,
+                dadosDepois: dadosAtualizado,
+                entidade: nomeClasse,
+                aplicacao: MethodBase.GetCurrentMethod()?.DeclaringType?.Name,
+                metodo: MethodBase.GetCurrentMethod()?.Name
+            );
         }
 
         public void Dispose()
