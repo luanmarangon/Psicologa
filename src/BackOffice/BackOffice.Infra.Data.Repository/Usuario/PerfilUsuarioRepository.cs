@@ -191,7 +191,6 @@ namespace Psicologa.Infra.Data.Repository.Usuario
             }
             return operacao;
         }
-
         public override void Dispose()
         {
             base.Dispose();

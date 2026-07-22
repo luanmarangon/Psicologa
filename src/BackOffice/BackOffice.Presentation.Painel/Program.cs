@@ -107,7 +107,7 @@ try
     #region Serviço para obter o usuário anônimo
     builder.Services.AddHttpContextAccessor();
     builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
-    builder.Services.AddScoped<OrigemReconhecida>();
+    //builder.Services.AddScoped<OrigemReconhecida>();
     #endregion
 
 
