@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Psicologa.Application.Pessoa.Services;
 using Psicologa.Application.Pessoa.ViewsModel;
+using Psicologa.Application.Psicologo.ViewsModel;
 using Psicologa.Application.Usuario.ViewsModel;
 using Psicologa.Presentation.Painel;
 using Psicologa.Presentation.Painel.Controllers;
@@ -71,7 +72,7 @@ namespace Psicologa.Areas.Administrativo.Presentation.Painel.Controllers
         public IActionResult Obter(string id)
         {
             int idLimpo = Convert.ToInt32(Criptografia.Descriptografar(id));
-            PessoaViewModel pessoa = _pessoaService.Obter(idLimpo);
+            PessoaConsultaViewModel pessoa = _pessoaService.Obter(idLimpo);
             return DefaultJSONResponse(pessoa != null, pessoa);
         }
 

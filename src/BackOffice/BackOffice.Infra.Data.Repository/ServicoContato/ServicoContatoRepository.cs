@@ -241,21 +241,21 @@ namespace Psicologa.Infra.Data.Repository.ServicoContato
                 {
                     string consultaPrincipal = $@"
                                     SELECT
-                                            -- ServicoContato
-                                            SC.ServicoContatoId, SC.ServicoId as ServicoIdContatoId, SC.Nome, SC.Contato, SC.Email, SC.Mensagem,
-                                            SC.StatusContato, SC.EntrouContato, SC.DataContato, SC.DataRetorno, SC.ObservacaoInterna,
-                                            SC.Origem, SC.VirouPaciente, SC.Prioridade, SC.PreferenciaContato, SC.IP, SC.UserAgent,
-                                            SC.DataCriacao, SC.DataAtualizacao,
-                                            -- Servico
-                                            S.ServicoId, S.Nome AS ServicoNome, S.Url AS ServicoUrl, S.DescricaoCurta AS ServicoDescricaoCurta,
-                                            S.Descricao AS ServicoDescricao, S.TempoSessaoMinutos AS ServicoTempoSessaoMinutos, S.ValorSessao AS ServicoValorSessao,
-                                            S.ImagemCapa, S.Online AS ServicoOnline, S.Presencial AS ServicoPresencial, S.DestaqueHome AS ServicoDestaqueHome,
-                                            S.OrdemExibicao AS ServicoOrdemExibicao, S.Ativo AS ServicoAtivo, S.DataCriacao AS ServicoDataCriacao,
-                                            S.DataAtualizacao AS ServicoDataAtualizacao
-                                        FROM ServicoContato SC
-                                        INNER JOIN Servico S
-                                            ON S.ServicoId = SC.ServicoId
-                                        WHERE (sc.Nome LIKE @Termo || s.Nome LIKE @Termo) 
+                                    -- servicoContato
+                                    sc.servicoContatoId, sc.servicoId as servicoIdContatoId, sc.Nome, sc.Contato, sc.Email, sc.Mensagem,
+                                    sc.statuscontato, sc.EntrouContato, sc.DataContato, sc.DataRetorno, sc.ObservacaoInterna,
+                                    sc.Origem, sc.VirouPaciente, sc.Prioridade, sc.PreferenciaContato, sc.IP, sc.UserAgent,
+                                    sc.DataCriacao, sc.DataAtualizacao,
+                                    -- servico
+                                    s.servicoId, s.Nome As servicoNome, s.Url As servicoUrl, s.DescricaoCurta As servicoDescricaoCurta,
+                                    s.Descricao As servicoDescricao, s.TemposessaoMinutos As servicoTemposessaoMinutos, s.Valorsessao As servicoValorsessao,
+                                    s.ImagemCapa, s.Online As servicoOnline, s.Presencial As servicoPresencial, s.DestaqueHome As servicoDestaqueHome,
+                                    s.OrdemExibicao As servicoOrdemExibicao, s.Ativo As servicoAtivo, s.DataCriacao As servicoDataCriacao,
+                                    s.DataAtualizacao As servicoDataAtualizacao
+                                FROM ServicoContato sc
+                                INNER JOIN Servico s
+                                    ON s.servicoId = sc.servicoId
+                                WHERE (sc.Nome LIKE @Termo || s.Nome LIKE @Termo) 
                                     #paginacaoFiltro";
 
                     cmd.CommandText = $"select count(*) from ({consultaPrincipal.Replace("#paginacaoFiltro", "")}) as t";

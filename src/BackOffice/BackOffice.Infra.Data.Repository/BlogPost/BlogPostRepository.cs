@@ -147,7 +147,7 @@ namespace Psicologa.Infra.Data.Repository.BlogPost
                                     SELECT b.BlogPostId, b.Titulo, b.Url, b.Conteudo, b.Resumo, b.ImagemCapa,
                                            b.Autor, b.DataCriacao, b.DataAtualizacao, b.DataPublicacao,
                                            b.DataRevogacao, b.Ativo, p.PessoaId, p.Nome
-                                    FROM blogPost b
+                                    FROM BlogPost b
                                     JOIN Pessoa p ON b.PessoaId = p.PessoaId
                                     WHERE b.Titulo LIKE @Termo || b.Resumo LIKE @Termo || b.Autor LIKE @Termo || b.Conteudo LIKE @Termo
                                     ORDER BY b.Titulo
@@ -186,7 +186,7 @@ namespace Psicologa.Infra.Data.Repository.BlogPost
                                     SELECT b.BlogPostId, b.Titulo, b.Url, b.Conteudo, b.Resumo, b.ImagemCapa,
                                            b.Autor, b.DataCriacao, b.DataAtualizacao, b.DataPublicacao,
                                            b.DataRevogacao, b.Ativo, p.PessoaId, p.Nome
-                                    FROM blogPost b
+                                    FROM BlogPost b
                                     JOIN Pessoa p ON b.PessoaId = p.PessoaId
                                     WHERE b.Ativo = 1 AND (b.DataPublicacao <= NOW() OR b.DataPublicacao IS NULL) AND (b.DataRevogacao > NOW() OR b.DataRevogacao IS NULL)
                                     ORDER BY b.DataPublicacao DESC
@@ -215,7 +215,7 @@ namespace Psicologa.Infra.Data.Repository.BlogPost
                                     SELECT b.BlogPostId, b.Titulo, b.Url, b.Conteudo, b.Resumo, b.ImagemCapa,
                                            b.Autor, b.DataCriacao, b.DataAtualizacao, b.DataPublicacao,
                                            b.DataRevogacao, b.Ativo, p.PessoaId, p.Nome
-                                    FROM blogPost b
+                                    FROM BlogPost b
                                     JOIN Pessoa p ON b.PessoaId = p.PessoaId
                                     WHERE b.Ativo = 1 AND (b.DataPublicacao <= NOW() OR b.DataPublicacao IS NULL) AND (b.DataRevogacao > NOW() OR b.DataRevogacao IS NULL)
                                     ORDER BY b.DataPublicacao DESC;";
@@ -247,7 +247,7 @@ namespace Psicologa.Infra.Data.Repository.BlogPost
                                     SELECT b.BlogPostId, b.Titulo, b.Url, b.Conteudo, b.Resumo, b.ImagemCapa,
                                            b.Autor, b.DataCriacao, b.DataAtualizacao, b.DataPublicacao,
                                            b.DataRevogacao, b.Ativo, p.PessoaId, p.Nome
-                                    FROM blogPost b
+                                    FROM BlogPost b
                                     JOIN Pessoa p ON b.PessoaId = p.PessoaId
                                     WHERE b.BlogPostId = @Id;";
 
@@ -279,7 +279,7 @@ namespace Psicologa.Infra.Data.Repository.BlogPost
                                     SELECT b.BlogPostId, b.Titulo, b.Url, b.Conteudo, b.Resumo, b.ImagemCapa,
                                            b.Autor, b.DataCriacao, b.DataAtualizacao, b.DataPublicacao,
                                            b.DataRevogacao, b.Ativo, p.PessoaId, p.Nome
-                                    FROM blogPost b
+                                    FROM BlogPost b
                                     JOIN Pessoa p ON b.PessoaId = p.PessoaId
                                     WHERE b.Url = @Url;";
 

@@ -156,7 +156,7 @@ namespace Psicologa.Infra.Data.Repository.Configuracao
                         // remove tudo
                         using (var cmdDelete = DbContext.CreateCommand())
                         {
-                            cmdDelete.CommandText = @"DELETE FROM configuracaofuncionamento";
+                            cmdDelete.CommandText = @"DELETE FROM ConfiguracaoFuncionamento";
                             cmdDelete.ExecuteNonQuery();
                         }
 
@@ -172,7 +172,7 @@ namespace Psicologa.Infra.Data.Repository.Configuracao
                             {
                                 using (var cmd = DbContext.CreateCommand())
                                 {
-                                    cmd.CommandText = @"INSERT INTO configuracaofuncionamento(DiaSemana,Ativo,HoraInicio,HoraFim,Ordem,DataCriacao,DataAtualizacao)
+                                    cmd.CommandText = @"INSERT INTO ConfiguracaoFuncionamento(DiaSemana,Ativo,HoraInicio,HoraFim,Ordem,DataCriacao,DataAtualizacao)
                                                                                     VALUES(@DiaSemana,@Ativo,@HoraInicio,@HoraFim,@Ordem,@DataCriacao,@DataAtualizacao)";
 
                                     cmd.ParameterAdd("@DiaSemana",dia.DiaSemana);

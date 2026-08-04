@@ -30,7 +30,7 @@ namespace Psicologa.Infra.Data.Repository.ProntuarioAnexo
                 using (var cmd = DbContext.CreateCommand())
                 {
                     cmd.CommandText = @$"SELECT pa.ProntuarioAnexoId, pa.TipoAnexo, pa.Nome, pa.NomeArquivo, pa.MimeType, pa.TamanhoArquivo, pa.Arquivo, pa.Observacao, pa.DataCriacao, pa.DataAtualizacao, pt.ProntuarioId as ProntuarioIdPaciente
-                                   FROM prontuarioanexo pa
+                                   FROM Prontuarioanexo pa
                                    JOIN Prontuario pt ON pa.ProntuarioId = pt.ProntuarioId
                                         WHERE pa.ProntuarioAnexoId = @Id";
 
@@ -75,7 +75,7 @@ namespace Psicologa.Infra.Data.Repository.ProntuarioAnexo
                 {
                     string consultaPrincipal =
                                 $@"SELECT pa.ProntuarioAnexoId, pa.TipoAnexo, pa.Nome, pa.NomeArquivo, pa.MimeType, pa.TamanhoArquivo, pa.Arquivo, pa.Observacao, pa.DataCriacao, pa.DataAtualizacao, pt.ProntuarioId as ProntuarioIdPaciente
-                                   FROM prontuarioanexo pa
+                                   FROM Prontuarioanexo pa
                                    JOIN Prontuario pt ON pa.ProntuarioId = pt.ProntuarioId
                                    where pa.Nome Like @Termo AND pa.ProntuarioId = @ProntuarioId {sqlFiltroTipoAnexo}
                                    order by pa.Nome desc

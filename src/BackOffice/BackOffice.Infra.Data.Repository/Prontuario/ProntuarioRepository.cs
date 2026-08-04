@@ -95,7 +95,7 @@ namespace Psicologa.Infra.Data.Repository.Prontuario
                                 pr.DataAtualizacao as DataAtualizacaoProntuario, pr.DataEncerramento as DataEncerramentoProntuario,
                                 pa.PacienteId as PacienteIdPaciente, pa.Matricula,
                                 p.PessoaId as PessoaIdPessoa, p.Nome as PessoaNome
-                            FROM prontuario pr
+                            FROM Prontuario pr
                             INNER JOIN Paciente pa on pr.PacienteId = pa.PacienteId
                             INNER JOIN Pessoa p on pa.PessoaId = p.PessoaId
                             WHERE pr.ProntuarioId = @Id";
@@ -109,6 +109,39 @@ namespace Psicologa.Infra.Data.Repository.Prontuario
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Erro ao obter prontuário com ID {ProntuarioId}", prontuarioId);
+            }
+
+            return prontuario;
+        }
+        public Domain.Prontuario.Entities.Prontuario ObterPorPacienteId(int pacienteId)
+        {
+            //VALIDAR ESTA ERRADO O SELECT
+            Domain.Prontuario.Entities.Prontuario prontuario = new Domain.Prontuario.Entities.Prontuario();
+
+            try
+            {
+                using (var cmd = DbContext.CreateCommand())
+                {
+                    cmd.CommandText = $@"
+                            SELECT pr.ProntuarioId, pr.PacienteId as PacienteId, pr.QueixaPrincipal, pr.ObjetivoTratamento, pr.HistoricoFamiliar, pr.ObservacoesIniciais,
+                                pr.Ativo As ProntuarioAtivo, pr.DataCriacao as DataCriacaoProntuario,
+                                pr.DataAtualizacao as DataAtualizacaoProntuario, pr.DataEncerramento as DataEncerramentoProntuario,
+                                pa.PacienteId as PacienteIdPaciente, pa.Matricula,
+                                p.PessoaId as PessoaIdPessoa, p.Nome as PessoaNome
+                            FROM Prontuario pr
+                            INNER JOIN Paciente pa on pr.PacienteId = pa.PacienteId
+                            INNER JOIN Pessoa p on pa.PessoaId = p.PessoaId
+                            WHERE pr.PacienteId = @Id";
+                    cmd.ParameterAdd("@Id", pacienteId);
+                    using (var dr = cmd.ExecuteReader())
+                    {
+                        prontuario = Map(dr).FirstOrDefault();
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Erro ao obter prontuário com ID {ProntuarioId}", pacienteId);
             }
 
             return prontuario;
@@ -127,7 +160,7 @@ namespace Psicologa.Infra.Data.Repository.Prontuario
                                 pr.DataAtualizacao as DataAtualizacaoProntuario, pr.DataEncerramento as DataEncerramentoProntuario,
                                 pa.PacienteId as PacienteIdPaciente, pa.Matricula,
                                 p.PessoaId as PessoaIdPessoa, p.Nome as PessoaNome
-                            FROM prontuario pr
+                            FROM Prontuario pr
                             INNER JOIN Paciente pa on pr.PacienteId = pa.PacienteId
                             INNER JOIN Pessoa p on pa.PessoaId = p.PessoaId
                             WHERE pa.PacienteId = @Id";

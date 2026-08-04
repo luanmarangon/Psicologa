@@ -9,7 +9,9 @@ namespace Psicologa.Domain.Prontuario.Interfaces.Repositories
     public interface IProntuarioRepository:IRepositoryBase<Entities.Prontuario>
     {
         Domain.Prontuario.Entities.Prontuario Obter(int prontuarioId);
+        Domain.Prontuario.Entities.Prontuario ObterPorPacienteId(int pacienteId);
         Domain.Prontuario.Entities.Prontuario ObterProntuarioPorPacienteId(int pacienteId);
+        //Domain.Prontuario.Entities.Prontuario ObterPorPaciente(int pacienteId);
         bool Salvar(Domain.Prontuario.Entities.Prontuario prontuario);
     }
 }

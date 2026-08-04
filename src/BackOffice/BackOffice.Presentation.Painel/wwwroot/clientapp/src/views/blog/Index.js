@@ -55,7 +55,7 @@ export default class Index extends Component {
 
         return (
 
-            <div key={post.id} className="col-xl-4 col-lg-6 col-md-6 mb-4">
+            <div key={post.id} className="col-xl-6 col-lg-6 col-md-6 mb-4">
                 <div className="ps-blog-card h-100">
                     {/* Imagem */}
                     <div className="ps-blog-image position-relative">
@@ -195,7 +195,7 @@ export default class Index extends Component {
 
                 <div className="row">
                     {/* LISTAGEM */}
-                    <div className="row">
+                    <div className="row mt-4 mr-1 ml-1">
                         {this.state.aguarde ? <LoadingIndicator /> :
                             this.state.resultadoPesquisa.length === 0 ?
                                 <div className="col-12 text-center text-muted">Nenhum post encontrado</div> :

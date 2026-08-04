@@ -72,6 +72,8 @@ namespace Psicologa.Application.Pessoa.ViewsModel
 
         public struct PessoaPaciente
         {
+            [JsonConverter(typeof(EncryptIdJSONConverter))]
+            public int Id { get; set; }
             public string? ContatoEmergenciaNome { get; set; }
             public string? ContatoEmergenciaTelefone { get; set; }
             [JsonConverter(typeof(EncryptIdJSONConverter))]
@@ -81,6 +83,8 @@ namespace Psicologa.Application.Pessoa.ViewsModel
 
         public struct PessoaPsicologo
         {
+            [JsonConverter(typeof(EncryptIdJSONConverter))]
+            public int Id { get; set; }
             public string? Crp { get; set; }
             public string? CrpUf { get; set; }
             [JsonConverter(typeof(DateTimeJSONConverter))]
@@ -111,7 +115,8 @@ namespace Psicologa.Application.Pessoa.ViewsModel
             [JsonConverter(typeof(Int32JSONConverter))]
             public int DocIdTipo { get; set; }
             public string DocIdTipoNome { get; set; }
-            public string DataNascimento { get; set; }
+            [JsonConverter(typeof(DateTimeJSONConverter))]
+            public DateTime DataNascimento { get; set; }
             public string RazaoSocial { get; set; }
             public int? Sexo { get; set; }
             public bool Ativo { get; set; }
@@ -119,8 +124,22 @@ namespace Psicologa.Application.Pessoa.ViewsModel
 
         public struct PessoaEndereco
         {
+            [JsonConverter(typeof(EncryptIdJSONConverter))]
+            public int Id { get; set; }
+            public string Logradouro { get; set; }
+            public string Numero { get; set; }
+            public string Bairro { get; set; }
+            public string CEP { get; set; }
+            public string Complemento { get; set; }
+            public string UF { get; set; }
+            public string PontoReferencia { get; set; }
             public string Latitude { get; set; }
             public string Longitude { get; set; }
+
+            //[JsonConverter(typeof(EncryptIdJSONConverter))]
+            //public int CidadeId { get; set; }
+
+            public string Cidade { get; set; }
         }
 
         public struct PessoaContato
@@ -141,16 +160,20 @@ namespace Psicologa.Application.Pessoa.ViewsModel
             public string TipoNome { get; set; }
         }
 
-        public struct PessoaPaciente
+        public class PessoaPaciente
         {
+            [JsonConverter(typeof(EncryptIdJSONConverter))]
+            public int Id { get; set; }
             public string? ContatoEmergenciaNome { get; set; }
             public string? ContatoEmergenciaTelefone { get; set; }
             [JsonConverter(typeof(EncryptIdJSONConverter))]
             public int? ResponsavelId { get; set; }
             public string? ResponsavelNome { get; set; }
         }
-        public struct PessoaPsicologo
+        public class PessoaPsicologo
         {
+            [JsonConverter(typeof(EncryptIdJSONConverter))]
+            public int Id { get; set; }
             public string? Crp { get; set; }
             public string? CrpUf { get; set; }
             [JsonConverter(typeof(DateTimeJSONConverter))]

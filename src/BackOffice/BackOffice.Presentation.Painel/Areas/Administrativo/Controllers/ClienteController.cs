@@ -72,21 +72,21 @@ namespace Psicologa.Presentation.Painel.Areas.Administrativo.Controllers
             return DefaultJSONResponse(operacao, pessoaVM);
         }
 
-        [HttpGet]
-        public IActionResult ObterCliente(string id)
-        {
-            int idLimpo = Convert.ToInt32(Criptografia.Descriptografar(id));
-            PessoaViewModel pessoa = _pessoaService.Obter(idLimpo);
-            return DefaultJSONResponse(pessoa != null, pessoa);
-        }
+        //[HttpGet]
+        //public IActionResult ObterCliente(string id)
+        //{
+        //    int idLimpo = Convert.ToInt32(Criptografia.Descriptografar(id));
+        //    PessoaViewModel pessoa = _pessoaService.Obter(idLimpo);
+        //    return DefaultJSONResponse(pessoa != null, pessoa);
+        //}
 
-        [HttpGet]
-        public IActionResult Pesquisar()
-        {
-            int idLimpo = _ua.PessoaId;
-            PessoaViewModel pessoa = _pessoaService.Obter(idLimpo);
-            return DefaultJSONResponse(pessoa != null, pessoa);
-        }
+        //[HttpGet]
+        //public IActionResult Pesquisar()
+        //{
+        //    int idLimpo = _ua.PessoaId;
+        //    PessoaViewModel pessoa = _pessoaService.Obter(idLimpo);
+        //    return DefaultJSONResponse(pessoa != null, pessoa);
+        //}
 
 
 

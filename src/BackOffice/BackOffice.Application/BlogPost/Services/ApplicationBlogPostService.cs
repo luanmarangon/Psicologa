@@ -4,6 +4,7 @@ using Shared.Infra.CrossCutting.ValidationResult;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Reflection;
 using System.Text.RegularExpressions;
 
@@ -228,25 +229,52 @@ namespace Psicologa.Application.BlogPost.Services
             return url;
         }
 
+        //private string ObterResumo(string conteudo)
+        //{
+        //    if (string.IsNullOrWhiteSpace(conteudo))
+        //        return string.Empty;
+
+        //    // Remove tags HTML
+        //    string textoLimpo = Regex.Replace(conteudo, "<.*?>", string.Empty);
+
+        //    // Remove espaços extras
+        //    textoLimpo = textoLimpo.Trim();
+
+        //    int maxLength = 100;
+
+        //    if (textoLimpo.Length <= maxLength)
+        //        return textoLimpo;
+
+        //    return textoLimpo.Substring(0, maxLength) + "...";
+        //}
+
         private string ObterResumo(string conteudo)
         {
             if (string.IsNullOrWhiteSpace(conteudo))
                 return string.Empty;
 
-            // Remove tags HTML
+            // Remove as tags HTML
             string textoLimpo = Regex.Replace(conteudo, "<.*?>", string.Empty);
 
-            // Remove espaços extras
-            textoLimpo = textoLimpo.Trim();
+            // Converte entidades HTML (&eacute; -> é, &nbsp; -> espaço, etc.)
+            textoLimpo = WebUtility.HtmlDecode(textoLimpo);
 
-            int maxLength = 100;
+            // Remove espaços e quebras de linha extras
+            textoLimpo = Regex.Replace(textoLimpo, @"\s+", " ").Trim();
+
+            const int maxLength = 100;
 
             if (textoLimpo.Length <= maxLength)
                 return textoLimpo;
 
-            return textoLimpo.Substring(0, maxLength) + "...";
-        }
+            // Evita cortar no meio de uma palavra
+            int ultimoEspaco = textoLimpo.LastIndexOf(' ', maxLength);
 
+            if (ultimoEspaco > 0)
+                return textoLimpo[..ultimoEspaco] + "...";
+
+            return textoLimpo[..maxLength] + "...";
+        }
         public void Dispose()
         {
         }

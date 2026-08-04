@@ -31,7 +31,7 @@ namespace Psicologa.Application.Prontuario.Services
             prontuario.Id = prontuarioVM.Id;
             prontuario.Paciente = new Domain.Paciente.Entities.Paciente 
             { 
-                Id = prontuarioVM.Paciente.Id
+                Id = prontuarioVM.PacienteId
             };
             prontuario.QueixaPrincipal = prontuarioVM.QueixaPrincipal;
             prontuario.ObjetivoTratamento = prontuarioVM.ObjetivoTratamento;
@@ -56,6 +56,11 @@ namespace Psicologa.Application.Prontuario.Services
             var prontuario = _service.Obter(prontuarioId);
             return FormatarRetornoConsulta(prontuario);
         }
+        public ProntuarioConsultaViewModel ObterPorPacienteId(int pacienteId)
+        {
+            var prontuario = _service.ObterPorPacienteId(pacienteId);
+            return FormatarRetornoConsulta(prontuario);
+        }
         public ProntuarioConsultaViewModel ObterProntuarioPorPacienteId(int pacienteId)
         {
             var prontuario = _service.ObterProntuarioPorPacienteId(pacienteId);
@@ -70,16 +75,22 @@ namespace Psicologa.Application.Prontuario.Services
             ProntuarioConsultaViewModel vm = new ProntuarioConsultaViewModel()
             {
                 Id = pr.Id,
-                Paciente = new Domain.Paciente.Entities.Paciente
-                {
-                    Id = pr.Paciente.Id,
-                    Pessoa = new Domain.Pessoa.Entities.Pessoa
-                    {
-                        Id = pr.Paciente.Pessoa.Id,
-                        Nome = pr.Paciente.Pessoa.Nome
-                    },
-                    Matricula = pr.Paciente.Matricula,
-                },
+                PacienteId = pr.Paciente.Id,
+                PacienteNome = pr.Paciente.Pessoa.Nome,
+                PacienteMatricula = pr.Paciente.Matricula,
+
+
+
+                //Paciente = new Domain.Paciente.Entities.Paciente
+                //{
+                //    Id = pr.Paciente.Id,
+                //    Pessoa = new Domain.Pessoa.Entities.Pessoa
+                //    {
+                //        Id = pr.Paciente.Pessoa.Id,
+                //        Nome = pr.Paciente.Pessoa.Nome
+                //    },
+                //    Matricula = pr.Paciente.Matricula,
+                //},
                 QueixaPrincipal = pr.QueixaPrincipal,
                 ObjetivoTratamento = pr.ObjetivoTratamento,
                 HistoricoFamiliar = pr.HistoricoFamiliar,

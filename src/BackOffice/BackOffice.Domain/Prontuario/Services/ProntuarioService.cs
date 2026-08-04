@@ -38,10 +38,19 @@ namespace Psicologa.Domain.Prontuario.Services
         {
             return _repository.Obter(prontuarioId);
         }
+        public Domain.Prontuario.Entities.Prontuario ObterPorPacienteId(int pacienteId)
+        {
+            return _repository.ObterPorPacienteId(pacienteId);
+        }
         public Domain.Prontuario.Entities.Prontuario ObterProntuarioPorPacienteId(int pacienteId)
         {
             return _repository.ObterProntuarioPorPacienteId(pacienteId);
         }
 
-    }
+        //public Entities.Prontuario ObterPorPaciente(int pacienteId)
+        //{
+        //    return _repository.ObterPorPaciente(pacienteId);
+        //}
+
+        }
 }

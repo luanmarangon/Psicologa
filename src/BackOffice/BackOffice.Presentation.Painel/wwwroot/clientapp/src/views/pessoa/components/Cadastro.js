@@ -159,27 +159,47 @@ export default class Cadastro extends Component {
         $('#cadastroModal').modal('hide');
     }
 
+    // obter = (id) => {
+
+    //     let p = HTTPClient.get("Administrativo/Pessoa/Obter?id=" + id)
+    //         .then(r => r.json())
+    //         .then(r => {
+    //             this.setState({
+    //                 dados: r.data.dados,
+    //                 endereco: r.data.endereco,
+    //                 contatos: r.data.contatos,
+    //                 tipos: r.data.tipos,
+    //                 paciente: r.data.paciente,
+    //                 psicologo: r.data.psicologo
+    //             });
+    //         })
+    //         .catch((e) => {
+    //             showToastr({ type: "error", text: "Um erro ocorreu." });
+    //         });
+
+    //     return p;
+    // }
+
     obter = (id) => {
 
-        let p = HTTPClient.get("Administrativo/Pessoa/Obter?id=" + id)
-            .then(r => r.json())
-            .then(r => {
-                this.setState({
-                    dados: r.data.dados,
-                    endereco: r.data.endereco,
-                    contatos: r.data.contatos,
-                    tipos: r.data.tipos,
-                    paciente: r.data.paciente,
-                    psicologo: r.data.psicologo
-                });
-            })
-            .catch((e) => {
-                showToastr({ type: "error", text: "Um erro ocorreu." });
+    let p = HTTPClient.get("Administrativo/Pessoa/Obter?id=" + id)
+        .then(r => r.json())
+        .then(r => {
+            this.setState({
+                dados: r.data.dados,
+                endereco: r.data.endereco,
+                contatos: r.data.contatos,
+                tipos: r.data.tipos,
+                paciente: r.data.paciente || this.state.paciente,
+                psicologo: r.data.psicologo || this.state.psicologo
             });
+        })
+        .catch((e) => {
+            showToastr({ type: "error", text: "Um erro ocorreu." });
+        });
 
-        return p;
-    }
-
+    return p;
+}
     inicializarSelect2Responsavel = () => {
 
         if (!$("#selResponsavel").length) return;
@@ -786,7 +806,8 @@ export default class Cadastro extends Component {
                             <div className="row">
                                 <div className="col-sm">
                                     <label htmlFor="txtCRP">Número do CRP</label>
-                                    <input type="text" className="form-control form-control-modern" id="txtCRP" autoComplete="off" maxLength="20" value={this.state.psicologo.crp}
+                                    <input type="text" className="form-control form-control-modern" id="txtCRP" autoComplete="off" maxLength="20" 
+                                    value={this.state.psicologo.crp || ''}
                                         onChange={(e) => this.setState({ psicologo: { ...this.state.psicologo, crp: e.target.value } })} />
                                 </div>
                                 <div className="col-sm">
@@ -826,7 +847,8 @@ export default class Cadastro extends Component {
                                 </div>
                                 <div className="col-sm">
                                     <label htmlFor="txtCRP">Data Emissão CRP</label>
-                                    <input type="date" className="form-control form-control-modern" id="txtCRP" autoComplete="off" maxLength="20" value={formatarDataPtBrToInputDate(this.state.psicologo.dataEmissaoCrp)}
+                                    <input type="date" className="form-control form-control-modern" id="txtCRP" autoComplete="off" maxLength="20" 
+                                    value={formatarDataPtBrToInputDate(this.state.psicologo.dataEmissaoCrp) || ''}
                                         onChange={(e) => this.setState({ psicologo: { ...this.state.psicologo, dataEmissaoCrp: e.target.value } })} />
                                 </div>
 

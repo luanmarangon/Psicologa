@@ -66,6 +66,77 @@ export default class Cadastro extends Component {
 
     // ─── Select2 Paciente ────────────────────────────────────────────────────
 
+    // inicializarSelect2Paciente = () => {
+    //     if (!$("#selPaciente").length) return;
+
+    //     if ($("#selPaciente").hasClass("select2-hidden-accessible")) {
+    //         $("#selPaciente").select2("destroy");
+    //     }
+
+    //     $("#selPaciente").select2({
+    //         language: "pt-BR",
+    //         placeholder: "Digite para buscar o paciente...",
+    //         minimumInputLength: 2,
+    //         ajax: {
+    //             url: (params) =>
+    //                 resolveClientURL("Administrativo/Pessoa/ConsultarClienteAutoComplete?q=" + encodeURIComponent(params.term)),
+    //             dataType: 'json',
+    //             delay: 300,
+    //             processResults: (data) => ({
+    //                 results: data.map(item => ({
+    //                     id: item.dados.id,
+    //                     text: item.dados.nome.toUpperCase(),
+    //                     nome: item.dados.nome.toUpperCase(),
+    //                     cidade: item.dados.cidade,
+    //                     docIdNro: item.dados.docIdNro,
+    //                     docIdTipoNome: item.dados.docIdTipoNome,
+    //                 }))
+    //             }),
+    //         },
+    //         templateResult: (data) => {
+    //             if (!data.id) return data.text;
+    //             return $(
+    //                 '<div>' +
+    //                 '<div><strong>' + data.nome + '</strong></div>' +
+    //                 '<div class="small text-muted">' + (data.docIdNro || '') + ' (' + (data.docIdTipoNome || '') + ')</div>' +
+    //                 '<div class="small text-muted">' + (data.cidade || '') + '</div>' +
+    //                 '</div>'
+    //             );
+    //         },
+    //         templateSelection: (data) => data.nome || data.text,
+    //     });
+
+    //     $("#selPaciente").off("select2:select").on("select2:select", (e) => {
+    //         const item = e.params.data;
+    //         this.setState(prev => ({
+    //             trocarPaciente: false,
+    //             dados: {
+    //                 ...prev.dados,
+    //                 pacienteId: item.id,
+    //                 pacienteNome: item.nome,
+    //             }
+    //         }), () => {
+    //             // Esconde o container do Select2 e mostra o input estático
+    //             $("#selPaciente").next(".select2-container").hide();
+    //         });
+    //     });
+    // }
+
+    // trocarPacienteHandler = () => {
+    //     // Mostra o Select2 novamente e limpa o valor
+    //     $("#selPaciente").val(null).trigger("change");
+    //     $("#selPaciente").next(".select2-container").show();
+
+    //     this.setState(prev => ({
+    //         trocarPaciente: true,
+    //         dados: {
+    //             ...prev.dados,
+    //             pacienteId: '',
+    //             pacienteNome: '',
+    //         }
+    //     }));
+    // }
+
     inicializarSelect2Paciente = () => {
         if (!$("#selPaciente").length) return;
 
@@ -84,7 +155,9 @@ export default class Cadastro extends Component {
                 delay: 300,
                 processResults: (data) => ({
                     results: data.map(item => ({
-                        id: item.dados.id,
+                        id: item.dados.id,                       // id da Pessoa (usado pelo Select2 internamente)
+                        pessoaId: item.dados.id,                  // id da Pessoa, explícito
+                        pacienteId: item.paciente?.id || null,    // id do Paciente (pode não existir ainda)
                         text: item.dados.nome.toUpperCase(),
                         nome: item.dados.nome.toUpperCase(),
                         cidade: item.dados.cidade,
@@ -108,11 +181,20 @@ export default class Cadastro extends Component {
 
         $("#selPaciente").off("select2:select").on("select2:select", (e) => {
             const item = e.params.data;
+
+            if (!item.pacienteId) {
+                // Pessoa existe mas ainda não tem registro de Paciente
+                // Ajuste aqui conforme a regra de negócio: bloquear seleção, avisar o usuário,
+                // ou permitir e deixar o backend criar o registro de Paciente ao salvar.
+                showToastr("warning", "Esta pessoa ainda não possui cadastro de paciente.");
+            }
+
             this.setState(prev => ({
                 trocarPaciente: false,
                 dados: {
                     ...prev.dados,
-                    pacienteId: item.id,
+                    pessoaId: item.pessoaId,
+                    pacienteId: item.pacienteId,
                     pacienteNome: item.nome,
                 }
             }), () => {
@@ -131,6 +213,7 @@ export default class Cadastro extends Component {
             trocarPaciente: true,
             dados: {
                 ...prev.dados,
+                pessoaId: '',
                 pacienteId: '',
                 pacienteNome: '',
             }
@@ -653,7 +736,7 @@ export default class Cadastro extends Component {
                                                             dados: {
                                                                 ...prev.dados,
                                                                 confirmouAgendamento: confirmou,
-                                                                dataConfirmacao: confirmou ?  new Date().toISOString() : null,
+                                                                dataConfirmacao: confirmou ? new Date().toISOString() : null,
                                                             }
                                                         }));
                                                     }}

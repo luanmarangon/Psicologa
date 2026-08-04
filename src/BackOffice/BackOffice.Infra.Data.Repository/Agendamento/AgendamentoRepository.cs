@@ -145,9 +145,10 @@ namespace Psicologa.Infra.Data.Repository.Agendamento
                                             a.ConfirmouAgendamento, a.DataConfirmacao,
                             p.Nome as PacienteNome, ps.Nome as PsicologoNome, s.Nome as ServicoNome
                             from Agendamento a
-                            inner join Pessoa p on p.PessoaId = a.PacienteId
-                            inner join Pessoa ps on ps.PessoaId = a.PsicologoId
-                            inner join Servico s on a.ServicoId = s.ServicoId
+                            INNER JOIN Paciente pac on a.PacienteId = pac.PacienteId
+                            INNER JOIN Pessoa p on pac.PessoaId = p.PessoaId 
+                            INNER JOIN Pessoa ps on ps.PessoaId = a.PsicologoId
+                            INNER JOIN Servico s on a.ServicoId = s.ServicoId
                             where (p.Nome like @termo or ps.Nome like @termo) {filtroConsulta}
                             #paginacaoFiltro";
 
@@ -185,9 +186,10 @@ namespace Psicologa.Infra.Data.Repository.Agendamento
                                             a.ConfirmouAgendamento, a.DataConfirmacao,
                             p.Nome as PacienteNome, ps.Nome as PsicologoNome, s.Nome as ServicoNome
                             from Agendamento a
-                            inner join Pessoa p on p.PessoaId = a.PacienteId
-                            inner join Pessoa ps on ps.PessoaId = a.PsicologoId
-                            inner join Servico s on a.ServicoId = s.ServicoId
+                            INNER JOIN Paciente pac on a.PacienteId = pac.PacienteId
+                            INNER JOIN Pessoa p on pac.PessoaId = p.PessoaId 
+                            INNER JOIN Pessoa ps on ps.PessoaId = a.PsicologoId
+                            INNER JOIN Servico s on a.ServicoId = s.ServicoId
                             where AgendamentoId = @id";
                     cmd.ParameterAdd("@id", id);
                     using (var dr = cmd.ExecuteReader())
@@ -216,9 +218,10 @@ namespace Psicologa.Infra.Data.Repository.Agendamento
                                             a.ConfirmouAgendamento, a.DataConfirmacao,
                             p.Nome as PacienteNome, ps.Nome as PsicologoNome, s.Nome as ServicoNome
                             from Agendamento a
-                            inner join Pessoa p on p.PessoaId = a.PacienteId
-                            inner join Pessoa ps on ps.PessoaId = a.PsicologoId
-                            inner join Servico s on a.ServicoId = s.ServicoId
+                            INNER JOIN Paciente pac on a.PacienteId = pac.PacienteId
+                            INNER JOIN Pessoa p on pac.PessoaId = p.PessoaId 
+                            INNER JOIN Pessoa ps on ps.PessoaId = a.PsicologoId
+                            INNER JOIN Servico s on a.ServicoId = s.ServicoId
                             where a.PacienteId = @PacienteId and a.PsicologoId = @PsicologoId and a.DataConsulta = @Data";
                     cmd.ParameterAdd("@PacienteId", pacienteId);
                     cmd.ParameterAdd("@PsicologoId", psicologoId);

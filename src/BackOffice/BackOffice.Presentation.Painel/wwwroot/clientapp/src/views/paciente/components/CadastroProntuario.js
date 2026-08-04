@@ -13,14 +13,15 @@ export default class CadastroProntuario extends Component {
             aguarde: false,
 
             trocarResponsavel: false,
+            pacienteId: 0,
             pacienteNome: '',
             pacienteMatricula: '',
             dados: {
 
                 id: 0,
-                pessoaId: 0,
-                pessoaNome: '',
-
+                pacienteId: 0,
+                pacienteNome: '',
+                pacienteMatricula: '',
                 dataPrimeiraSessao: '',
 
                 ativo: true,
@@ -43,6 +44,10 @@ export default class CadastroProntuario extends Component {
 
         let promiseEdicao = null;
         let promisePaciente = null;
+
+        // alert("ID EDIÇÃO: " + this.props.idEdicao);
+
+
         if (!isEmpty(this.props.idEdicao)) {
 
             promiseEdicao = this.obter(this.props.idEdicao);
@@ -88,7 +93,7 @@ export default class CadastroProntuario extends Component {
     }
 
     obter = (id) => {
-        let p = HTTPClient.get("Administrativo/Prontuario/Obter?id=" + id)
+        let p = HTTPClient.get("Administrativo/Prontuario/ObterPorPacienteId?id=" + id)
             .then(r => r.json())
             .then(r => {
                 this.setState({
@@ -113,10 +118,13 @@ export default class CadastroProntuario extends Component {
             .then(r => r.json())
             .then(r => {
                 this.setState({
-                    pacienteNome: r.data.pessoaNome,
-                    pacienteMatricula: r.data.matricula
+                    dados: {
+                        ...this.state.dados,
+                        pacienteId: r.data.id,
+                        pacienteNome: r.data.pessoaNome,
+                        pacienteMatricula: r.data.matricula
+                    }
                 });
-                console.log(r.data.pessoaNome);
             })
             .catch(() => {
                 showToastr({
@@ -275,63 +283,31 @@ export default class CadastroProntuario extends Component {
         this.setState({
             aguarde: true
         });
-
-        HTTPClient.post("Administrativo/Prontuario/Salvar", this.state.dados)
-
-            .then(r => r.json())
-
-            // .then(r => {
-
-            //     if (r.success) {
-
-            //         this.props.onFechar(r.data);
-            //         showToastr(r.messages);
-
-            //     } else {
-
-            //         showToastr(r.messages);
-
-            //     }
-
-            // })
-
-            // .catch(() => {
-
-            //     showToastr({
-            //         type: "error",
-            //         text: "Um erro ocorreu."
-            //     });
-
-            // })
+        var dadosParaSalvar = {
+            ...this.state.dados,
+        };
+        HTTPClient.post("Administrativo/Prontuario/Salvar", dadosParaSalvar)
             .then(r => {
+                return r.json();
+            })
+            .then(r => {
+                if (r.success) {
+                    this.props.onFechar(r.data);
+                    showToastr(r.messages);
+                } else showToastr(r.messages);
+            })
+            .catch((e) => {
+                showToastr({
+                    type: "error",
+                    text: "Um erro ocorreu."
+                });
 
-    console.log("SUCCESS:", r.success);
-
-    if (r.success) {
-
-        console.log("ANTES onFechar");
-
-        this.props.onFechar(r.data);
-
-        console.log("DEPOIS onFechar");
-
-        showToastr(r.messages);
-    }
-})
-.catch(e => {
-
-    console.error("ERRO:", e);
-
-});
-
-            // .finally(() => {
-
-            //     this.setState({
-            //         aguarde: false
-            //     });
-
-            // });
-
+            })
+            .finally(() => {
+                this.setState({
+                    aguarde: false
+                });
+            });
     }
 
     encerrar = () => {
@@ -348,7 +324,7 @@ export default class CadastroProntuario extends Component {
                     <div className="d-flex justify-content-between align-items-center">
                         <div>
                             <div className="paciente-subtitulo">Paciente</div>
-                            <div className="paciente-nome">{this.state.pacienteNome}</div>
+                            <div className="paciente-nome">{this.state.dados.pacienteNome}</div>
                         </div>
                         <div>
                             {this.state.dados.ativo ?

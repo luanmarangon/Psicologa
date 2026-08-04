@@ -1,11 +1,12 @@
 ﻿using Psicologa.Application.Agendamento.ViewsModel;
+using Psicologa.Application.ProntuarioSessao.Services;
+using Psicologa.Application.ProntuarioSessao.ViewsModel;
 using Psicologa.Domain.Agendamento.Entities;
 using Shared.Infra.CrossCutting;
 using Shared.Infra.CrossCutting.ValidationResult;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
 using static Shared.Infra.CrossCutting.PaginacaoDados;
 
 namespace Psicologa.Application.Agendamento.Services
@@ -16,18 +17,24 @@ namespace Psicologa.Application.Agendamento.Services
         private readonly Domain.Agendamento.Services.AgendamentoService _servicoAgendamento;
         private readonly Domain.Configuracao.Services.ConfiguracaoService _configuracaoService;
         private readonly Domain.Prontuario.Services.ProntuarioService _prontuarioService;
+        private readonly Domain.ProntuarioSessao.Services.ProntuarioSessaoService _prontuarioSessaoService;
+        //private readonly ApplicationProntuarioSessaoService _appProntuarioSessaoService;
         private readonly IAppSettings _appSettings;
 
         public ApplicationAgentamentoService(Domain.LogAplicacao.Services.LogAplicacaoService logAplicacaoService,
             Domain.Agendamento.Services.AgendamentoService servicoAgendamento,
             Domain.Configuracao.Services.ConfiguracaoService configuracaoService,
                 Domain.Prontuario.Services.ProntuarioService prontuarioService,
+                Domain.ProntuarioSessao.Services.ProntuarioSessaoService prontuarioSessaoService,
+            //ApplicationProntuarioSessaoService appProntuarioSessaoService,
             IAppSettings appSettings)
         {
             _logAplicacaoService = logAplicacaoService;
             _servicoAgendamento = servicoAgendamento;
             _configuracaoService = configuracaoService;
             _prontuarioService = prontuarioService;
+            _prontuarioSessaoService = prontuarioSessaoService;
+            //_appProntuarioSessaoService = appProntuarioSessaoService;
             _appSettings = appSettings;
         }
 
@@ -69,7 +76,41 @@ namespace Psicologa.Application.Agendamento.Services
             };
 
             if (agendamento.Validar())
+            {
                 operacao = _servicoAgendamento.Salvar(agendamento);
+
+                if (operacao)
+                {
+                    dados.Id = agendamento.Id;
+
+                    //criar a sessão
+                    //ProntuarioSessaoViewModel sessaoVM = new ProntuarioSessaoViewModel();
+                    Domain.ProntuarioSessao.Entities.ProntuarioSessao sessaoVM = new Domain.ProntuarioSessao.Entities.ProntuarioSessao();
+                    var prontuario = _prontuarioService.ObterProntuarioPorPacienteId(agendamento.Paciente.Id);
+
+                    sessaoVM.Prontuario = new Domain.Prontuario.Entities.Prontuario
+                    {
+                        Id = prontuario.Id
+                    };
+                    sessaoVM.Agendamento = new Domain.Agendamento.Entities.Agendamento
+                    {
+                        Id = agendamento.Id
+                    };
+                    sessaoVM.Psicologa = new Domain.Pessoa.Entities.Pessoa
+                    {
+                        Id = agendamento.Psicologo.Id
+                    };
+                    sessaoVM.DataSessao = agendamento.DataConsulta;
+                    //sessaoVM.HoraInicio = TimeSpan.Parse(agendamento.HoraInicio);
+                    sessaoVM.TipoAtendimento = (Domain.Agendamento.Entities.Agendamento.tpFiltro)(agendamento.Online ? 2 : 1); //1 - Presencial, 2 - Online
+
+                    (operacao) = _prontuarioSessaoService.EvoluirSessao(sessaoVM);
+
+                }
+            }
+
+
+
 
             //if (operacao)
             //    RegistrarLog(agendamento.Id, requisicao, dadosExistente, "Agendamento");

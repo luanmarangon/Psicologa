@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using Psicologa.Domain.Paciente.Entities;
 
 namespace Psicologa.Domain.Pessoa.Entities
 {
@@ -38,6 +39,9 @@ namespace Psicologa.Domain.Pessoa.Entities
         public List<PessoaTipo> Tipos { get; set; }
         public bool Ativo { get; set; }
 
+        public Domain.Paciente.Entities.Paciente? Paciente { get; set; } = null;
+        public Domain.Psicologo.Entities.Psicologo? Psicologo { get; set; } = null; 
+        
         public Pessoa()
         {
             DocIdTipo = TpDoc.Indefinido;
@@ -104,14 +108,15 @@ namespace Psicologa.Domain.Pessoa.Entities
                     {
                         PessoaFisica pf = (PessoaFisica)this;
 
-                        if (pf.DataNascimento == DateTime.MinValue)
-                        {
-                            base.ValidationResult.Add(Message.TypeMessage.InvalidField, "Data de Nascimento é obrigatório.");
-                        }
-                        else if (pf.DocIdTipo == Pessoa.TpDoc.CPF && pf.DocIdNro != "" && !PessoaFisicaUtils.ValidarCPF(pf.DocIdNro))
-                        {
-                            base.ValidationResult.Add(Message.TypeMessage.InvalidField, "O CPF é inválido.");
-                        }
+                        //if (pf.DataNascimento == DateTime.MinValue)
+                        //{
+                        //    base.ValidationResult.Add(Message.TypeMessage.InvalidField, "Data de Nascimento é obrigatório.");
+                        //}
+                        //else
+                        //if (pf.DocIdTipo == Pessoa.TpDoc.CPF && pf.DocIdNro != "" && !PessoaFisicaUtils.ValidarCPF(pf.DocIdNro))
+                        //{
+                        //    base.ValidationResult.Add(Message.TypeMessage.InvalidField, "O CPF é inválido.");
+                        //}
                     }
                 }
 
@@ -122,12 +127,12 @@ namespace Psicologa.Domain.Pessoa.Entities
                     Endereco.Bairro = Endereco.Bairro.Trim();
                     Endereco.CEP = Endereco.CEP.Trim();
 
-                    if (Endereco.Logradouro == "" || Endereco.Numero == "" || Endereco.Bairro == "" || Endereco.CEP == "" || Endereco.Cidade == "")
-                    {
-                        base.ValidationResult.Add(Message.TypeMessage.InvalidField, "Forneça o endereço.");
-                    }
-                    else
-                    {
+                    //if (Endereco.Logradouro == "" || Endereco.Numero == "" || Endereco.Bairro == "" || Endereco.CEP == "" || Endereco.Cidade == "")
+                    //{
+                    //    base.ValidationResult.Add(Message.TypeMessage.InvalidField, "Forneça o endereço.");
+                    //}
+                    //else
+                    //{
                         if (!string.IsNullOrEmpty(Endereco.Latitude) && Endereco.Latitude.Length > 11)
                         {
                             base.ValidationResult.Add(Message.TypeMessage.InvalidField, "A Latitude tem muitos caracteres. Limite em 11.");
@@ -136,7 +141,7 @@ namespace Psicologa.Domain.Pessoa.Entities
                         {
                             base.ValidationResult.Add(Message.TypeMessage.InvalidField, "A Longitude tem muitos caracteres. Limite em 11.");
                         }
-                    }
+                    //}
                 }
             }
 

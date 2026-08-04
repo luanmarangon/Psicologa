@@ -43,9 +43,16 @@ namespace Psicologa.Presentation.Painel.Areas.Administrativo.Controllers
             var prontuario = _prontuarioService.Obter(idLimpo);
             return DefaultJSONResponse(true, prontuario);
         }
+        [HttpGet]
+        public IActionResult ObterPorPacienteId(string id)
+        {
+            int idLimpo = Convert.ToInt32(Criptografia.Descriptografar(id));
+            var prontuario = _prontuarioService.ObterPorPacienteId(idLimpo);
+            return DefaultJSONResponse(true, prontuario);
+        }
 
         [HttpPost]
-        public IActionResult Salvar([FromBody] System.Text.Json.JsonElement dados)
+        public IActionResult Salvar([FromBody] System.Text.Json.JsonElement dadosParaSalvar)
         {
             var requisicao = _req.ToArray(_ua);
 
@@ -55,7 +62,7 @@ namespace Psicologa.Presentation.Painel.Areas.Administrativo.Controllers
             ProntuarioViewModel prontuario = null;
             try
             {
-                prontuario = dados.Deserialize<ProntuarioViewModel>();
+                prontuario = dadosParaSalvar.Deserialize<ProntuarioViewModel>();
 
                 (operacao, vr) = _prontuarioService.Salvar(prontuario, requisicao);
 
@@ -73,7 +80,7 @@ namespace Psicologa.Presentation.Painel.Areas.Administrativo.Controllers
             if (operacao)
             {
                 prontuarioVM = _prontuarioService.Obter(prontuario.Id);
-                AddUserMessageSuccess("Pessoa salva com sucesso.");
+                AddUserMessageSuccess("Prontuario salvo com sucesso.");
             }
 
             return DefaultJSONResponse(operacao, prontuarioVM);
@@ -147,7 +154,7 @@ namespace Psicologa.Presentation.Painel.Areas.Administrativo.Controllers
         [HttpGet]
         public IActionResult PesquisarSessao(string q, string protocoloId, int filtroTipoAtendimento = 0, int pagina = 0, int ordenacao = 1)
         {
-            int idLimpo = Convert.ToInt32((protocoloId));
+            int idLimpo = Convert.ToInt32(Criptografia.Descriptografar(protocoloId));
 
             IEnumerable<object> sessoes = new List<object>();
             PaginacaoDados paginacao = new PaginacaoDados(pagina, 10, (PaginacaoDados.TpOrdenacao)ordenacao);

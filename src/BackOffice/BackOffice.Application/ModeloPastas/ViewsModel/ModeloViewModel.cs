@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Psicologa.Application.Prontuario.ViewsModel
+namespace Psicologa.Application.Modelo.ViewsModel
 {
-    internal class ProntuarioSessaoViewModel
+    internal class ModeloViewModel
     {
     }
 }

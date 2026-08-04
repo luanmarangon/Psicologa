@@ -311,6 +311,7 @@ namespace Psicologa.Infra.Data.Repository.Pessoa
                         #region Paciente
                         
                         int idAux = 0;
+                        int novoPacienteId = 0;
 
                         bool ehPaciente = pessoa.Tipos.Exists(p => p.Tipo == PessoaTipo.TpPessoa.Paciente);
                         
@@ -321,25 +322,113 @@ namespace Psicologa.Infra.Data.Repository.Pessoa
 
                         if(ehPaciente)
                         {
-                            cmd.CommandText = $@"SELECT COUNT(*) FROM Paciente where PessoaId = @PessoaId";
+                            cmd.CommandText = $@"SELECT PacienteId FROM Paciente where PessoaId = @PessoaId";
                             cmd.ParametersClear();
                             cmd.ParameterAdd("@PessoaId", idAux);
 
-                            if(Convert.ToInt32(cmd.ExecuteScalar()) == 0)
+                            var resultado = cmd.ExecuteScalar();
+                            novoPacienteId = resultado != null && resultado != DBNull.Value ? Convert.ToInt32(resultado) : 0;
+
+                            if (Convert.ToInt32(cmd.ExecuteScalar()) == 0)
                             {
-                                cmd.CommandText = $@"INSERT INTO Paciente (PessoaId, Ativo) VALUES (@PessoaId, @Ativo)";
+                                cmd.CommandText = $@"INSERT INTO Paciente (PessoaId, DataPrimeiraSessao, Ativo, Observacoes, ContatoEmergenciaNome, ContatoEmergenciaTelefone, Matricula, ResponsavelId, DataCriacao, DataAtualizacao) 
+                                                                   VALUES (@PessoaId, @DataPrimeiraSessao, @Ativo, @Observacoes, @ContatoEmergenciaNome, @ContatoEmergenciaTelefone, @Matricula, @ResponsavelId, @DataCriacao, @DataAtualizacao)";
                                 cmd.ParametersClear();
                                 cmd.ParameterAdd("@PessoaId", idAux);
+                                cmd.ParameterAdd("@DataPrimeiraSessao", pessoa.Paciente?.DataPrimeiraSessao);
                                 cmd.ParameterAdd("@Ativo", pessoa.Ativo);
+                                cmd.ParameterAdd("@Observacoes", pessoa.Paciente?.Observacoes);
+                                cmd.ParameterAdd("@ContatoEmergenciaNome", pessoa.Paciente?.ContatoEmergenciaNome);
+                                cmd.ParameterAdd("@ContatoEmergenciaTelefone", pessoa.Paciente?.ContatoEmergenciaTelefone);
+                                cmd.ParameterAdd("@Matricula", pessoa.Paciente?.Matricula);
+                                //cmd.ParameterAdd("@ResponsavelId", pessoa.Paciente?.Responsavel.Id);
+                                cmd.ParameterAdd("@ResponsavelId",pessoa.Paciente?.Responsavel?.Id ?? (object)DBNull.Value);
+                                cmd.ParameterAdd("@DataCriacao", pessoa.Paciente?.DataCriacao);
+                                cmd.ParameterAdd("@DataAtualizacao", pessoa.Paciente?.DataAtualizacao);
 
                                 cmd.ExecuteNonQuery();
-                                }
+
+                                cmd.ParametersClear();
+                                cmd.CommandText = "select LAST_INSERT_ID();";
+                                novoPacienteId = Convert.ToInt32(cmd.ExecuteScalar());
+                            }
                             else
                             {
-                                cmd.CommandText = $@"UPDATE Paciente SET Ativo = @Ativo WHERE PessoaId = @PessoaId";
+                                cmd.CommandText = $@"UPDATE Paciente SET DataPrimeiraSessao = @DataPrimeiraSessao, 
+                                                                         Ativo = @Ativo, 
+                                                                         Observacoes = @Observacoes,
+                                                                         ContatoEmergenciaNome = @ContatoEmergenciaNome,
+                                                                         ContatoEmergenciaTelefone = @ContatoEmergenciaTelefone,
+                                                                         Matricula = @Matricula,
+                                                                         ResponsavelId = @ResponsavelId,
+                                                                         DataAtualizacao = @DataAtualizacao
+                                                    WHERE PessoaId = @PessoaId";
                                 cmd.ParametersClear();
                                 cmd.ParameterAdd("@PessoaId", idAux);
+                                cmd.ParameterAdd("@DataPrimeiraSessao", pessoa.Paciente?.DataPrimeiraSessao);
                                 cmd.ParameterAdd("@Ativo", pessoa.Ativo);
+                                cmd.ParameterAdd("@Observacoes", pessoa.Paciente?.Observacoes);
+                                cmd.ParameterAdd("@ContatoEmergenciaNome", pessoa.Paciente?.ContatoEmergenciaNome);
+                                cmd.ParameterAdd("@ContatoEmergenciaTelefone", pessoa.Paciente?.ContatoEmergenciaTelefone);
+                                cmd.ParameterAdd("@Matricula", pessoa.Paciente?.Matricula);
+                                cmd.ParameterAdd("@ResponsavelId", pessoa.Paciente?.Responsavel.Id);
+                                cmd.ParameterAdd("@DataAtualizacao", pessoa.Paciente?.DataAtualizacao);
+                                cmd.ExecuteNonQuery();
+                            }
+                        }
+                        #endregion
+                        #region Psicologo
+                        
+                        int idPsiAux = 0;
+                        int novoPsicologoId = 0;
+
+                        bool ehPsicologo = pessoa.Tipos.Exists(p => p.Tipo == PessoaTipo.TpPessoa.Psicologo);
+                        
+                        if(pessoa.Id == 0 && novaPessoaId > 0)
+                            idPsiAux = novaPessoaId;
+                        else 
+                            idPsiAux = pessoa.Id;
+
+                        if(ehPsicologo)
+                        {
+                            cmd.CommandText = $@"SELECT PsicologoId FROM Psicologo where PessoaId = @PessoaId";
+                            cmd.ParametersClear();
+                            cmd.ParameterAdd("@PessoaId", idPsiAux);
+
+                            if(Convert.ToInt32(cmd.ExecuteScalar()) == 0)
+                            {
+                                cmd.CommandText = $@"INSERT INTO Psicologo (PessoaId, Crp, CrpUf, DataEmissaoCrp, Ativo, DataCriacao, DataAtualizacao) 
+                                                                    VALUES (@PessoaId, @Crp, @CrpUf, @DataEmissaoCrp, @Ativo, @DataCriacao, @DataAtualizacao)";
+                                cmd.ParametersClear();
+                                cmd.ParameterAdd("@PessoaId", idPsiAux);
+                                cmd.ParameterAdd("@Crp", pessoa.Psicologo?.Crp);
+                                cmd.ParameterAdd("@CrpUf", pessoa.Psicologo?.CrpUf);
+                                cmd.ParameterAdd("@DataEmissaoCrp", pessoa.Psicologo?.DataEmissaoCrp);
+                                cmd.ParameterAdd("@Ativo", pessoa.Ativo);
+                                cmd.ParameterAdd("@DataCriacao", pessoa.Psicologo?.DataCriacao);
+                                cmd.ParameterAdd("@DataAtualizacao", pessoa.Psicologo?.DataAtualizacao);
+
+                                cmd.ExecuteNonQuery();
+                                cmd.ParametersClear();
+                                cmd.CommandText = "select LAST_INSERT_ID();";
+                                novoPsicologoId = Convert.ToInt32(cmd.ExecuteScalar());
+                            }
+                            else
+                            {
+                                cmd.CommandText = $@"UPDATE Psicologo SET 
+                                                            Crp = @Crp,
+                                                            CrpUf = @CrpUf,
+                                                            DataEmissaoCrp = @DataEmissaoCrp,
+                                                            Ativo = @Ativo, 
+                                                            DataAtualizacao = @DataAtualizacao
+                                                    WHERE PessoaId = @PessoaId";
+                                cmd.ParametersClear();
+                                cmd.ParameterAdd("@PessoaId", idPsiAux);
+                                cmd.ParameterAdd("@Crp", pessoa.Psicologo?.Crp);
+                                cmd.ParameterAdd("@CrpUf", pessoa.Psicologo?.CrpUf);
+                                cmd.ParameterAdd("@DataEmissaoCrp", pessoa.Psicologo?.DataEmissaoCrp);
+                                cmd.ParameterAdd("@Ativo", pessoa.Ativo);
+                                cmd.ParameterAdd("@DataAtualizacao", pessoa.Psicologo?.DataAtualizacao);
                                 cmd.ExecuteNonQuery();
                             }
                         }
@@ -350,6 +439,14 @@ namespace Psicologa.Infra.Data.Repository.Pessoa
                         if (pessoa.Id == 0 && novaPessoaId > 0)
                         {
                             pessoa.Id = novaPessoaId;
+                            if(ehPaciente && pessoa.Paciente.Id == 0 && novoPacienteId > 0)
+                            {
+                                pessoa.Paciente.Id = novoPacienteId;
+                            }
+                            if(ehPsicologo && pessoa.Psicologo.Id == 0 && novoPsicologoId > 0)
+                            {
+                                pessoa.Psicologo.Id = novoPsicologoId;
+                            }
                         }
                     }
 
@@ -650,7 +747,9 @@ namespace Psicologa.Infra.Data.Repository.Pessoa
                             pc.PessoaContatoId, pc.Contato, pc.Tipo as ContatoTipo, pc.Observacao as ContatoObservacao,
                             e.PessoaEnderecoId, e.Bairro as EnderecoBairro, e.Cep as EnderecoCep, e.Complemento as EnderecoComplemento, e.Logradouro as EnderecoLogradouro, e.Numero as EnderecoNumero, e.PontoReferencia as EnderecoPontoReferencia, e.Latitude as EnderecoLatitude, e.Longitude as EnderecoLongitude,
                             e.Cidade, e.UF,
-                            pt.PessoaTipoId as PessoaTipoId, pt.Tipo as PessoaTipoTipo
+                            pt.PessoaTipoId as PessoaTipoId, pt.Tipo as PessoaTipoTipo, 
+                            pac.PacienteId, pac.DataPrimeiraSessao, pac.Ativo as AtivoPaciente, pac.Observacoes, pac.ContatoEmergenciaNome, pac.ContatoEmergenciaTelefone, pac.Matricula, pac.ResponsavelId, pac.DataCriacao as DataCriacaoPaciente, pac.DataAtualizacao as DataAtualizacaoPaciente,
+							psi.PsicologoId, psi.Crp, psi.CrpUf, psi.DataEmissaoCrp, psi.DataCriacao as DataCriacaoPsicologo, psi.DataAtualizacao as DataAtualizacaoPsicologo
                         from
                             Pessoa p
                             left outer join PessoaJuridica pj on p.PessoaId = pj.PessoaId
@@ -658,6 +757,8 @@ namespace Psicologa.Infra.Data.Repository.Pessoa
                             left outer join PessoaContato pc on p.PessoaId = pc.PessoaId
                             left outer join PessoaTipo pt on p.PessoaId = pt.PessoaId
                             left outer join PessoaEndereco e on p.PessoaId = e.PessoaId
+                            left outer join Paciente pac on p.PessoaId = pac.PessoaId
+                            left outer join Psicologo psi on p.PessoaId = psi.PessoaId
                         where p.PessoaId = @Id";
 
                     cmd.ParametersClear();
@@ -797,7 +898,9 @@ namespace Psicologa.Infra.Data.Repository.Pessoa
                             pc.PessoaContatoId, pc.Contato, pc.Tipo as ContatoTipo, pc.Observacao as ContatoObservacao,
                             e.PessoaEnderecoId, e.Bairro as EnderecoBairro, e.Cep as EnderecoCep, e.Complemento as EnderecoComplemento, e.Logradouro as EnderecoLogradouro, e.Numero as EnderecoNumero, e.PontoReferencia as EnderecoPontoReferencia, e.Latitude as EnderecoLatitude, e.Longitude as EnderecoLongitude,
                             e.Cidade, e.UF,
-                            pt.PessoaTipoId as PessoaTipoId, pt.Tipo as PessoaTipoTipo
+                            pt.PessoaTipoId as PessoaTipoId, pt.Tipo as PessoaTipoTipo, 
+                            pac.PacienteId, pac.DataPrimeiraSessao, pac.Ativo as AtivoPaciente, pac.Observacoes, pac.ContatoEmergenciaNome, pac.ContatoEmergenciaTelefone, pac.Matricula, pac.ResponsavelId, pac.DataCriacao as DataCriacaoPaciente, pac.DataAtualizacao as DataAtualizacaoPaciente,
+							psi.PsicologoId, psi.Crp, psi.CrpUf, psi.DataEmissaoCrp, psi.DataCriacao as DataCriacaoPsicologo, psi.DataAtualizacao as DataAtualizacaoPsicologo
                         from
                             Pessoa p
                             left outer join PessoaJuridica pj on p.PessoaId = pj.PessoaId
@@ -805,6 +908,8 @@ namespace Psicologa.Infra.Data.Repository.Pessoa
                             left outer join PessoaContato pc on p.PessoaId = pc.PessoaId
                             left outer join PessoaTipo pt on p.PessoaId = pt.PessoaId
                             left outer join PessoaEndereco e on p.PessoaId = e.PessoaId
+                            left outer join Paciente pac on p.PessoaId = pac.PessoaId
+                            left outer join Psicologo psi on p.PessoaId = psi.PessoaId
                         where p.Nome Like @Nome {sqlFiltroPessoaTipo}
                         order by p.Nome desc";
 
@@ -848,7 +953,9 @@ namespace Psicologa.Infra.Data.Repository.Pessoa
                             pc.PessoaContatoId, pc.Contato, pc.Tipo as ContatoTipo, pc.Observacao as ContatoObservacao,
                             e.PessoaEnderecoId, e.Bairro as EnderecoBairro, e.Cep as EnderecoCep, e.Complemento as EnderecoComplemento, e.Logradouro as EnderecoLogradouro, e.Numero as EnderecoNumero, e.PontoReferencia as EnderecoPontoReferencia, e.Latitude as EnderecoLatitude, e.Longitude as EnderecoLongitude,
                             e.Cidade, e.UF,
-                            pt.PessoaTipoId as PessoaTipoId, pt.Tipo as PessoaTipoTipo
+                            pt.PessoaTipoId as PessoaTipoId, pt.Tipo as PessoaTipoTipo, 
+                            pac.PacienteId, pac.DataPrimeiraSessao, pac.Ativo as AtivoPaciente, pac.Observacoes, pac.ContatoEmergenciaNome, pac.ContatoEmergenciaTelefone, pac.Matricula, pac.ResponsavelId, pac.DataCriacao as DataCriacaoPaciente, pac.DataAtualizacao as DataAtualizacaoPaciente,
+							psi.PsicologoId, psi.Crp, psi.CrpUf, psi.DataEmissaoCrp, psi.DataCriacao as DataCriacaoPsicologo, psi.DataAtualizacao as DataAtualizacaoPsicologo
                         from
                             Pessoa p
                             left outer join PessoaJuridica pj on p.PessoaId = pj.PessoaId
@@ -856,6 +963,8 @@ namespace Psicologa.Infra.Data.Repository.Pessoa
                             left outer join PessoaContato pc on p.PessoaId = pc.PessoaId
                             left outer join PessoaTipo pt on p.PessoaId = pt.PessoaId
                             left outer join PessoaEndereco e on p.PessoaId = e.PessoaId
+                            left outer join Paciente pac on p.PessoaId = pac.PessoaId
+                            left outer join Psicologo psi on p.PessoaId = psi.PessoaId
                             {sqlFiltroPessoaTipo}
                         order by p.PessoaId desc
                         limit {top}";
@@ -892,7 +1001,9 @@ namespace Psicologa.Infra.Data.Repository.Pessoa
                             pc.PessoaContatoId, pc.Contato, pc.Tipo as ContatoTipo, pc.Observacao as ContatoObservacao,
                             e.PessoaEnderecoId, e.Bairro as EnderecoBairro, e.Cep as EnderecoCep, e.Complemento as EnderecoComplemento, e.Logradouro as EnderecoLogradouro, e.Numero as EnderecoNumero, e.PontoReferencia as EnderecoPontoReferencia, e.Latitude as EnderecoLatitude, e.Longitude as EnderecoLongitude,
                             e.Cidade, e.UF,
-                            pt.PessoaTipoId as PessoaTipoId, pt.Tipo as PessoaTipoTipo
+                            pt.PessoaTipoId as PessoaTipoId, pt.Tipo as PessoaTipoTipo, 
+                            pac.PacienteId, pac.DataPrimeiraSessao, pac.Ativo as AtivoPaciente, pac.Observacoes, pac.ContatoEmergenciaNome, pac.ContatoEmergenciaTelefone, pac.Matricula, pac.ResponsavelId, pac.DataCriacao as DataCriacaoPaciente, pac.DataAtualizacao as DataAtualizacaoPaciente,
+							psi.PsicologoId, psi.Crp, psi.CrpUf, psi.DataEmissaoCrp, psi.DataCriacao as DataCriacaoPsicologo, psi.DataAtualizacao as DataAtualizacaoPsicologo
                         from
                             Pessoa p
                             left outer join PessoaJuridica pj on p.PessoaId = pj.PessoaId
@@ -900,6 +1011,8 @@ namespace Psicologa.Infra.Data.Repository.Pessoa
                             left outer join PessoaContato pc on p.PessoaId = pc.PessoaId
                             left outer join PessoaTipo pt on p.PessoaId = pt.PessoaId
                             left outer join PessoaEndereco e on p.PessoaId = e.PessoaId
+                            left outer join Paciente pac on p.PessoaId = pac.PessoaId
+                            left outer join Psicologo psi on p.PessoaId = psi.PessoaId
                             where p.Ativo and pt.Tipo = {(int)PessoaTipo.TpPessoa.Paciente}
                         order by p.PessoaId desc";
 
@@ -938,7 +1051,9 @@ namespace Psicologa.Infra.Data.Repository.Pessoa
                             pc.PessoaContatoId, pc.Contato, pc.Tipo as ContatoTipo, pc.Observacao as ContatoObservacao,
                             e.PessoaEnderecoId, e.Bairro as EnderecoBairro, e.Cep as EnderecoCep, e.Complemento as EnderecoComplemento, e.Logradouro as EnderecoLogradouro, e.Numero as EnderecoNumero, e.PontoReferencia as EnderecoPontoReferencia, e.Latitude as EnderecoLatitude, e.Longitude as EnderecoLongitude,
                             e.Cidade, e.UF,
-                            pt.PessoaTipoId as PessoaTipoId, pt.Tipo as PessoaTipoTipo
+                            pt.PessoaTipoId as PessoaTipoId, pt.Tipo as PessoaTipoTipo, 
+                            pac.PacienteId, pac.DataPrimeiraSessao, pac.Ativo as AtivoPaciente, pac.Observacoes, pac.ContatoEmergenciaNome, pac.ContatoEmergenciaTelefone, pac.Matricula, pac.ResponsavelId, pac.DataCriacao as DataCriacaoPaciente, pac.DataAtualizacao as DataAtualizacaoPaciente,
+							psi.PsicologoId, psi.Crp, psi.CrpUf, psi.DataEmissaoCrp, psi.DataCriacao as DataCriacaoPsicologo, psi.DataAtualizacao as DataAtualizacaoPsicologo
                         from
                             Pessoa p
                             left outer join PessoaJuridica pj on p.PessoaId = pj.PessoaId
@@ -946,6 +1061,8 @@ namespace Psicologa.Infra.Data.Repository.Pessoa
                             left outer join PessoaContato pc on p.PessoaId = pc.PessoaId
                             left outer join PessoaTipo pt on p.PessoaId = pt.PessoaId
                             left outer join PessoaEndereco e on p.PessoaId = e.PessoaId
+                            left outer join Paciente pac on p.PessoaId = pac.PessoaId
+                            left outer join Psicologo psi on p.PessoaId = psi.PessoaId
                         where p.Ativo and pt.Tipo = {(int)PessoaTipo.TpPessoa.Psicologo} and
                               p.Nome Like @Termo and
                               u.ClienteIdVinculo = @clienteIdVinculo
@@ -1039,6 +1156,32 @@ namespace Psicologa.Infra.Data.Repository.Pessoa
                         //    }
                         //}
                     };
+                    p.Paciente = dr["PacienteId"] != DBNull.Value ? new Domain.Paciente.Entities.Paciente()
+                    {
+                        Id = Convert.ToInt32(dr["PacienteId"]),
+                        DataPrimeiraSessao = dr["DataPrimeiraSessao"] != DBNull.Value ? Convert.ToDateTime(dr["DataPrimeiraSessao"]) : DateTime.MinValue,
+                        Ativo = dr["AtivoPaciente"] != DBNull.Value ? Convert.ToBoolean(dr["AtivoPaciente"]) : false,
+                        Observacoes = dr["Observacoes"].ToString(),
+                        ContatoEmergenciaNome = dr["ContatoEmergenciaNome"].ToString(),
+                        ContatoEmergenciaTelefone = dr["ContatoEmergenciaTelefone"].ToString(),
+                        Matricula = dr["Matricula"].ToString(),
+                        Responsavel = new Domain.Pessoa.Entities.Pessoa()
+                        {
+                            Id = dr["ResponsavelId"] != DBNull.Value ? Convert.ToInt32(dr["ResponsavelId"]) : 0
+                        },
+                        DataCriacao = dr["DataCriacaoPaciente"] != DBNull.Value ? Convert.ToDateTime(dr["DataCriacaoPaciente"]) : DateTime.MinValue,
+                        DataAtualizacao = dr["DataAtualizacaoPaciente"] != DBNull.Value ? Convert.ToDateTime(dr["DataAtualizacaoPaciente"]) : DateTime.MinValue
+                    } : null;
+
+                    p.Psicologo = dr["PsicologoId"] != DBNull.Value ? new Domain.Psicologo.Entities.Psicologo()
+                    {
+                        Id = Convert.ToInt32(dr["PsicologoId"]),
+                        Crp = dr["Crp"].ToString(),
+                        CrpUf = dr["CrpUf"].ToString(),
+                        DataEmissaoCrp = dr["DataEmissaoCrp"] != DBNull.Value ? Convert.ToDateTime(dr["DataEmissaoCrp"]) : DateTime.MinValue,
+                        DataCriacao = dr["DataCriacaoPsicologo"] != DBNull.Value ? Convert.ToDateTime(dr["DataCriacaoPsicologo"]) : DateTime.MinValue,
+                        DataAtualizacao = dr["DataAtualizacaoPsicologo"] != DBNull.Value ? Convert.ToDateTime(dr["DataAtualizacaoPsicologo"]) : DateTime.MinValue
+                    } : null;
                 }
 
                 //relacionamentos * para *
@@ -1100,11 +1243,13 @@ namespace Psicologa.Infra.Data.Repository.Pessoa
                 using (var cmd = DbContext.CreateCommand())
                 {
                     cmd.CommandText =
-                    $@"select SQL_CALC_FOUND_ROWS p.*, pj.*, pf.*,
+                    $@"select p.*, pj.*, pf.*,
                             pc.PessoaContatoId, pc.Contato, pc.Tipo as ContatoTipo, pc.Observacao as ContatoObservacao,
                             e.PessoaEnderecoId, e.Bairro as EnderecoBairro, e.Cep as EnderecoCep, e.Complemento as EnderecoComplemento, e.Logradouro as EnderecoLogradouro, e.Numero as EnderecoNumero, e.PontoReferencia as EnderecoPontoReferencia, e.Latitude as EnderecoLatitude, e.Longitude as EnderecoLongitude,
-                            e.Cidade,e.UF,
-                            pt.PessoaTipoId as PessoaTipoId, pt.Tipo as PessoaTipoTipo
+                            e.Cidade, e.UF,
+                            pt.PessoaTipoId as PessoaTipoId, pt.Tipo as PessoaTipoTipo, 
+                            pac.PacienteId, pac.DataPrimeiraSessao, pac.Ativo as AtivoPaciente, pac.Observacoes, pac.ContatoEmergenciaNome, pac.ContatoEmergenciaTelefone, pac.Matricula, pac.ResponsavelId, pac.DataCriacao as DataCriacaoPaciente, pac.DataAtualizacao as DataAtualizacaoPaciente,
+							psi.PsicologoId, psi.Crp, psi.CrpUf, psi.DataEmissaoCrp, psi.DataCriacao as DataCriacaoPsicologo, psi.DataAtualizacao as DataAtualizacaoPsicologo
                         from
                             Pessoa p
                             left outer join PessoaJuridica pj on p.PessoaId = pj.PessoaId
@@ -1112,7 +1257,8 @@ namespace Psicologa.Infra.Data.Repository.Pessoa
                             left outer join PessoaContato pc on p.PessoaId = pc.PessoaId
                             left outer join PessoaTipo pt on p.PessoaId = pt.PessoaId
                             left outer join PessoaEndereco e on p.PessoaId = e.PessoaId
-
+                            left outer join Paciente pac on p.PessoaId = pac.PessoaId
+                            left outer join Psicologo psi on p.PessoaId = psi.PessoaId
                         where p.Nome Like @Nome {sqlFiltroPessoaTipo}
                         order by p.Nome ASC
                         limit {pular},{paginacao.TamanhoPagina}";

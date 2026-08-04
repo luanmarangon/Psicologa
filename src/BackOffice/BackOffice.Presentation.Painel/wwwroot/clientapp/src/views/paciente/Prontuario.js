@@ -57,9 +57,9 @@ export default class Index extends Component {
 
                 this.setState({
                     paciente: {
-                        id: r.data.pessoaId,
-                        nome: r.data.paciente.pessoa.nome || "",
-                        matricula: r.data.paciente.matricula || "",
+                        id: r.data.pacienteId,
+                        nome: r.data.pacienteNome || "",
+                        matricula: r.data.pacienteMatricula || "",
                         ativo: r.data.ativo,
                         prontuarioId: prontuarioId
                     }
@@ -71,7 +71,7 @@ export default class Index extends Component {
 
                 showToastr({
                     type: "error",
-                    text: "Um erro ocorreu."
+                    text: "Um erro ocorreu ao obter o dados do paciente."
                 });
 
                 return null;
@@ -100,7 +100,7 @@ export default class Index extends Component {
             .catch(() => {
                 showToastr({
                     type: "error",
-                    text: "Um erro ocorreu."
+                    text: "Um erro ocorreu ao obter as sessões."
                 });
             });
     }

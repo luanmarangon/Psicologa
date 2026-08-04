@@ -72,6 +72,11 @@ namespace Psicologa.Application.ProntuarioSessao.Services
             return (operacao, sessao.ValidationResult);
         }
 
+
+
+
+
+
         public IEnumerable<ProntuarioConsultaSessaoViewModel> Consultar(string termo, int protocoloId, int filtroTipoAtendimento, PaginacaoDados paginacao)
         {
             List<ProntuarioConsultaSessaoViewModel> retorno = new List<ProntuarioConsultaSessaoViewModel>();

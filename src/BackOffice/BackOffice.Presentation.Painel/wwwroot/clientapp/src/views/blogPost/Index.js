@@ -65,7 +65,7 @@ export default class Index extends Component {
 
     renderCard = (post) => {
     return (
-        <div key={post.id} className="col-xl-4 col-lg-6 col-md-6 mb-4">
+        <div key={post.id} className="col-xl-6 col-lg-6 col-md-6 mb-4">
             <div className="card h-100 border-0 shadow-sm  blog-card">
 
                 {/* Imagem */}

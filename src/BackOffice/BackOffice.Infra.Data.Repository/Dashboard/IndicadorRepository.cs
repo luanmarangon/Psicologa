@@ -24,7 +24,7 @@ namespace Psicologa.Infra.Data.Repository.Dashboard
                 using(var cmd = DbContext.CreateCommand())
                 {
                     cmd.CommandText =
-                        $@"SELECT COUNT(*) AS Psicologos FROM pessoa p JOIN pessoatipo pt ON p.PessoaId = pt.PessoaId WHERE pt.Tipo = 3 AND p.Ativo = 1";
+                        $@"SELECT COUNT(*) AS Psicologos FROM Pessoa p JOIN PessoaTipo pt ON p.PessoaId = pt.PessoaId WHERE pt.Tipo = 3 AND p.Ativo = 1";
 
                     return Convert.ToInt32(cmd.ExecuteScalar());
                 }
@@ -44,7 +44,7 @@ namespace Psicologa.Infra.Data.Repository.Dashboard
                 using(var cmd = DbContext.CreateCommand())
                 {
                     cmd.CommandText =
-                        $@"SELECT COUNT(*) AS Clientes FROM pessoa p JOIN pessoatipo pt ON p.PessoaId = pt.PessoaId WHERE pt.Tipo = 1 AND p.Ativo = 1";
+                        $@"SELECT COUNT(*) AS Clientes FROM Pessoa p JOIN PessoaTipo pt ON p.PessoaId = pt.PessoaId WHERE pt.Tipo = 1 AND p.Ativo = 1";
 
                     return Convert.ToInt32(cmd.ExecuteScalar());
                 }
@@ -84,7 +84,7 @@ namespace Psicologa.Infra.Data.Repository.Dashboard
                 using (var cmd = DbContext.CreateCommand())
                 {
                     cmd.CommandText =
-                        $@"SELECT COUNT(*) AS Colaboradores FROM pessoa p JOIN pessoatipo pt ON p.PessoaId = pt.PessoaId WHERE pt.Tipo = 2 AND p.Ativo = 1";
+                        $@"SELECT COUNT(*) AS Colaboradores FROM Pessoa p JOIN PessoaTipo pt ON p.PessoaId = pt.PessoaId WHERE pt.Tipo = 2 AND p.Ativo = 1";
 
                     return Convert.ToInt32(cmd.ExecuteScalar());
                 }
@@ -124,7 +124,7 @@ namespace Psicologa.Infra.Data.Repository.Dashboard
                 using (var cmd = DbContext.CreateCommand())
                 {
                     cmd.CommandText =
-                        $@"SELECT COUNT(*) AS USUARIOS FROM usuario";
+                        $@"SELECT COUNT(*) AS USUARIOS FROM Usuario";
 
                     return Convert.ToInt32(cmd.ExecuteScalar());
                 }
@@ -213,12 +213,12 @@ namespace Psicologa.Infra.Data.Repository.Dashboard
                 {
                     cmd.CommandText =
                         $@"SELECT
-	                        (SELECT COUNT(*) FROM pessoa p JOIN pessoatipo pt ON p.PessoaId = pt.PessoaId WHERE pt.Tipo = 1 AND p.Ativo = 1) AS Clientes,
-	                        (SELECT COUNT(*) FROM pessoa p JOIN pessoatipo pt ON p.PessoaId = pt.PessoaId WHERE pt.Tipo = 2 AND p.Ativo = 1) AS Colaboradores,
-	                        (SELECT COUNT(*) FROM pessoa p JOIN pessoatipo pt ON p.PessoaId = pt.PessoaId WHERE pt.Tipo = 3 AND p.Ativo = 1) AS Psicologos,
+	                        (SELECT COUNT(*) FROM Pessoa p JOIN PessoaTipo pt ON p.PessoaId = pt.PessoaId WHERE pt.Tipo = 1 AND p.Ativo = 1) AS Clientes,
+	                        (SELECT COUNT(*) FROM Pessoa p JOIN PessoaTipo pt ON p.PessoaId = pt.PessoaId WHERE pt.Tipo = 2 AND p.Ativo = 1) AS Colaboradores,
+	                        (SELECT COUNT(*) FROM Pessoa p JOIN PessoaTipo pt ON p.PessoaId = pt.PessoaId WHERE pt.Tipo = 3 AND p.Ativo = 1) AS Psicologos,
                             (SELECT COUNT(*) FROM BlogPost ) AS BlogTotal,
                             (SELECT COUNT(*) FROM BlogPost Where Date(DataPublicacao) <= Now()) AS BlogPublicados,
-                            (SELECT COUNT(*) FROM usuario) as Usuarios,
+                            (SELECT COUNT(*) FROM Usuario) as Usuarios,
                             (SELECT COUNT(*) FROM Servico where Ativo = 1) as ServicosAtivos
 
                         
@@ -255,7 +255,7 @@ namespace Psicologa.Infra.Data.Repository.Dashboard
                 {
                     cmd.CommandText =
                         $@"SELECT
-	                        (SELECT COUNT(*) FROM pessoa p JOIN pessoatipo pt ON p.PessoaId = pt.PessoaId WHERE pt.Tipo = 3 AND p.Ativo = 1) AS Psicologos,
+	                        (SELECT COUNT(*) FROM Pessoa p JOIN PessoaTipo pt ON p.PessoaId = pt.PessoaId WHERE pt.Tipo = 3 AND p.Ativo = 1) AS Psicologos,
                             (SELECT COUNT(*) FROM BlogPost Where Date(DataPublicacao) <= Now()) AS BlogPublicados,
                             (SELECT COUNT(*) FROM Servico where Ativo = 1) as ServicosAtivos
 

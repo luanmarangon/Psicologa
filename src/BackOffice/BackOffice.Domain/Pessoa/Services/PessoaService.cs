@@ -65,25 +65,25 @@ namespace Psicologa.Domain.Pessoa.Services
 
             bool valido = pessoa.Validar();
 
-            if (valido)
-            {
-                var vr = DocumentoIdentificacaoUnico(pessoa);
-                if (!vr.IsValid())
-                {
-                    pessoa.ValidationResult.Add(vr.Messages);
-                    valido = false;
-                }
+            //if (valido)
+            //{
+            //    var vr = DocumentoIdentificacaoUnico(pessoa);
+            //    if (!vr.IsValid())
+            //    {
+            //        pessoa.ValidationResult.Add(vr.Messages);
+            //        valido = false;
+            //    }
 
-                if (valido)
-                {
-                    vr = FormaContatoUnica(pessoa);
-                    if (!vr.IsValid())
-                    {
-                        pessoa.ValidationResult.Add(vr.Messages);
-                        valido = false;
-                    }
-                }
-            }
+            //    if (valido)
+            //    {
+            //        vr = FormaContatoUnica(pessoa);
+            //        if (!vr.IsValid())
+            //        {
+            //            pessoa.ValidationResult.Add(vr.Messages);
+            //            valido = false;
+            //        }
+            //    }
+            //}
 
             if (valido)
             {

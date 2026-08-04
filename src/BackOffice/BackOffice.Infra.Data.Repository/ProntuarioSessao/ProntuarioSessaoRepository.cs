@@ -105,7 +105,7 @@ namespace Psicologa.Infra.Data.Repository.ProntuarioSessao
                                         ps.PsicologaId, ps.TipoAtendimento,  ps.Evolucao, ps.DataCriacao AS ProntuarioSessaoDataCriacao, ps.DataAtualizacao AS ProntuarioSessaoDataAtualizacao,
                                         pr.ProntuarioId,
                                         p.PessoaId, p.Nome as PsicologoNome
-                                    FROM prontuariosessao ps
+                                    FROM ProntuarioSessao ps
                                     JOIN Prontuario pr on ps.ProntuarioId = pr.ProntuarioId
                                     JOIN Pessoa p on ps.PsicologaId = p.PessoaId
                                     LEFT JOIN Agendamento a on ps.AgendamentoId = a.AgendamentoId
@@ -169,7 +169,7 @@ namespace Psicologa.Infra.Data.Repository.ProntuarioSessao
                                         ps.PsicologaId, ps.TipoAtendimento,  ps.Evolucao, ps.DataCriacao AS ProntuarioSessaoDataCriacao, ps.DataAtualizacao AS ProntuarioSessaoDataAtualizacao,
                                         pr.ProntuarioId,
                                         p.PessoaId, p.Nome as PsicologoNome
-                                    FROM prontuariosessao ps
+                                    FROM ProntuarioSessao ps
                                     JOIN Prontuario pr on ps.ProntuarioId = pr.ProntuarioId
                                     JOIN Pessoa p on ps.PsicologaId = p.PessoaId
                                     LEFT JOIN Agendamento a on ps.AgendamentoId = a.AgendamentoId

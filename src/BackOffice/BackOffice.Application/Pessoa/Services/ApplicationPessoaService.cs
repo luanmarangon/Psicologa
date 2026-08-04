@@ -1,4 +1,5 @@
 ﻿using Psicologa.Application.Pessoa.ViewsModel;
+using Psicologa.Application.Prontuario.ViewsModel;
 using Psicologa.Domain.Paciente.Entities;
 using Psicologa.Domain.Pessoa.Entities;
 using Psicologa.Domain.Usuario.Entities;
@@ -8,6 +9,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Reflection.PortableExecutable;
+
 
 //using static Psicologa.Application.Pessoa.ViewsModel.ClienteEGestorViewModel;
 using static Shared.Infra.CrossCutting.PaginacaoDados;
@@ -26,10 +29,12 @@ namespace Psicologa.Application.Pessoa.Services
         private readonly Paciente.Services.ApplicationPacienteService _applicationPacienteService;
         private readonly Psicologo.Services.ApplicationPsicologoService _applicationPsicologoService;
 
+        private readonly Prontuario.Services.ApplicationProntuarioService _applicationProntuarioService;
+
         public ApplicationPessoaService(Domain.Pessoa.Services.PessoaService pessoaService, Shared.Domain.Cidade.Services.CidadeService cidadeService, Domain.LogAplicacao.Services.LogAplicacaoService logAplicacaoService,
             IAppSettings appSettings, Domain.Usuario.Services.UsuarioService usuarioService, 
             Paciente.Services.ApplicationPacienteService applicationPacienteService,
-            Psicologo.Services.ApplicationPsicologoService applicationPsicologoService)
+            Psicologo.Services.ApplicationPsicologoService applicationPsicologoService, Prontuario.Services.ApplicationProntuarioService applicationProntuarioService)
         {
             _pessoaService = pessoaService;
             _cidadeService = cidadeService;
@@ -38,6 +43,7 @@ namespace Psicologa.Application.Pessoa.Services
             _applicationPacienteService = applicationPacienteService;
             _applicationPsicologoService = applicationPsicologoService;
             _usuarioService = usuarioService;
+            _applicationProntuarioService = applicationProntuarioService;
         }
 
         public (bool, ValidationResult) Salvar(PessoaViewModel pessoaVM, string[] requisicao)
@@ -115,6 +121,59 @@ namespace Psicologa.Application.Pessoa.Services
                 pf.Sexo = (PessoaFisica.TpSexo)pessoaVM.Dados.Sexo;
             }
 
+            //Paciente
+            if (pessoa.Tipos.Any(t => t.Tipo == PessoaTipo.TpPessoa.Paciente) && pessoaVM.Paciente.HasValue)
+            {
+                var paciente = pessoaVM.Paciente.Value;
+
+                pessoa.Paciente = new Domain.Paciente.Entities.Paciente
+                {
+                    Id = paciente.Id,
+                    ContatoEmergenciaNome = paciente.ContatoEmergenciaNome,
+                    ContatoEmergenciaTelefone = paciente.ContatoEmergenciaTelefone,
+                    Responsavel = paciente.ResponsavelId.HasValue
+                        ? new Domain.Pessoa.Entities.Pessoa
+                        {
+                            Id = paciente.ResponsavelId.Value
+                        }
+                        : null,
+                };
+
+                if(pessoaVM.Paciente.HasValue)
+                {
+                    pessoa.Paciente.DataCriacao = DateTime.Now;
+                    pessoa.Paciente.Matricula = _applicationPacienteService.GerarMatricula();
+                }
+
+                pessoa.Paciente.DataAtualizacao = DateTime.Now;
+            }
+
+            //Psicologo
+
+            if (pessoa.Tipos.Any(t => t.Tipo == PessoaTipo.TpPessoa.Psicologo) && pessoaVM.Psicologo.HasValue)
+            {
+                var psicologo = pessoaVM.Psicologo.Value;
+
+                pessoa.Psicologo = new Domain.Psicologo.Entities.Psicologo
+                {
+                    Id = psicologo.Id,
+                    Crp = psicologo.Crp,
+                    CrpUf = psicologo.CrpUf,
+                    DataEmissaoCrp = psicologo.DataEmissaoCrp
+                };
+            }
+            //Psicologo
+            //if (pessoa.Tipos.Any(t => t.Tipo == PessoaTipo.TpPessoa.Psicologo))
+            //{
+            //   pessoa.Psicologo = new Domain.Psicologo.Entities.Psicologo
+            //   {
+            //       Id = pessoaVM.Psicologo?.Id,
+            //       Crp = pessoaVM.Psicologo?.Crp,
+            //       CrpUf = pessoaVM.Psicologo?.CrpUf,
+            //       DataEmissaoCrp = pessoaVM.Psicologo?.DataEmissaoCrp ?? DateTime.MinValue
+            //   } : null;
+            //}
+
             if (pessoa.ValidationResult.Count == 0)
             {
                 operacao = _pessoaService.Salvar(pessoa);
@@ -123,39 +182,64 @@ namespace Psicologa.Application.Pessoa.Services
                 {
                     pessoaVM.Dados.Id = pessoa.Id;
 
+
+                    //Se salvou a Pessoa e for Paciente precisamos criar o prontuario para para gerar
+
+                    if(pessoa.Paciente.Id > 0)
+                    {
+                        var prontuario = _applicationProntuarioService.ObterPorPacienteId(pessoa.Paciente.Id);
+                        
+                        if(prontuario == null)
+                        {
+                            ProntuarioViewModel prontuarioCriar = new ProntuarioViewModel();
+                            prontuarioCriar.PacienteId = pessoa.Paciente.Id;
+                            prontuarioCriar.Ativo = true;
+
+                            (operacao, _)= _applicationProntuarioService.Salvar(prontuarioCriar, requisicao);
+
+                        }
+                    
+                    
+                    
+                    
+                    }
+
+
+
+
                     //Criar o Paciente
 
-                    if (pessoa.Tipos.Any(t => t.Tipo == PessoaTipo.TpPessoa.Paciente))
-                    {
-                        var paciente = _applicationPacienteService.ObterPorPessoaId(pessoa.Id);
+                    //if (pessoa.Tipos.Any(t => t.Tipo == PessoaTipo.TpPessoa.Paciente))
+                    //{
+                    //    var paciente = _applicationPacienteService.ObterPorPessoaId(pessoa.Id);
 
-                        var pacienteVM = new Application.Paciente.ViewsModel.PacienteViewModel()
-                        {
-                            Id = paciente.Id,
-                            Ativo = pessoa.Ativo,
-                            PessoaId = pessoa.Id,
-                            ContatoEmergenciaNome = pessoaVM.Paciente?.ContatoEmergenciaNome,
-                            ContatoEmergenciaTelefone = pessoaVM.Paciente?.ContatoEmergenciaTelefone,
-                            ResponsavelId = pessoaVM.Paciente?.ResponsavelId,
-                        };
-                        (operacao, _) = _applicationPacienteService.Salvar(pacienteVM, requisicao);
-                    }
+                    //    var pacienteVM = new Application.Paciente.ViewsModel.PacienteViewModel()
+                    //    {
+                    //        Id = paciente.Id,
+                    //        Ativo = pessoa.Ativo,
+                    //        PessoaId = pessoa.Id,
+                    //        ContatoEmergenciaNome = pessoaVM.Paciente?.ContatoEmergenciaNome,
+                    //        ContatoEmergenciaTelefone = pessoaVM.Paciente?.ContatoEmergenciaTelefone,
+                    //        ResponsavelId = pessoaVM.Paciente?.ResponsavelId,
+                    //    };
+                    //    (operacao, _) = _applicationPacienteService.Salvar(pacienteVM, requisicao);
+                    //}
 
-                    //Criar o Psicologo
-                    if (pessoa.Tipos.Any(t => t.Tipo == PessoaTipo.TpPessoa.Psicologo))
-                    {
+                    ////Criar o Psicologo
+                    //if (pessoa.Tipos.Any(t => t.Tipo == PessoaTipo.TpPessoa.Psicologo))
+                    //{
 
-                        var psicologoVM = new Application.Psicologo.ViewsModel.PsicologoViewModel()
-                        {
-                            Id = 0,
-                            PessoaId = pessoa.Id,
-                            Ativo = pessoa.Ativo, 
-                            Crp = pessoaVM.Psicologo?.Crp,
-                            CrpUf = pessoaVM.Psicologo?.CrpUf,
-                            DataEmissaoCrp = pessoaVM.Psicologo?.DataEmissaoCrp ?? DateTime.MinValue
-                        };
-                        (operacao, _) = _applicationPsicologoService.Salvar(psicologoVM, requisicao);
-                    }
+                    //    var psicologoVM = new Application.Psicologo.ViewsModel.PsicologoViewModel()
+                    //    {
+                    //        Id = 0,
+                    //        PessoaId = pessoa.Id,
+                    //        Ativo = pessoa.Ativo, 
+                    //        Crp = pessoaVM.Psicologo?.Crp,
+                    //        CrpUf = pessoaVM.Psicologo?.CrpUf,
+                    //        DataEmissaoCrp = pessoaVM.Psicologo?.DataEmissaoCrp ?? DateTime.MinValue
+                    //    };
+                    //    (operacao, _) = _applicationPsicologoService.Salvar(psicologoVM, requisicao);
+                    //}
                 }
             }
 
@@ -361,112 +445,120 @@ namespace Psicologa.Application.Pessoa.Services
             return (operacao, usuarioEmail);
         }
 
-        public PessoaViewModel Obter(int id)
+        public PessoaConsultaViewModel Obter(int id)
         {
             var pessoa = _pessoaService.Obter(id);
 
-            if (pessoa == null)
-                return null;
+            PessoaConsultaViewModel pessoaRetorno = null;
 
-            var dados = new PessoaViewModel.PessoaDados()
-            {
-                Id = pessoa.Id,
-                Nome = pessoa.Nome,
-                DocIdNro = PessoaUtils.FormatarCPFCPNJ(pessoa.DocIdNro),
-                DocIdTipo = (int)pessoa.DocIdTipo,
-                Ativo = pessoa.Ativo
-            };
-
-            PessoaFisica pf = new PessoaFisica(pessoa);
-            PessoaJuridica pj = new PessoaJuridica(pessoa);
-            dados.DataNascimento = pf.DataNascimento;
-            dados.RazaoSocial = pj.RazaoSocial;
-            dados.Sexo = (int)pf.Sexo;
-
-            var endereco = new PessoaViewModel.PessoaEndereco()
-            {
-                Id = pessoa.Endereco.Id,
-                Logradouro = pessoa.Endereco.Logradouro,
-                Numero = pessoa.Endereco.Numero,
-                Bairro = pessoa.Endereco.Bairro,
-                CEP = pessoa.Endereco.CEP,
-                Complemento = pessoa.Endereco.Complemento,
-                UF = pessoa.Endereco.UF,
-                Cidade = pessoa.Endereco.Cidade,
-                PontoReferencia = pessoa.Endereco.PontoReferencia,
-                Latitude = pessoa.Endereco.Latitude,
-                Longitude = pessoa.Endereco.Longitude
-            };
-
-            var contatos = new List<PessoaViewModel.PessoaContato>();
-
-            foreach (var c in pessoa.Contatos)
-            {
-                contatos.Add(new PessoaViewModel.PessoaContato
-                {
-                    Id = c.Id,
-                    Tipo = (int)c.Tipo,
-                    TipoNome = Utils.ObterDescricaoEnum(c.Tipo),
-                    Contato = c.Contato,
-                    Observacao = c.Observacao,
-                });
-            }
-
-            var tipos = new List<PessoaViewModel.PessoaTipo>();
-
-            foreach (var t in pessoa.Tipos)
-            {
-                tipos.Add(new PessoaViewModel.PessoaTipo
-                {
-                    Id = t.Id,
-                    Tipo = (int)t.Tipo,
-                    TipoNome = Utils.ObterDescricaoEnum(t.Tipo)
-                });
-            }
-
-            var pacienteVM = (PessoaViewModel.PessoaPaciente?)null;
-
-            if (pessoa.Tipos.Any(t => t.Tipo == PessoaTipo.TpPessoa.Paciente))
-            {
-                var paciente = _applicationPacienteService.ObterPorPessoaId(pessoa.Id);
-                if (paciente != null)
-                {
-                    pacienteVM = new PessoaViewModel.PessoaPaciente()
-                    {
-                        ContatoEmergenciaNome = paciente.ContatoEmergenciaNome,
-                        ContatoEmergenciaTelefone = paciente.ContatoEmergenciaTelefone,
-                        ResponsavelId = paciente.ResponsavelId,
-                        ResponsavelNome = paciente.ResponsavelNome
-                    };
-                }
-            }
-
-            var psicologoVM = (PessoaViewModel.PessoaPsicologo?)null;
-            if(pessoa.Tipos.Any(t => t.Tipo == PessoaTipo.TpPessoa.Psicologo))
-            {
-                var psicologo = _applicationPsicologoService.ObterPorPessoaId(pessoa.Id);
-                if(psicologo != null)
-                {
-                    psicologoVM = new PessoaViewModel.PessoaPsicologo()
-                    {
-                        Crp = psicologo.Crp,
-                        CrpUf = psicologo.CrpUf,
-                        DataEmissaoCrp = psicologo.DataEmissaoCrp
-                    };
-                }
-            }
+            pessoaRetorno = FormatarRetornoConsulta(pessoa);
 
 
-            var pessoaRetorno = new PessoaViewModel()
-            {
-                DataAlteracao = pessoa.DataAlteracao,
-                Dados = dados,
-                Endereco = endereco,
-                Contatos = contatos,
-                Tipos = tipos,
-                Paciente = pacienteVM, 
-                Psicologo = psicologoVM
-            };
+
+            //if (pessoa == null)
+            //    return null;
+
+            //var dados = new PessoaViewModel.PessoaDados()
+            //{
+            //    Id = pessoa.Id,
+            //    Nome = pessoa.Nome,
+            //    DocIdNro = PessoaUtils.FormatarCPFCPNJ(pessoa.DocIdNro),
+            //    DocIdTipo = (int)pessoa.DocIdTipo,
+            //    Ativo = pessoa.Ativo
+            //};
+
+            //PessoaFisica pf = new PessoaFisica(pessoa);
+            //PessoaJuridica pj = new PessoaJuridica(pessoa);
+            //dados.DataNascimento = pf.DataNascimento;
+            //dados.RazaoSocial = pj.RazaoSocial;
+            //dados.Sexo = (int)pf.Sexo;
+
+            //var endereco = new PessoaViewModel.PessoaEndereco()
+            //{
+            //    Id = pessoa.Endereco.Id,
+            //    Logradouro = pessoa.Endereco.Logradouro,
+            //    Numero = pessoa.Endereco.Numero,
+            //    Bairro = pessoa.Endereco.Bairro,
+            //    CEP = pessoa.Endereco.CEP,
+            //    Complemento = pessoa.Endereco.Complemento,
+            //    UF = pessoa.Endereco.UF,
+            //    Cidade = pessoa.Endereco.Cidade,
+            //    PontoReferencia = pessoa.Endereco.PontoReferencia,
+            //    Latitude = pessoa.Endereco.Latitude,
+            //    Longitude = pessoa.Endereco.Longitude
+            //};
+
+            //var contatos = new List<PessoaViewModel.PessoaContato>();
+
+            //foreach (var c in pessoa.Contatos)
+            //{
+            //    contatos.Add(new PessoaViewModel.PessoaContato
+            //    {
+            //        Id = c.Id,
+            //        Tipo = (int)c.Tipo,
+            //        TipoNome = Utils.ObterDescricaoEnum(c.Tipo),
+            //        Contato = c.Contato,
+            //        Observacao = c.Observacao,
+            //    });
+            //}
+
+            //var tipos = new List<PessoaViewModel.PessoaTipo>();
+
+            //foreach (var t in pessoa.Tipos)
+            //{
+            //    tipos.Add(new PessoaViewModel.PessoaTipo
+            //    {
+            //        Id = t.Id,
+            //        Tipo = (int)t.Tipo,
+            //        TipoNome = Utils.ObterDescricaoEnum(t.Tipo)
+            //    });
+            //}
+
+
+
+            //var pacienteVM = (PessoaViewModel.PessoaPaciente?)null;
+
+            //if (pessoa.Tipos.Any(t => t.Tipo == PessoaTipo.TpPessoa.Paciente))
+            //{
+            //    var paciente = _applicationPacienteService.ObterPorPessoaId(pessoa.Id);
+            //    if (paciente != null)
+            //    {
+            //        pacienteVM = new PessoaViewModel.PessoaPaciente()
+            //        {
+            //            ContatoEmergenciaNome = paciente.ContatoEmergenciaNome,
+            //            ContatoEmergenciaTelefone = paciente.ContatoEmergenciaTelefone,
+            //            ResponsavelId = paciente.ResponsavelId,
+            //            ResponsavelNome = paciente.ResponsavelNome
+            //        };
+            //    }
+            //}
+
+            ////var psicologoVM = (PessoaViewModel.PessoaPsicologo?)null;
+            ////if(pessoa.Tipos.Any(t => t.Tipo == PessoaTipo.TpPessoa.Psicologo))
+            ////{
+            ////    var psicologo = _applicationPsicologoService.ObterPorPessoaId(pessoa.Id);
+            ////    if(psicologo != null)
+            ////    {
+            ////        psicologoVM = new PessoaViewModel.PessoaPsicologo()
+            ////        {
+            ////            Crp = psicologo.Crp,
+            ////            CrpUf = psicologo.CrpUf,
+            ////            DataEmissaoCrp = psicologo.DataEmissaoCrp
+            ////        };
+            ////    }
+            ////}
+
+
+            //var pessoaRetorno = new PessoaViewModel()
+            //{
+            //    DataAlteracao = pessoa.DataAlteracao,
+            //    Dados = dados,
+            //    Endereco = endereco,
+            //    Contatos = contatos,
+            //    Tipos = tipos,
+            //    Paciente = pacienteVM, 
+            //    //Psicologo = psicologoVM
+            //};
 
             return pessoaRetorno;
         }
@@ -643,8 +735,22 @@ namespace Psicologa.Application.Pessoa.Services
                 Ativo = pessoa.Ativo
             };
 
+            PessoaFisica pf = new PessoaFisica(pessoa);
+            PessoaJuridica pj = new PessoaJuridica(pessoa);
+            dados.DataNascimento = Convert.ToDateTime(pf.DataNascimento);
+            dados.RazaoSocial = pj.RazaoSocial;
+            dados.Sexo = (int)pf.Sexo;
+
             var endereco = new PessoaConsultaViewModel.PessoaEndereco()
             {
+                Logradouro = pessoa.Endereco.Logradouro,
+                Numero = pessoa.Endereco.Numero,
+                Bairro = pessoa.Endereco.Bairro,
+                CEP = pessoa.Endereco.CEP,
+                Complemento = pessoa.Endereco.Complemento,
+                UF = pessoa.Endereco.UF,
+                Cidade = pessoa.Endereco.Cidade,
+                PontoReferencia = pessoa.Endereco.PontoReferencia,
                 Latitude = pessoa.Endereco.Latitude,
                 Longitude = pessoa.Endereco.Longitude
             };
@@ -674,12 +780,30 @@ namespace Psicologa.Application.Pessoa.Services
                 });
             }
 
+            var pacienteVM = pessoa.Paciente != null ? new PessoaConsultaViewModel.PessoaPaciente()
+            {
+                Id = pessoa.Paciente.Id,
+                ContatoEmergenciaNome = pessoa.Paciente.ContatoEmergenciaNome,
+                ContatoEmergenciaTelefone = pessoa.Paciente.ContatoEmergenciaTelefone,
+                ResponsavelId = pessoa.Paciente.Responsavel?.Id,
+                ResponsavelNome = pessoa.Paciente.Responsavel?.Nome
+            } : null;
+
+            var psicologoVM = pessoa.Psicologo != null ? new PessoaConsultaViewModel.PessoaPsicologo()
+            {
+                Crp = pessoa.Psicologo.Crp,
+                CrpUf = pessoa.Psicologo.CrpUf,
+                DataEmissaoCrp = pessoa.Psicologo.DataEmissaoCrp
+            } : null;
+
             var pessoaRetorno = new PessoaConsultaViewModel()
             {
                 Dados = dados,
                 Endereco = endereco,
                 Contatos = contatos,
-                Tipos = tipos
+                Tipos = tipos,
+                Paciente = pacienteVM,
+                Psicologo = psicologoVM
             };
 
             return pessoaRetorno;

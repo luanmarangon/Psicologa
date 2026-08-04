@@ -14,7 +14,7 @@ namespace Psicologa.Application.ServicoContato.ViewsModel
     {
         [JsonConverter(typeof(EncryptIdJSONConverter))]
         public int Id { get; set; }
-        [JsonConverter(typeof(Int32JSONConverter))]
+        [JsonConverter(typeof(EncryptIdJSONConverter))]
         public int ServicoId { get; set; }
         public string Nome { get; set; }
         public string Contato { get; set; }

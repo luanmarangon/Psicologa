@@ -76,7 +76,7 @@ namespace Psicologa.Infra.Data.Repository.LogAplicacao
                 {
                     cmd.CommandText = $@"SELECT l.LogId, l.DataCriacao, l.UsuarioId, l.UsuarioNome, l.Dispositivo, l.IP, l.UserAgent, l.Entidade, l.EntidadeId,
                                                 l.Operacao, l.Aplicacao, l.Metodo, l.DadosAntes, l.DadosDepois, l.DadosAlterados
-                                        FROM log l
+                                        FROM Log l
                                         ORDER BY DataCriacao
                                         DESC LIMIT {top}";
                     cmd.ParametersClear();
@@ -101,7 +101,7 @@ namespace Psicologa.Infra.Data.Repository.LogAplicacao
                 {
                     cmd.CommandText = $@"SELECT l.LogId, l.DataCriacao, l.UsuarioId, l.UsuarioNome, l.Dispositivo, l.IP, l.UserAgent, l.Entidade, l.EntidadeId,
                                                 l.Operacao, l.Aplicacao, l.Metodo, l.DadosAntes, l.DadosDepois, l.DadosAlterados
-                                        FROM log l
+                                        FROM Log l
                                         WHERE l.LogId = @Id";
                     cmd.ParametersClear();
                     cmd.ParameterAdd("@Id", id);
@@ -135,7 +135,7 @@ namespace Psicologa.Infra.Data.Repository.LogAplicacao
                 {
                     string consultaPrincipal = $@"SELECT l.LogId, l.DataCriacao, l.UsuarioId, l.UsuarioNome, l.Dispositivo, l.IP, l.UserAgent, l.Entidade, l.EntidadeId,
                                                 l.Operacao, l.Aplicacao, l.Metodo, l.DadosAntes, l.DadosDepois, l.DadosAlterados
-                                        FROM log l
+                                        FROM Log l
                                         WHERE (l.UsuarioNome LIKE @Termo || l.Entidade LIKE @Termo || l.Aplicacao LIKE @Termo || l.Metodo LIKE @Termo)
                                         #paginacaoFiltro";
 
