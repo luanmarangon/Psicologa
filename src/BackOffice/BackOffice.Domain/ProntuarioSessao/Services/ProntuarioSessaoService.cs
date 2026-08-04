@@ -48,5 +48,11 @@ namespace Psicologa.Domain.ProntuarioSessao.Services
         {
             return _repository.ExcluirSessao(id);
         }
+
+        public Entities.ProntuarioSessao ObterPorAgendamento(int agendamentoId)
+        {
+            return _repository.ObterPorAgendamento(agendamentoId);
+        }
+
     }
 }

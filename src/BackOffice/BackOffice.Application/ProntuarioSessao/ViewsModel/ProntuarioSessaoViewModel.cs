@@ -14,7 +14,7 @@ namespace Psicologa.Application.ProntuarioSessao.ViewsModel
         public int Id { get; set; }
         [JsonConverter(typeof(EncryptIdJSONConverter))]
         public int ProntuarioId { get; set; }
-        [JsonConverter(typeof(EncryptIdJSONConverter))]
+        //[JsonConverter(typeof(EncryptIdJSONConverter))]
         public int? AgendamentoId { get; set; }
         public DateTime DataSessao { get; set; }
         public string HoraInicio { get; set; }
@@ -28,7 +28,9 @@ namespace Psicologa.Application.ProntuarioSessao.ViewsModel
     {
         [JsonConverter(typeof(EncryptIdJSONConverter))]
         public int Id { get; set; }
+        //[JsonConverter(typeof(EncryptIdJSONConverter))]
         public int ProntuarioId { get; set; }
+        //[JsonConverter(typeof(EncryptIdJSONConverter))]
         public int? AgendamentoId { get; set; }
         public DateTime DataSessao { get; set; }
         public string HoraInicio { get; set; }

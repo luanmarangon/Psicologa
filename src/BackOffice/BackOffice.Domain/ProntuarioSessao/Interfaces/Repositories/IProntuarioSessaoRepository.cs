@@ -14,6 +14,7 @@ namespace Psicologa.Domain.ProntuarioSessao.Interfaces.Repositories
         IEnumerable<Domain.ProntuarioSessao.Entities.ProntuarioSessao> Consultar(string termo, int protocoloId, int filtroTipoAtendimento, PaginacaoDados paginacao);
 
         Entities.ProntuarioSessao ObterSessao(int id);
+        Entities.ProntuarioSessao ObterPorAgendamento(int agendamentoId);
 
         bool ExcluirSessao(int id);
     }

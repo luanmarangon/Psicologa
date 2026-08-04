@@ -1,10 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Org.BouncyCastle.Ocsp;
 using Psicologa.Application.Agendamento.Services;
 using Psicologa.Application.Agendamento.ViewsModel;
-using Psicologa.Application.Servico.ViewsModel;
-using Psicologa.Application.ServicoContato.ViewsModel;
-using Psicologa.Domain.Servico.Services;
 using Psicologa.Presentation.Painel.Controllers;
 using Shared.Infra.CrossCutting;
 using Shared.Infra.CrossCutting.JSONConverter;

@@ -4,13 +4,11 @@ using Psicologa.Application.Prontuario.ViewsModel;
 using Psicologa.Application.ProntuarioSessao.Services;
 using Psicologa.Application.ProntuarioSessao.ViewsModel;
 using Psicologa.Application.Usuario.ViewsModel;
-using Psicologa.Domain.Paciente.Entities;
-using Psicologa.Domain.Paciente.Services;
-using Psicologa.Domain.Pessoa.Services;
 using Psicologa.Presentation.Painel.Controllers;
 using Shared.Infra.CrossCutting;
 using Shared.Infra.CrossCutting.JSONConverter;
 using Shared.Infra.CrossCutting.ValidationResult;
+
 
 namespace Psicologa.Presentation.Painel.Areas.Administrativo.Controllers
 {

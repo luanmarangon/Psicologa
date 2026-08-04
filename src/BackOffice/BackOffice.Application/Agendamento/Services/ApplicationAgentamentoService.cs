@@ -79,41 +79,53 @@ namespace Psicologa.Application.Agendamento.Services
             {
                 operacao = _servicoAgendamento.Salvar(agendamento);
 
+                //Criar a Sessão
                 if (operacao)
                 {
                     dados.Id = agendamento.Id;
 
-                    //criar a sessão
-                    //ProntuarioSessaoViewModel sessaoVM = new ProntuarioSessaoViewModel();
-                    Domain.ProntuarioSessao.Entities.ProntuarioSessao sessaoVM = new Domain.ProntuarioSessao.Entities.ProntuarioSessao();
+                    // Obtém a sessão vinculada ao agendamento ou cria uma nova
+                    var prontSessao = _prontuarioSessaoService.ObterPorAgendamento(agendamento.Id)
+                                      ?? new Domain.ProntuarioSessao.Entities.ProntuarioSessao();
+
                     var prontuario = _prontuarioService.ObterProntuarioPorPacienteId(agendamento.Paciente.Id);
 
-                    sessaoVM.Prontuario = new Domain.Prontuario.Entities.Prontuario
+                    if (prontuario == null)
                     {
-                        Id = prontuario.Id
-                    };
-                    sessaoVM.Agendamento = new Domain.Agendamento.Entities.Agendamento
+                        throw new Exception("Não foi encontrado um prontuário para o paciente.");
+                    }
+
+                    if (prontSessao.Prontuario == null || prontSessao.Prontuario.Id == 0)
+                    {
+                        prontSessao.Prontuario = new Domain.Prontuario.Entities.Prontuario
+                        {
+                            Id = prontuario.Id
+                        };
+                    }
+
+                    prontSessao.Agendamento = new Domain.Agendamento.Entities.Agendamento
                     {
                         Id = agendamento.Id
                     };
-                    sessaoVM.Psicologa = new Domain.Pessoa.Entities.Pessoa
+
+                    prontSessao.Psicologa = new Domain.Pessoa.Entities.Pessoa
                     {
                         Id = agendamento.Psicologo.Id
                     };
-                    sessaoVM.DataSessao = agendamento.DataConsulta;
-                    //sessaoVM.HoraInicio = TimeSpan.Parse(agendamento.HoraInicio);
-                    sessaoVM.TipoAtendimento = (Domain.Agendamento.Entities.Agendamento.tpFiltro)(agendamento.Online ? 2 : 1); //1 - Presencial, 2 - Online
 
-                    (operacao) = _prontuarioSessaoService.EvoluirSessao(sessaoVM);
+                    prontSessao.DataSessao = agendamento.DataConsulta;
+                    prontSessao.HoraInicio = TimeSpan.Parse(agendamento.HoraInicio);
+                    prontSessao.HoraFim = TimeSpan.Parse(agendamento.HoraFim);
+                    prontSessao.TipoAtendimento = (Domain.Agendamento.Entities.Agendamento.tpFiltro)(agendamento.Online ? 2 : 1);
 
+                    var operacaoSessao = _prontuarioSessaoService.EvoluirSessao(prontSessao);
+                    operacao = operacao && operacaoSessao;
+                    
+                    if(operacao)
+                        _logAplicacaoService.Registrar(prontSessao.Id, requisicao, prontSessao, null, "ProntuarioSessao", "ApplicationAgentamentoService", "Salvar");
                 }
             }
 
-
-
-
-            //if (operacao)
-            //    RegistrarLog(agendamento.Id, requisicao, dadosExistente, "Agendamento");
             if (operacao)
             {
                 _logAplicacaoService.Registrar(dados.Id, requisicao, dadosExistente, agendamento, "Agendamento", "ApplicationAgentamentoService", "Salvar");
@@ -170,11 +182,13 @@ namespace Psicologa.Application.Agendamento.Services
                 for (
                     TimeSpan horaAtual = inicioPeriodo;
                     horaAtual < fimPeriodo;
-                    horaAtual = horaAtual.Add(TimeSpan.FromHours(1))
+                    //horaAtual = horaAtual.Add(TimeSpan.FromHours(1))
+                    horaAtual = horaAtual.Add(TimeSpan.FromMinutes(30))
                 )
                 {
                     TimeSpan proximaHora =
-                        horaAtual.Add(TimeSpan.FromHours(1));
+                        //horaAtual.Add(TimeSpan.FromHours(1));
+                        horaAtual.Add(TimeSpan.FromMinutes(30));
 
                     // não ultrapassa o horário final
                     if (proximaHora > fimPeriodo)
@@ -247,9 +261,16 @@ namespace Psicologa.Application.Agendamento.Services
             var dadosExistente = _servicoAgendamento.ObterPorId(agendamentoId);
             operacao = _servicoAgendamento.Excluir(agendamentoId);
 
+            //Excluir Sessão
+            var prontSessao = _prontuarioSessaoService.ObterPorAgendamento(agendamentoId);
+
+            operacao = _prontuarioSessaoService.ExcluirSessao(prontSessao.Id);
+
+
             if (operacao)
             {
                 _logAplicacaoService.Registrar(agendamentoId, requisicao, dadosExistente, null, "Agendamento", "ApplicationAgentamentoService", "Excluir");
+                _logAplicacaoService.Registrar(prontSessao.Id, requisicao, prontSessao, null, "ProntuarioSessao", "ApplicationAgentamentoService", "Excluir");
             }
 
             return operacao;

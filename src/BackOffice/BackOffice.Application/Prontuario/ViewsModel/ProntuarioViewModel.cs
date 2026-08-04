@@ -11,10 +11,9 @@ namespace Psicologa.Application.Prontuario.ViewsModel
 {
     public class ProntuarioViewModel
     {
-            [JsonConverter(typeof(EncryptIdJSONConverter))]
+        [JsonConverter(typeof(EncryptIdJSONConverter))]
         public int Id { get; set; }
-            [JsonConverter(typeof(EncryptIdJSONConverter))]
-
+        [JsonConverter(typeof(EncryptIdJSONConverter))]
         public int PacienteId { get; set; }
         public string PacienteNome { get; set; }
         public string PacienteMatricula { get; set; }
@@ -30,10 +29,9 @@ namespace Psicologa.Application.Prontuario.ViewsModel
 
     public class ProntuarioConsultaViewModel
     {
-            [JsonConverter(typeof(EncryptIdJSONConverter))]
+        [JsonConverter(typeof(EncryptIdJSONConverter))]
         public int Id { get; set; }
         [JsonConverter(typeof(EncryptIdJSONConverter))]
-
         public int PacienteId { get; set; }
         public string PacienteNome { get; set; }
         public string PacienteMatricula { get; set; }

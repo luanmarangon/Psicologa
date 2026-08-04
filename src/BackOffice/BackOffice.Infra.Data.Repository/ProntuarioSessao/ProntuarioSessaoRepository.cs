@@ -188,6 +188,39 @@ namespace Psicologa.Infra.Data.Repository.ProntuarioSessao
 
             return prontuario;
         }
+        public Domain.ProntuarioSessao.Entities.ProntuarioSessao ObterPorAgendamento(int agendamentoId)
+        {
+            Domain.ProntuarioSessao.Entities.ProntuarioSessao prontuario = new Domain.ProntuarioSessao.Entities.ProntuarioSessao();
+
+            try
+            {
+                using (var cmd = DbContext.CreateCommand())
+                {
+                    cmd.CommandText = $@"
+                            SELECT
+                                        ps.ProntuarioSessaoId, ps.ProntuarioId AS ProntuarioSessaoProntuarioId, ps.AgendamentoId AS ProntuarioSessaoAgendamentoId, ps.DataSessao, ps.HoraInicio, ps.HoraFim,
+                                        ps.PsicologaId, ps.TipoAtendimento,  ps.Evolucao, ps.DataCriacao AS ProntuarioSessaoDataCriacao, ps.DataAtualizacao AS ProntuarioSessaoDataAtualizacao,
+                                        pr.ProntuarioId,
+                                        p.PessoaId, p.Nome as PsicologoNome
+                                    FROM ProntuarioSessao ps
+                                    JOIN Prontuario pr on ps.ProntuarioId = pr.ProntuarioId
+                                    JOIN Pessoa p on ps.PsicologaId = p.PessoaId
+                                    LEFT JOIN Agendamento a on ps.AgendamentoId = a.AgendamentoId
+                                    WHERE ps.AgendamentoId = @Id";
+                    cmd.ParameterAdd("@Id", agendamentoId);
+                    using (var dr = cmd.ExecuteReader())
+                    {
+                        prontuario = Map(dr).FirstOrDefault();
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Erro ao obter prontuário com ID {ProntuarioId}", agendamentoId);
+            }
+
+            return prontuario;
+        }
 
         //public IEnumerable<Domain.Prontuario.Entities.Prontuario> ObterPorPaciente(int pacienteId)
         //{
