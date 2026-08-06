@@ -144,6 +144,15 @@ try
           .PersistKeysToFileSystem(new DirectoryInfo(keysFolder));
 
     var app = builder.Build();
+
+
+    if (!app.Environment.IsDevelopment())
+    {
+        app.UseExceptionHandler("/Erro");
+    }
+
+    app.UseStatusCodePagesWithReExecute("/Erro/{0}");
+
     _appSettings.ContentRootPath = app.Environment.ContentRootPath;
 
     string routePrefix = "";

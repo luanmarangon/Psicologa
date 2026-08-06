@@ -29,6 +29,11 @@ export default class Cadastro extends Component {
                 tipoAgendamento: '',
                 confirmouAgendamento: false,
                 dataConfirmacao: '',
+                // ─── Recorrência ───
+                recorrente: false,
+                tipoRecorrencia: 'semanal', // 'semanal' | 'quinzenal' | 'mensal'
+                quantidadeOcorrencias: 4,
+                dataFimRecorrencia: '',
             },
             horariosDisponiveis: []
         };
@@ -65,77 +70,6 @@ export default class Cadastro extends Component {
     }
 
     // ─── Select2 Paciente ────────────────────────────────────────────────────
-
-    // inicializarSelect2Paciente = () => {
-    //     if (!$("#selPaciente").length) return;
-
-    //     if ($("#selPaciente").hasClass("select2-hidden-accessible")) {
-    //         $("#selPaciente").select2("destroy");
-    //     }
-
-    //     $("#selPaciente").select2({
-    //         language: "pt-BR",
-    //         placeholder: "Digite para buscar o paciente...",
-    //         minimumInputLength: 2,
-    //         ajax: {
-    //             url: (params) =>
-    //                 resolveClientURL("Administrativo/Pessoa/ConsultarClienteAutoComplete?q=" + encodeURIComponent(params.term)),
-    //             dataType: 'json',
-    //             delay: 300,
-    //             processResults: (data) => ({
-    //                 results: data.map(item => ({
-    //                     id: item.dados.id,
-    //                     text: item.dados.nome.toUpperCase(),
-    //                     nome: item.dados.nome.toUpperCase(),
-    //                     cidade: item.dados.cidade,
-    //                     docIdNro: item.dados.docIdNro,
-    //                     docIdTipoNome: item.dados.docIdTipoNome,
-    //                 }))
-    //             }),
-    //         },
-    //         templateResult: (data) => {
-    //             if (!data.id) return data.text;
-    //             return $(
-    //                 '<div>' +
-    //                 '<div><strong>' + data.nome + '</strong></div>' +
-    //                 '<div class="small text-muted">' + (data.docIdNro || '') + ' (' + (data.docIdTipoNome || '') + ')</div>' +
-    //                 '<div class="small text-muted">' + (data.cidade || '') + '</div>' +
-    //                 '</div>'
-    //             );
-    //         },
-    //         templateSelection: (data) => data.nome || data.text,
-    //     });
-
-    //     $("#selPaciente").off("select2:select").on("select2:select", (e) => {
-    //         const item = e.params.data;
-    //         this.setState(prev => ({
-    //             trocarPaciente: false,
-    //             dados: {
-    //                 ...prev.dados,
-    //                 pacienteId: item.id,
-    //                 pacienteNome: item.nome,
-    //             }
-    //         }), () => {
-    //             // Esconde o container do Select2 e mostra o input estático
-    //             $("#selPaciente").next(".select2-container").hide();
-    //         });
-    //     });
-    // }
-
-    // trocarPacienteHandler = () => {
-    //     // Mostra o Select2 novamente e limpa o valor
-    //     $("#selPaciente").val(null).trigger("change");
-    //     $("#selPaciente").next(".select2-container").show();
-
-    //     this.setState(prev => ({
-    //         trocarPaciente: true,
-    //         dados: {
-    //             ...prev.dados,
-    //             pacienteId: '',
-    //             pacienteNome: '',
-    //         }
-    //     }));
-    // }
 
     inicializarSelect2Paciente = () => {
         if (!$("#selPaciente").length) return;
@@ -184,8 +118,6 @@ export default class Cadastro extends Component {
 
             if (!item.pacienteId) {
                 // Pessoa existe mas ainda não tem registro de Paciente
-                // Ajuste aqui conforme a regra de negócio: bloquear seleção, avisar o usuário,
-                // ou permitir e deixar o backend criar o registro de Paciente ao salvar.
                 showToastr("warning", "Esta pessoa ainda não possui cadastro de paciente.");
             }
 
@@ -365,16 +297,46 @@ export default class Cadastro extends Component {
         if (!form.horaInicio) return showToastr({ type: "warning", text: "Informe o horário da consulta." });
         if (!form.tempoSessao) return showToastr({ type: "warning", text: "Informe a duração da sessão." });
 
+        if (form.recorrente) {
+            const semQuantidadeValida = !form.quantidadeOcorrencias || form.quantidadeOcorrencias < 2;
+            if (!form.dataFimRecorrencia && semQuantidadeValida) {
+                return showToastr({ type: "warning", text: "Informe a quantidade de sessões ou a data final da recorrência." });
+            }
+        }
+
         this.setState({ aguardeSalvar: true });
 
-        HTTPClient.post("Administrativo/Agendamento/Salvar", form, false)
+        const endpoint = form.recorrente
+            ? "Administrativo/Agendamento/SalvarRecorrente"
+            : "Administrativo/Agendamento/Salvar";
+
+        HTTPClient.post(endpoint, form, false)
             .then(r => r.json())
             .then(r => {
                 if (!r.success) {
                     showToastr(r.messages);
                     return;
                 }
-                showToastr({ type: "success", text: "Agendamento salvo com sucesso." });
+
+                if (form.recorrente) {
+                    const total = r.data?.totalCriados ?? 0;
+                    const conflitos = r.data?.conflitos || [];
+
+                    showToastr({
+                        type: "success",
+                        text: `${total} agendamento(s) criado(s) com sucesso.`
+                    });
+
+                    if (conflitos.length > 0) {
+                        showToastr({
+                            type: "warning",
+                            text: `Não foi possível agendar nas datas: ${conflitos.join(', ')}.`
+                        });
+                    }
+                } else {
+                    showToastr({ type: "success", text: "Agendamento salvo com sucesso." });
+                }
+
                 this.props.onFechar(true);
             })
             .catch(() => {
@@ -639,6 +601,70 @@ export default class Cadastro extends Component {
                                         />
                                     </div>
 
+                                    {/* RECORRENTE */}
+                                    <div className="col-md-12 form-group">
+                                        <div className="custom-control custom-switch mt-1">
+                                            <input
+                                                type="checkbox"
+                                                className="custom-control-input"
+                                                id="recorrente"
+                                                checked={form.recorrente || false}
+                                                disabled={edicao}
+                                                onChange={(e) => this.handleChange('recorrente', e.target.checked)}
+                                            />
+                                            <label className="custom-control-label" htmlFor="recorrente">
+                                                {form.recorrente ? "Agendamento recorrente" : "Agendamento único"}
+                                            </label>
+                                        </div>
+                                        {edicao && (
+                                            <small className="text-muted d-block">
+                                                A recorrência só pode ser definida na criação do agendamento.
+                                            </small>
+                                        )}
+                                    </div>
+
+                                    {/* CAMPOS DE RECORRÊNCIA — visíveis apenas quando recorrente e não em edição */}
+                                    {form.recorrente && !edicao && (
+                                        <>
+                                            <div className="col-md-4 form-group">
+                                                <label>Repetir</label>
+                                                <select
+                                                    className="form-control"
+                                                    value={form.tipoRecorrencia}
+                                                    onChange={(e) => this.handleChange('tipoRecorrencia', e.target.value)}
+                                                >
+                                                    <option value="semanal">Toda semana</option>
+                                                    <option value="quinzenal">A cada 15 dias</option>
+                                                    <option value="mensal">Todo mês</option>
+                                                </select>
+                                            </div>
+
+                                            <div className="col-md-4 form-group">
+                                                <label>Quantidade de sessões</label>
+                                                <input
+                                                    type="number"
+                                                    className="form-control"
+                                                    min={2}
+                                                    max={52}
+                                                    value={form.quantidadeOcorrencias}
+                                                    disabled={!!form.dataFimRecorrencia}
+                                                    onChange={(e) => this.handleChange('quantidadeOcorrencias', e.target.value)}
+                                                />
+                                            </div>
+
+                                            <div className="col-md-4 form-group">
+                                                <label>Ou repetir até (opcional)</label>
+                                                <input
+                                                    type="date"
+                                                    className="form-control"
+                                                    value={form.dataFimRecorrencia}
+                                                    onChange={(e) => this.handleChange('dataFimRecorrencia', e.target.value)}
+                                                />
+                                                <small className="text-muted">Se preenchido, ignora a quantidade acima.</small>
+                                            </div>
+                                        </>
+                                    )}
+
                                     {/* MODALIDADE */}
                                     <div className="col-md-6 form-group">
                                         <label>Modalidade</label>
@@ -720,7 +746,6 @@ export default class Cadastro extends Component {
                                     </div>
 
                                     {/* CONFIRMAÇÃO DO AGENDAMENTO */}
-
                                     {this.props.idEdicao && (
                                         <div className="col-md-6 form-group">
                                             <label>Confirmação do Agendamento</label>
@@ -753,8 +778,6 @@ export default class Cadastro extends Component {
                                             </div>
                                         </div>
                                     )}
-
-
 
                                 </div>
                             )}

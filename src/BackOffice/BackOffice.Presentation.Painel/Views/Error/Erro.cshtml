@@ -1,0 +1,400 @@
+﻿@using Microsoft.Extensions.Options
+@inject IAppSettings appSetting
+@{
+    Layout = null;
+    var statusCode = ViewData["statusCode"]?.ToString() ?? "Erro";
+    var titulo = ViewData["titulo"]?.ToString() ?? "Ocorreu um erro";
+    var descricao = ViewData["descricao"]?.ToString() ?? "Tente novamente ou entre em contato com o suporte.";
+    var emailSuporte = appSetting.Email.Remetente;
+    var is404 = statusCode == "404";
+    var corIcone = is404 ? "#6BBFBA" : "#F79009";
+}
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>@statusCode — @titulo</title>
+    <link rel="icon" type="image/png" href="~/img/favicon.png">
+    <link rel="stylesheet" href="~/template/AdminLTE/plugins/fontawesome-free/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, sans-serif;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #F0F4F8;
+            background-image: radial-gradient(ellipse at 20% 50%, rgba(15,92,88,0.07) 0%, transparent 60%), radial-gradient(ellipse at 80% 20%, rgba(107,191,186,0.1) 0%, transparent 50%);
+            overflow: hidden;
+        }
+
+        .blob {
+            position: fixed;
+            border-radius: 50%;
+            filter: blur(80px);
+            opacity: 0.25;
+            pointer-events: none;
+            animation: float 8s ease-in-out infinite;
+        }
+
+        .blob-1 {
+            width: 500px;
+            height: 500px;
+            background: #6BBFBA;
+            top: -150px;
+            left: -150px;
+            animation-delay: 0s;
+        }
+
+        .blob-2 {
+            width: 400px;
+            height: 400px;
+            background: #0F5C58;
+            bottom: -100px;
+            right: -100px;
+            animation-delay: -4s;
+        }
+
+        @@keyframes float {
+            0%, 100% {
+                transform: translateY(0px) scale(1);
+            }
+
+            50% {
+                transform: translateY(-30px) scale(1.05);
+            }
+        }
+
+        .card {
+            position: relative;
+            background: rgba(255,255,255,0.85);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255,255,255,0.6);
+            border-radius: 24px;
+            padding: 52px 48px;
+            max-width: 520px;
+            width: calc(100% - 32px);
+            text-align: center;
+            box-shadow: 0 4px 6px rgba(16,24,40,0.03), 0 12px 48px rgba(16,24,40,0.08);
+            animation: slideUp .5s cubic-bezier(.16,1,.3,1) both;
+        }
+
+        @@keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(32px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .logo {
+            margin-bottom: 36px;
+            animation: slideUp .5s .05s cubic-bezier(.16,1,.3,1) both;
+        }
+
+            .logo img {
+                width: 180px;
+                height: auto;
+            }
+
+        .svg-wrapper {
+            margin: 0 auto 20px;
+            width: 90px;
+            height: 90px;
+            animation: slideUp .5s .1s cubic-bezier(.16,1,.3,1) both;
+        }
+
+            .svg-wrapper svg {
+                width: 100%;
+                height: 100%;
+            }
+
+        .status-code {
+            font-size: 80px;
+            font-weight: 800;
+            line-height: 1;
+            margin-bottom: 10px;
+            background: linear-gradient(135deg, #0F5C58 0%, #6BBFBA 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: slideUp .5s .15s cubic-bezier(.16,1,.3,1) both;
+        }
+
+        .titulo {
+            font-size: 20px;
+            font-weight: 700;
+            color: #101828;
+            margin-bottom: 10px;
+            animation: slideUp .5s .2s cubic-bezier(.16,1,.3,1) both;
+        }
+
+        .descricao {
+            font-size: 14px;
+            color: #667085;
+            line-height: 1.7;
+            margin-bottom: 32px;
+            animation: slideUp .5s .25s cubic-bezier(.16,1,.3,1) both;
+        }
+
+        .acoes {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-bottom: 24px;
+            animation: slideUp .5s .3s cubic-bezier(.16,1,.3,1) both;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 11px 24px;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none;
+            border: none;
+            transition: all .2s;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #0F5C58, #1a7a74);
+            color: #fff;
+            box-shadow: 0 4px 14px rgba(15,92,88,0.3);
+        }
+
+            .btn-primary:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 8px 20px rgba(15,92,88,0.35);
+            }
+
+        .btn-secondary {
+            background: #fff;
+            color: #344054;
+            border: 1px solid #D0D5DD;
+            box-shadow: 0 1px 3px rgba(16,24,40,0.06);
+        }
+
+            .btn-secondary:hover {
+                background: #F9FAFB;
+                transform: translateY(-2px);
+                box-shadow: 0 4px 10px rgba(16,24,40,0.08);
+            }
+
+        .sugestoes {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 28px;
+            animation: slideUp .5s .35s cubic-bezier(.16,1,.3,1) both;
+        }
+
+        .sugestao-card {
+            background: #F8F9FB;
+            border: 1px solid #EEF1F3;
+            border-radius: 12px;
+            padding: 14px;
+            text-align: left;
+            text-decoration: none;
+            transition: all .2s;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+            .sugestao-card:hover {
+                background: #F0FAFA;
+                border-color: #6BBFBA;
+                transform: translateY(-2px);
+            }
+
+        .sc-icon {
+            width: 34px;
+            height: 34px;
+            border-radius: 8px;
+            background: #E6F5F4;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #0F5C58;
+            font-size: 14px;
+            flex-shrink: 0;
+        }
+
+        .sc-texto {
+            font-size: 12px;
+            font-weight: 600;
+            color: #344054;
+        }
+
+        .sc-sub {
+            font-size: 11px;
+            color: #98A2B3;
+            margin-top: 2px;
+        }
+
+        .suporte {
+            font-size: 13px;
+            color: #98A2B3;
+            animation: slideUp .5s .4s cubic-bezier(.16,1,.3,1) both;
+        }
+
+            .suporte a {
+                color: #0F5C58;
+                text-decoration: none;
+                font-weight: 600;
+            }
+
+                .suporte a:hover {
+                    text-decoration: underline;
+                }
+
+        @@media (max-width: 480px) {
+            .card {
+                padding: 36px 20px;
+            }
+
+            .status-code {
+                font-size: 64px;
+            }
+
+            .sugestoes {
+                grid-template-columns: 1fr;
+            }
+
+            .logo img {
+                width: 140px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="blob blob-1"></div>
+    <div class="blob blob-2"></div>
+
+    <div class="card">
+
+        <!-- Logo -->
+        <div class="logo">
+            <img src="~/img/logo/logo.png" alt="PsicoProntuário" />
+        </div>
+
+        <!-- SVG animado -->
+        <div class="svg-wrapper">
+            @if (is404)
+            {
+                <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <circle cx="50" cy="50" r="48" fill="#E6F5F4" />
+                    <circle cx="50" cy="50" r="28" stroke="#6BBFBA" stroke-width="3" fill="none"
+                            stroke-dasharray="6 4"
+                            style="transform-origin:50px 50px;animation:spin 12s linear infinite" />
+                    <circle cx="50" cy="50" r="4" fill="#0F5C58" />
+                    <line x1="50" y1="50" x2="50" y2="26"
+                          stroke="#0F5C58" stroke-width="3" stroke-linecap="round"
+                          style="transform-origin:50px 50px;animation:spin2 3s ease-in-out infinite" />
+                    <line x1="50" y1="50" x2="68" y2="62"
+                          stroke="#6BBFBA" stroke-width="2.5" stroke-linecap="round"
+                          style="transform-origin:50px 50px;animation:spin2 3s ease-in-out infinite" />
+                    <style>
+                        @@keyframes spin {
+                            to {
+                                transform: rotate(360deg);
+                            }
+                        }
+
+                        @@keyframes spin2 {
+                            0%, 100% {
+                                transform: rotate(0deg);
+                            }
+
+                            50% {
+                                transform: rotate(20deg);
+                            }
+                        }
+                    </style>
+                </svg>
+            }
+            else
+            {
+                <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <circle cx="50" cy="50" r="48" fill="#FFF4E5" />
+                    <path d="M50 28 L76 72 H24 Z" stroke="#F79009" stroke-width="3"
+                          fill="#FEF0C7" stroke-linejoin="round"
+                          style="animation:pulse 2s ease-in-out infinite" />
+                    <rect x="47.5" y="44" width="5" height="16" rx="2.5" fill="#F79009" />
+                    <circle cx="50" cy="66" r="3" fill="#F79009" />
+                    <style>
+                        @@keyframes pulse {
+                            0%, 100% {
+                                opacity: 1;
+                            }
+
+                            50% {
+                                opacity: .7;
+                            }
+                        }
+                    </style>
+                </svg>
+            }
+        </div>
+
+        <!-- Código, título e descrição vindos do Controller -->
+        <div class="status-code">@statusCode</div>
+        <div class="titulo">@titulo</div>
+        <div class="descricao">@descricao</div>
+
+        <!-- Botões -->
+        <div class="acoes">
+            <a href="javascript:history.back()" class="btn btn-secondary">
+                <i class="fas fa-arrow-left"></i> Voltar
+            </a>
+            <a href="~/" class="btn btn-primary">
+                <i class="fas fa-home"></i> Ir para o início
+            </a>
+        </div>
+
+        <!-- Atalhos -->
+        @* <div class="sugestoes">
+            <a href="~/Administrativo/Paciente" class="sugestao-card">
+                <div class="sc-icon"><i class="fas fa-users"></i></div>
+                <div>
+                    <div class="sc-texto">Pacientes</div>
+                    <div class="sc-sub">Ver lista de pacientes</div>
+                </div>
+            </a>
+            <a href="~/Administrativo/Agenda" class="sugestao-card">
+                <div class="sc-icon"><i class="fas fa-calendar-check"></i></div>
+                <div>
+                    <div class="sc-texto">Agenda</div>
+                    <div class="sc-sub">Consultar agendamentos</div>
+                </div>
+            </a>
+        </div> *@
+
+        <!-- Suporte -->
+        <p class="suporte">
+            Precisa de ajuda?
+            <a href="mailto:@emailSuporte">Fale com o suporte</a>
+        </p>
+
+    </div>
+</body>
+</html>

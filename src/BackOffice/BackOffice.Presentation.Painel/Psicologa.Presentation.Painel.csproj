@@ -15,6 +15,11 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Content Remove="Areas\Administrativo\Views\Financeiro\Index.cshtml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="Areas\Administrativo\Views\Financeiro\Index.cshtml" />
     <None Include="Areas\Administrativo\Views\LogAplicacao\Index.cshtml" />
     <None Include="Areas\Administrativo\Views\BlogPost\Index.cshtml" />
     <None Include="Areas\Administrativo\Views\BlogPost\NovoPost.cshtml" />

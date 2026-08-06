@@ -132,6 +132,118 @@ namespace Psicologa.Application.Agendamento.Services
             }
             return (operacao, vr);
         }
+        public (bool, ValidationResult, ResultadoRecorrenciaViewModel) SalvarRecorrente(AgendamentoViewModel dados, string[] requisicao)
+        {
+            var resultado = new ResultadoRecorrenciaViewModel();
+            var vrGeral = new ValidationResult();
+
+            var datas = GerarDatasRecorrencia(
+                dados.DataConsulta,
+                dados.TipoRecorrencia,
+                dados.QuantidadeOcorrencias,
+                dados.DataFimRecorrencia
+            );
+
+            if (!datas.Any())
+            {
+                vrGeral.AddUserMessageError("Não foi possível gerar nenhuma data para a recorrência informada.");
+                return (false, vrGeral, resultado);
+            }
+
+            foreach (var data in datas)
+            {
+                // Monta um ViewModel novo por ocorrência, reaproveitando os dados do "molde"
+                var itemDados = new AgendamentoViewModel
+                {
+                    Id = 0, // sempre novo — nunca reaproveita Id de outra ocorrência
+                    PacienteId = dados.PacienteId,
+                    PacienteNome = dados.PacienteNome,
+                    PsicologoId = dados.PsicologoId,
+                    PsicologoNome = dados.PsicologoNome,
+                    ServicoId = dados.ServicoId,
+                    ServicoNome = dados.ServicoNome,
+                    DataConsulta = data,
+                    HoraInicio = dados.HoraInicio,
+                    TempoSessao = dados.TempoSessao,
+                    Online = dados.Online,
+                    Presencial = dados.Presencial,
+                    StatusAgendamento = dados.StatusAgendamento,
+                    TipoAgendamento = dados.TipoAgendamento,
+                    Ativo = dados.Ativo,
+                    ConfirmouAgendamento = false,   // ocorrências futuras nascem não confirmadas
+                    DataConfirmacao = null,
+                };
+
+                var (sucesso, vrItem) = Salvar(itemDados, requisicao);
+
+                //if (!datas.Any())
+                //{
+                //    vrGeral.AddUserMessageError("Recorrencia", "Não foi possível gerar nenhuma data para a recorrência informada.");
+                //    return (false, vrGeral, resultado);
+                //}
+                if (sucesso)
+                {
+                    resultado.TotalCriados++;
+                    resultado.IdsGerados.Add(itemDados.Id);
+                }
+                else
+                {
+                    resultado.Conflitos.Add($"{data:dd/MM/yyyy}");
+                    // TODO: quando tivermos como ler as mensagens do vrItem, anexar aqui
+                }
+                //if (sucesso)
+                //{
+                //    resultado.TotalCriados++;
+                //    resultado.IdsGerados.Add(itemDados.Id);
+                //}
+                //else
+                //{
+                //    var erros = vrItem?.AddUserMessageError != null && vrItem.AddUserMessageError.Any()
+                //        ? string.Join("; ", vrItem.AddUserMessageError)
+                //        : "erro ao salvar";
+                //    resultado.Conflitos.Add($"{data:dd/MM/yyyy} ({erros})");
+                //}
+            }
+
+            bool operacaoGeral = resultado.TotalCriados > 0;
+            return (operacaoGeral, vrGeral, resultado);
+        }
+
+        private List<DateTime> GerarDatasRecorrencia(DateTime dataInicial, string tipo, int? quantidade, DateTime? dataFim)
+        {
+            var datas = new List<DateTime>();
+            var atual = dataInicial;
+
+            Func<DateTime, DateTime> proximaData = tipo switch
+            {
+                "semanal" => d => d.AddDays(7),
+                "quinzenal" => d => d.AddDays(15),
+                "mensal" => d => d.AddMonths(1),
+                _ => d => d.AddDays(7)
+            };
+
+            bool temDataFimValida = dataFim.HasValue && dataFim.Value > DateTime.MinValue;
+
+            if (temDataFimValida)
+            {
+                while (atual <= dataFim.Value)
+                {
+                    datas.Add(atual);
+                    atual = proximaData(atual);
+                }
+            }
+            else
+            {
+                int qtd = quantidade ?? 1;
+                for (int i = 0; i < qtd; i++)
+                {
+                    datas.Add(atual);
+                    atual = proximaData(atual);
+                }
+            }
+
+            return datas;
+        }
         public AgendamentoDisponibilidadeViewModel ObterDisponibilidade(int psicologoId, DateTime dataConsulta)
         {
             AgendamentoDisponibilidadeViewModel disponibilidade =

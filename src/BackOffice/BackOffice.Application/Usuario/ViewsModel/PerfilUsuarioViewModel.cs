@@ -40,6 +40,8 @@ namespace Psicologa.Application.Usuario.ViewsModel
             GerenciarLogsAplicacao = 13,
             [Description("Gerenciar Documentos")]
             GerenciarDocumentos = 14,
+            [Description("Gerenciar Financeiro")]
+            GerenciarFinanceiro = 15,
 
             [Description("Gerenciar Categorias/Subcategorias Materiais Educativos")]
             GerenciarCategoriasMateriaisEducativos = 100,

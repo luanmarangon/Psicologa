@@ -41,6 +41,23 @@ namespace Psicologa.Application.Agendamento.ViewsModel
         public DateTime DataCriacao { get; set; }
         public DateTime DataAtualizacao { get; set; }
 
+        // ─── Recorrência ───
+        public bool Recorrente { get; set; }
+        public string TipoRecorrencia { get; set; }          // "semanal" | "quinzenal" | "mensal"
+
+        [JsonConverter(typeof(Int32JSONConverter))]
+        public int? QuantidadeOcorrencias { get; set; }
+
+        [JsonConverter(typeof(DateTimeJSONConverter))]
+        public DateTime? DataFimRecorrencia { get; set; }
+    }
+
+
+    public class ResultadoRecorrenciaViewModel
+    {
+        public int TotalCriados { get; set; } = 0;
+        public List<string> Conflitos { get; set; } = new List<string>();
+        public List<int> IdsGerados { get; set; } = new List<int>();
     }
 
     public class AgendamentoConsultaViewModel

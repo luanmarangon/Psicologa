@@ -14,49 +14,40 @@ export default class Index extends Component {
             pesquisar: "",
             iniciando: true,
             aguarde: false,
-            // resultadoPesquisa: [],
-            // legendaResultadoPesquisa: "Últimos usuários",
             confEmpresaModal: false,
             confFuncionamentoModal: false,
-            // usuarioIdSelecionado: "",
-            // pessoaIdSelecionado: "",
-            // pessoaSelecionado: ""
         };
     }
 
     componentDidMount = () => {
-
     }
 
     componentDidUpdate = () => {
         tableSelectable();
     }
 
-
-
     confEmpresaModalAbrir = (item) => {
         this.setState({
             confEmpresaModal: true,
         });
     }
-
     confEmpresaModalFechar = (usuario) => {
         this.setState({
             confEmpresaModal: false,
         });
     }
+
     confFuncionamentoModalAbrir = (item) => {
         this.setState({
             confFuncionamentoModal: true,
         });
     }
-
     confFuncionamentoModalFechar = (usuario) => {
         this.setState({
             confFuncionamentoModal: false,
         });
     }
-
+  
     renderItem = (label, textoBotao, icone, onClick) => {
         return (
             <div
@@ -83,7 +74,7 @@ export default class Index extends Component {
 
 
     render() {
-        const { confEmpresaModal: confEmpresa, confFuncionamentoModal: confFuncionamento } = this.state;
+        const { confEmpresaModal: confEmpresa, confFuncionamentoModal: confFuncionamento, confSubLocacaoModal: confSubLocacao } = this.state;
 
         return (
             <div className="card border-0 shadow-sm rounded-lg overflow-hidden">
@@ -100,12 +91,13 @@ export default class Index extends Component {
                     'clock',
                     () => this.confFuncionamentoModalAbrir({ id: "", pessoaId: "", pessoaNome: "" })
                 )}
-
+               
                 {/* futuros itens */}
                 {/* {this.renderItem('Outro item', 'Acessar', 'user', () => this.outroModal())} */}
 
                 {confEmpresa && (<ConfiguracaoEmpresa onFechar={this.confEmpresaModalFechar} />)}
                 {confFuncionamento && (<ConfiguracaoFuncionamento onFechar={this.confFuncionamentoModalFechar} />)}
+
             </div>
         );
     }

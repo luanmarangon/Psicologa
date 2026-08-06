@@ -84,6 +84,43 @@ namespace Psicologa.Presentation.Painel.Areas.Administrativo.Controllers
             }
             return DefaultJSONResponse(operacao, retorno);
         }
+        [HttpPost]
+        public IActionResult SalvarRecorrente([FromBody] System.Text.Json.JsonElement dados)
+        {
+            var requisicao = _req.ToArray(_ua);
+            bool operacao = false;
+            ValidationResult vr = new ValidationResult();
+
+            AgendamentoViewModel agendamentoVM = null;
+            ResultadoRecorrenciaViewModel resultadoRecorrencia = null;
+            try
+            {
+                agendamentoVM = dados.Deserialize<AgendamentoViewModel>();
+                (operacao, vr, resultadoRecorrencia) = _agendamentoSevice.SalvarRecorrente(agendamentoVM, requisicao);
+
+                if (!operacao)
+                {
+                    AddUserMessage(vr);
+                }
+            }
+            catch (Exception ex)
+            {
+                AddUserMessageError("Um erro ocorreu. Tente novamente");
+            }
+
+            object retorno = null;
+            if (operacao)
+            {
+                retorno = resultadoRecorrencia;
+
+                var mensagem = resultadoRecorrencia.Conflitos.Any()
+                    ? $"{resultadoRecorrencia.TotalCriados} agendamento(s) criado(s). {resultadoRecorrencia.Conflitos.Count} data(s) não puderam ser agendadas."
+                    : $"{resultadoRecorrencia.TotalCriados} agendamento(s) criado(s) com sucesso.";
+
+                AddUserMessageSuccess(mensagem);
+            }
+            return DefaultJSONResponse(operacao, retorno);
+        }
 
         [HttpGet]
         public IActionResult Obter(string id)

@@ -55,18 +55,15 @@
         cadastros.Filhos.Add(new { Titulo = "Convênios", HRef = "Administrativo/Convenio", IconeClass = "fas fa-handshake", Tag = "" });
     }
 
-
     if (permissoes.Contains(PerfilUsuarioViewModel.TpPermissao.GerenciarUsuarios))
     {
         cadastros.Filhos.Add(new { Titulo = "Usuários", HRef = "Administrativo/Usuario", IconeClass = "fas fa-users", Tag = "" });
     }
 
-
     if (cadastros.Filhos.Count > 0)
     {
         sideBarItens.Add(cadastros);
     }
-
 
     var blog = new { Titulo = "Blog", IconeClass = "fas fa-newspaper", Filhos = new List<dynamic>() };
 
@@ -82,8 +79,6 @@
     }
 
     var leads = new { Titulo = "Leads", IconeClass = "fas fa-address-book", Filhos = new List<dynamic>() };
-
-    // var leads = new { Titulo = "Leads", IconClass = "fas fa-address-book", Filhos = new List<dynamic>() };
 
     if(permissoes.Contains(PerfilUsuarioViewModel.TpPermissao.GerenciarLeads))
     {
@@ -108,10 +103,7 @@
         sideBarItens.Add(pacientes);
     }
 
-
     var agendamentos = new { Titulo = "Agendamentos", IconeClass = "fas fa-calendar-alt", Filhos = new List<dynamic>() };
-
-    // var leads = new { Titulo = "Leads", IconClass = "fas fa-address-book", Filhos = new List<dynamic>() };
 
     if(permissoes.Contains(PerfilUsuarioViewModel.TpPermissao.GerenciarAgendamentos))
     {
@@ -121,6 +113,18 @@
     if(agendamentos.Filhos.Count > 0)
     {
         sideBarItens.Add(agendamentos);
+    }
+    
+    var financeiro = new { Titulo = "Financeiro", IconeClass = "fas fa-dollar-sign", Filhos = new List<dynamic>() };
+
+    if (permissoes.Contains(PerfilUsuarioViewModel.TpPermissao.GerenciarFinanceiro))
+    {
+        financeiro.Filhos.Add(new { Titulo = "Gerenciar Financeiro", HRef = "Administrativo/Financeiro", IconeClass = "fas fa-dollar-sign", Tag = "" });
+    }
+
+    if (financeiro.Filhos.Count > 0)
+    {
+        sideBarItens.Add(financeiro);
     }
 
     var configs = new { Titulo = "Configurações", IconeClass = "fas fa-cog", Filhos = new List<dynamic>() };
@@ -134,7 +138,6 @@
     {            
         configs.Filhos.Add(new { Titulo = "Configurações", HRef = "Administrativo/Configuracao", IconeClass = "fas fa-cogs", Tag = "" });
     }
-
 
     if (configs.Filhos.Count > 0)
     {
