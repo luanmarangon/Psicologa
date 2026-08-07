@@ -15,5 +15,13 @@ namespace Psicologa.Domain.Financeiro.Services
         {
             _repository = repository;
         }
+
+
+
+
+        public IEnumerable<Entities.FinanceiroCategoria> ObterTodasCategoria(int tipo)
+        {
+            return _repository.ObterTodasCategoria(tipo);
+        }
     }
 }

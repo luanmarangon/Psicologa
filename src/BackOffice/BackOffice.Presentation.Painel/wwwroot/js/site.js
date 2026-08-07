@@ -313,7 +313,6 @@ function stringPTBRToFloat(strValue) {
     return parseFloat(strValue.replace(".", "").replace(",", "."));
 }
 
-
 function createGUID() {
     return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
         var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
@@ -333,4 +332,8 @@ function tableSelectable() {
 function obterExtensaoArquivo(nomeArquivo) {
     const partes = nomeArquivo.split('.'); 
     return partes.length > 1 ? partes.pop().toLowerCase() : '';
+}
+
+function formatarMoeda(valor) {
+    return (Number(valor) || 0).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
 }

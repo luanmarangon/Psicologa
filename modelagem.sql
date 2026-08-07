@@ -423,36 +423,36 @@ CREATE TABLE Usuario (
 
 
 
-CREATE TABLE CategoriaFinanceira (
-  CategoriaFinanceiraId INT NOT NULL AUTO_INCREMENT,
+CREATE TABLE FinanceiroCategoria (
+  FinanceiroCategoriaId INT NOT NULL AUTO_INCREMENT,
   Nome VARCHAR(100) NULL,
   Tipo INT NULL,
   Ativo TINYINT NULL,
   DataCriacao DATETIME NULL,
   DataAtualizacao DATETIME NULL,
-  PRIMARY KEY (CategoriaFinanceiraId))
+  PRIMARY KEY (FinanceiroCategoriaId))
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8mb4
 COLLATE = utf8mb4_unicode_ci;
 
-CREATE TABLE `Psicologa`.`Financeiro` (
-  `FinanceiroId` INT NOT NULL AUTO_INCREMENT,
-  `Tipo` INT NULL,
-  `Descricao` VARCHAR(300) NULL,
-  `CategoriaId` INT NULL,
-  `Valor` DECIMAL(10,2) NULL,
-  `DataLancamento` DATETIME NULL,
-  `Observacao` VARCHAR(500) NULL,
-  `Ativo` TINYINT NULL,
-  `Quitado` TINYINT NULL,
-  `DataQuitacao` DATETIME NULL,
-  `DataCriacao` DATETIME NULL,
-  `DataAtualizacao` DATETIME NULL,
-  PRIMARY KEY (`FinanceiroId`),
-  INDEX `FK_Financeiro_CategoriaFinanceira_idx` (`CategoriaId` ASC) VISIBLE,
-  CONSTRAINT `FK_Financeiro_CategoriaFinanceira`
-    FOREIGN KEY (`CategoriaId`)
-    REFERENCES `Psicologa`.`CategoriaFinanceira` (`CategoriaFinanceiraId`)
+CREATE TABLE Financeiro (
+  FinanceiroId INT NOT NULL AUTO_INCREMENT,
+  Tipo INT NULL,
+  Descricao VARCHAR(300) NULL,
+  CategoriaId INT NULL,
+  Valor DECIMAL(10,2) NULL,
+  DataLancamento DATETIME NULL,
+  Observacao VARCHAR(500) NULL,
+  Ativo TINYINT NULL,
+  Quitado TINYINT NULL,
+  DataQuitacao DATETIME NULL,
+  DataCriacao DATETIME NULL,
+  DataAtualizacao DATETIME NULL,
+  PRIMARY KEY (FinanceiroId),
+  INDEX FK_Financeiro_FinanceiroCategoria_idx (CategoriaId ASC) VISIBLE,
+  CONSTRAINT FK_Financeiro_FinanceiroCategoria
+    FOREIGN KEY (CategoriaId)
+    REFERENCES Psicologa.FinanceiroCategoria (FinanceiroCategoriaId)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB

@@ -19,11 +19,11 @@ namespace Psicologa.Domain.Financeiro.Entities
         }
 
         public int Id { get; set; }
-        public string Name { get; set; }
+        public string Nome { get; set; }
         public TipoCategoria Tipo { get; set; }
         public bool Ativo { get; set; }
         public DateTime DataCriacao { get; set; }
-        public DateTime DataAlteracao { get; set; }
+        public DateTime DataAtualizacao { get; set; }
 
         public override bool Validar()
         {

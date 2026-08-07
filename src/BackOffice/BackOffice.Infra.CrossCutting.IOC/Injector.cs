@@ -66,6 +66,12 @@ namespace Psicologa.Infra.CrossCutting.IOC
             services.AddScoped(typeof(Domain.Psicologo.Services.PsicologoService));
             services.AddScoped<Domain.Psicologo.Interfaces.Repositories.IPsicologoRepository, Infra.Data.Repository.Psicologo.PsicologoRepository>();
 
+            services.AddScoped(typeof(Domain.Financeiro.Services.FinanceiroCategoriaService));
+            services.AddScoped<Domain.Financeiro.Interfaces.Repositories.IFinanceiroCategoriaRepository, Infra.Data.Repository.Financeiro.FinanceiroCategoriaRepository>();
+
+            services.AddScoped(typeof(Domain.Financeiro.Services.FinanceiroService));
+            services.AddScoped<Domain.Financeiro.Interfaces.Repositories.IFinanceiroRepository, Infra.Data.Repository.Financeiro.FinanceiroRepository>();
+
             #endregion Serviços e Repositórios do Domain.
         }
 
@@ -99,6 +105,11 @@ namespace Psicologa.Infra.CrossCutting.IOC
             services.AddScoped(typeof(Application.Documentos.Services.ApplicationDocumentosService));
 
             services.AddScoped(typeof(Application.Psicologo.Services.ApplicationPsicologoService));
+
+            services.AddScoped(typeof(Application.Financeiro.Services.ApplicationFinanceiroCategoriaService));
+            services.AddScoped(typeof(Application.Financeiro.Services.ApplicationFinanceiroService));
+
+
 
             #endregion Serviços da Application.
         }

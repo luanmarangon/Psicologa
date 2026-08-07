@@ -8,5 +8,6 @@ namespace Psicologa.Domain.Financeiro.Interfaces.Repositories
 {
     public interface IFinanceiroCategoriaRepository : IRepositoryBase<Entities.FinanceiroCategoria>
     {
+        IEnumerable<Entities.FinanceiroCategoria> ObterTodasCategoria(int tipo);
     }
 }

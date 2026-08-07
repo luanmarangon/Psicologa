@@ -26,9 +26,9 @@ namespace Psicologa.Domain.Financeiro.Entities
         public string Observacao { get; set; }
         public bool Ativo { get; set; }
         public bool Quitado { get; set; }
-        public DateTime DataQuitacao { get; set; }
+        public DateTime? DataQuitacao { get; set; }
         public DateTime DataCriacao { get; set; }
-        public DateTime DataAlteracao { get; set; }
+        public DateTime DataAtualizacao { get; set; }
 
 
 

@@ -14,14 +14,16 @@ export default class Cadastro extends Component {
             categorias: [],
             dados: {
                 id: 0,
-                tipo: "despesa", // "despesa" | "receita"
-                categoria: "",
+                tipo: 1, // "despesa" | "receita"
+                categoria: 0,
+                categoriaNome: "",
                 descricao: "",
                 dataLancamento: "",
                 valor: "",
                 observacao: "",
                 quitado: false, // "pago" para despesa, "recebido" para receita — mesmo campo
                 dataQuitacao: "",
+                ativo: true,
             },
         };
     }
@@ -43,7 +45,7 @@ export default class Cadastro extends Component {
     obterCategorias = (tipo) => {
         this.setState({ aguardeCategorias: true });
 
-        return HTTPClient.get(`Administrativo/CategoriaFinanceira/ObterTodas?tipo=${tipo}`)
+        return HTTPClient.get(`Administrativo/Financeiro/ObterCategorias?tipo=${tipo}`)
             .then(r => r.json())
             .then(r => {
                 if (!r.success) {
@@ -122,20 +124,19 @@ export default class Cadastro extends Component {
     }
 
     handleTipoChange = (tipo) => {
-        // Ao trocar o tipo, limpa a categoria pois as opções mudam e recarrega a lista certa
+        // tipo: 1 = despesa, 2 = receita
         this.setState(prev => ({
             dados: { ...prev.dados, tipo, categoria: "" }
         }), () => {
             this.obterCategorias(tipo);
         });
     }
-
     // ─── Render ──────────────────────────────────────────────────────────────
 
     render() {
         const { aguarde, aguardeCategorias, aguardeSalvar, categorias, dados: form } = this.state;
         const edicao = !!this.props.idEdicao;
-        const ehReceita = form.tipo === "receita";
+        const ehReceita = form.tipo === 2; // 2 = receita
 
         let saida =
             <div className="modal fade show d-block" tabIndex="-1" style={{ backgroundColor: 'rgba(0,0,0,0.5)' }}>
@@ -165,7 +166,7 @@ export default class Cadastro extends Component {
                                                 <button
                                                     type="button"
                                                     className={`btn ${!ehReceita ? 'btn-danger' : 'btn-outline-danger'}`}
-                                                    onClick={() => this.handleTipoChange('despesa')}
+                                                    onClick={() => this.handleTipoChange(1)}
                                                 >
                                                     <i className="fas fa-arrow-circle-down mr-1"></i>
                                                     Despesa
@@ -173,7 +174,7 @@ export default class Cadastro extends Component {
                                                 <button
                                                     type="button"
                                                     className={`btn ${ehReceita ? 'btn-success' : 'btn-outline-success'}`}
-                                                    onClick={() => this.handleTipoChange('receita')}
+                                                    onClick={() => this.handleTipoChange(2)}
                                                 >
                                                     <i className="fas fa-arrow-circle-up mr-1"></i>
                                                     Receita
@@ -221,9 +222,11 @@ export default class Cadastro extends Component {
                                         <input
                                             type="date"
                                             className="form-control"
-                                            value={form.dataLancamento}
+                                            value={formatarDataPtBrToInputDate(form.dataLancamento)}
                                             onChange={(e) => this.handleChange('dataLancamento', e.target.value)}
                                         />
+                                        {/* <input type="date" className="form-control" id="txtDataNascimento" value={formatarDataPtBrToInputDate(form.dataLancamento)}
+                                            onChange={(e) => this.setState({ dados: { ...this.state.dados, dataLancamento: e.target.value } })} /> */}
                                     </div>
 
                                     {/* VALOR */}
@@ -233,13 +236,31 @@ export default class Cadastro extends Component {
                                             <div className="input-group-prepend">
                                                 <span className="input-group-text">R$</span>
                                             </div>
-                                            <input
+                                            {/* <input
                                                 type="number"
                                                 className="form-control"
                                                 min={0}
                                                 step="0.01"
-                                                value={form.valor}
+                                                value={(form.valor)}
                                                 onChange={(e) => this.handleChange('valor', e.target.value)}
+                                            /> */}
+                                            {/* <input
+                                                type="text"
+                                                inputMode="numeric"
+                                                className="form-control"
+                                                value={floatToPTBRString(form.valor || 0)}
+                                                // onChange={this.handleValorChange}
+                                                onChange={(e) => this.setState({ dados: { ...this.state.dados, valor: e.target.value } })} 
+                                            /> */}
+                                            <input
+                                                type="text"
+                                                inputMode="decimal"
+                                                className="form-control"
+                                                value={form.valor}
+                                                onChange={(e) => {
+                                                    const valor = e.target.value.replace(',', '.');
+                                                    this.setState({ dados: { ...this.state.dados, valor } });
+                                                }}
                                             />
                                         </div>
                                     </div>
@@ -291,7 +312,7 @@ export default class Cadastro extends Component {
                                             <input
                                                 type="date"
                                                 className="form-control"
-                                                value={form.dataQuitacao}
+                                                value={formatarDataPtBrToInputDate(form.dataQuitacao)}
                                                 onChange={(e) => this.handleChange('dataQuitacao', e.target.value)}
                                             />
                                         </div>

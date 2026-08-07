@@ -4,6 +4,7 @@ import { createRoot } from 'react-dom/client';
 
 import Cadastro from './components/Cadastro';
 import LoadingIndicator from '../../components/LoadingIndicator';
+import ResumoFinanceiroModal from './components/ResumoFinanceiroModal';
 
 export default class Index extends Component {
 
@@ -17,6 +18,7 @@ export default class Index extends Component {
             legendaResultadoPesquisa: "Últimos lançamentos",
             cadastroModal: false,
             lancamentoIdSelecionado: "",
+            resumoModal: false,
             filtro: "0", // 0=Todos, 1=Despesas, 2=Receitas, 3=Pendentes
             resumo: {
                 totalReceitas: 0,
@@ -132,15 +134,15 @@ export default class Index extends Component {
             });
     }
 
-    formatarMoeda = (valor) => {
-        return (Number(valor) || 0).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
-    }
+    // formatarMoeda = (valor) => {
+    //     return (Number(valor) || 0).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+    // }
 
-    formatarData = (data) => {
-        if (!data) return '';
-        const [ano, mes, dia] = data.split('T')[0].split('-');
-        return `${dia}/${mes}/${ano}`;
-    }
+    // formatarData = (data) => {
+    //     if (!data) return '';
+    //     const [ano, mes, dia] = data.split('T')[0].split('-');
+    //     return `${dia}/${mes}/${ano}`;
+    // }
 
 
     render() {
@@ -157,7 +159,7 @@ export default class Index extends Component {
                             <div className="card">
                                 <div className="card-body py-2">
                                     <div className="small text-muted">Receitas</div>
-                                    <div className="h5 mb-0 text-success">{this.formatarMoeda(resumo.totalReceitas)}</div>
+                                    <div className="h5 mb-0 text-success">{formatarMoeda(resumo.totalReceitas)}</div>
                                 </div>
                             </div>
                         </div>
@@ -165,7 +167,7 @@ export default class Index extends Component {
                             <div className="card">
                                 <div className="card-body py-2">
                                     <div className="small text-muted">Despesas</div>
-                                    <div className="h5 mb-0 text-danger">{this.formatarMoeda(resumo.totalDespesas)}</div>
+                                    <div className="h5 mb-0 text-danger">{formatarMoeda(resumo.totalDespesas)}</div>
                                 </div>
                             </div>
                         </div>
@@ -174,7 +176,7 @@ export default class Index extends Component {
                                 <div className="card-body py-2">
                                     <div className="small text-muted">Saldo</div>
                                     <div className={`h5 mb-0 ${resumo.saldo >= 0 ? 'text-success' : 'text-danger'}`}>
-                                        {this.formatarMoeda(resumo.saldo)}
+                                        {formatarMoeda(resumo.saldo)}
                                     </div>
                                 </div>
                             </div>
@@ -217,6 +219,9 @@ export default class Index extends Component {
                         <div className="form-group">
                             <button type="button" className="btn btn-primary" onClick={this.cadastroModalAbrir}>Novo</button>
                         </div>
+                        <button type="button" className="btn btn-outline-primary" onClick={() => this.setState({ resumoModal: true })}>
+                            <i className="fas fa-chart-pie mr-1"></i>Resumo
+                        </button>
                     </div>
 
                     <div className="row">
@@ -257,20 +262,26 @@ export default class Index extends Component {
                                                     this.state.resultadoPesquisa.map(item => {
                                                         return (
                                                             <tr key={item.id}>
-                                                                <td>
-                                                                    {item.tipo === "receita"
+                                                                {/* <td>
+                                                                    {item.tipo === 2
                                                                         ? <span className="badge badge-success">Receita</span>
                                                                         : <span className="badge badge-danger">Despesa</span>
                                                                     }
+                                                                </td> */}
+                                                                <td>
+                                                                    <span className={`badge ${Number(item.tipo) === 2 ? 'badge-success' : 'badge-danger'}`}>
+                                                                        {item.tipoDescricao}
+                                                                    </span>
                                                                 </td>
                                                                 <td>{item.categoriaNome}</td>
-                                                                <td>{this.formatarData(item.dataLancamento)}</td>
+                                                                <td>{(item.dataLancamento)}</td>
+                                                                {/* <td>{this.formatarData(item.dataLancamento)}</td> */}
                                                                 <td>{item.descricao}</td>
-                                                                <td className="text-right font-weight-bold">{this.formatarMoeda(item.valor)}</td>
+                                                                <td className="text-right font-weight-bold">{floatToPTBRString(item.valor)}</td>
                                                                 <td>
                                                                     {item.quitado
-                                                                        ? <span className="badge badge-light border">{item.tipo === "receita" ? "Recebido" : "Pago"}</span>
-                                                                        : <span className="badge badge-warning">{item.tipo === "receita" ? "A receber" : "Pendente"}</span>
+                                                                        ? <span className="badge badge-light border">{item.tipo === 2 ? "Recebido" : "Pago"}</span>
+                                                                        : <span className="badge badge-warning">{item.tipo === 2 ? "A receber" : "Pendente"}</span>
                                                                     }
                                                                 </td>
                                                                 <td>
@@ -297,7 +308,7 @@ export default class Index extends Component {
                     </div>
 
                     {this.state.cadastroModal ? <Cadastro onFechar={this.cadastroModalFechar} idEdicao={this.state.lancamentoIdSelecionado} /> : null}
-
+                    {this.state.resumoModal && <ResumoFinanceiroModal onFechar={() => this.setState({ resumoModal: false })} />}
                 </div>
             </div>
         return (saida);
