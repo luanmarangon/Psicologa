@@ -144,7 +144,7 @@ namespace Psicologa.Presentation.Painel.Areas.Administrativo.Controllers
         {
             var requisicao = _req.ToArray(_ua);
 
-            int idLimpo = Convert.ToInt32(id);
+            int idLimpo = Convert.ToInt32(Criptografia.Descriptografar(id));
             var servico = _prontuarioSessaoService.ObterSessao(idLimpo, requisicao);
             return DefaultJSONResponse(true, servico);
         }

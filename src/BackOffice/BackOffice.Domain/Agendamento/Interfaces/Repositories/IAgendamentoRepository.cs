@@ -16,5 +16,6 @@ namespace Psicologa.Domain.Agendamento.Interfaces.Repositories
         Domain.Agendamento.Entities.Agendamento ObterPorId(int id);
         Domain.Agendamento.Entities.Agendamento ObterAgendamentoPorPaciente(int pacienteId, int psicologoId, DateTime data);
         bool Excluir(int id);
+        bool AtualizarStatusAgendamento(int agendamentoId, int statusId);
     }
 }

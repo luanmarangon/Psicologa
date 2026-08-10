@@ -65,6 +65,12 @@ namespace Psicologa.Application.ProntuarioSessao.Services
             }
             //Log da operação
 
+            if(!string.IsNullOrEmpty(sessao.Evolucao) && agendamento.StatusAgendamento != (int)Domain.Agendamento.Entities.Agendamento.TpStatusAgendamento.Realizado)
+            {
+                agendamento.StatusAgendamento = (int)Domain.Agendamento.Entities.Agendamento.TpStatusAgendamento.Realizado;
+                operacao = _agendamentoService.AtualizarStatusAgendamento(agendamento.Id, agendamento.StatusAgendamento, requisicao);
+            }
+    
             if (operacao)
             {
                 _logAplicacaoService.Registrar(sessaoVM.Id, requisicao, dadosExistente, sessao, "ProntuarioSessao", "ApplicationProntuarioSessaoService", "EvoluirSessao");

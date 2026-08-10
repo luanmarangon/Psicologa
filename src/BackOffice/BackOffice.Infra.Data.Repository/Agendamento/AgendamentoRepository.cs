@@ -239,6 +239,29 @@ namespace Psicologa.Infra.Data.Repository.Agendamento
             }
             return agendamento;
         }
+
+        public bool AtualizarStatusAgendamento(int agendamentoId, int statusId)
+        {
+            bool operacao = false;
+            try
+            {
+                using (var cmd = DbContext.CreateCommand())
+                {
+                    cmd.CommandText = @"Update Agendamento set StatusAgendamento = @statusId where AgendamentoId = @agendamentoId";
+                    cmd.ParameterAdd("@statusId", statusId);
+                    cmd.ParameterAdd("@agendamentoId", agendamentoId);
+                    operacao = cmd.ExecuteNonQuery() > 0;
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Erro ao atualizar status do agendamento.");
+            }
+            return operacao;
+        }
+
+
+
         public bool Excluir(int id)
         {
             bool operacao = false;

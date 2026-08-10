@@ -40,6 +40,10 @@ namespace Psicologa.Domain.Agendamento.Services
             return _repository.ObterPorId(id);
         }
 
+        public bool AtualizarStatusAgendamento(int agendamentoId, int statusId)
+        {
+            return _repository.AtualizarStatusAgendamento(agendamentoId, statusId);
+        }
         public Domain.Agendamento.Entities.Agendamento ObterAgendamentoPorPaciente(int pacienteId, int psicologoId, DateTime data)
         {
             return _repository.ObterAgendamentoPorPaciente(pacienteId, psicologoId, data);

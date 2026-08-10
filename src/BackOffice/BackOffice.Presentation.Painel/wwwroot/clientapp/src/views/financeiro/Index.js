@@ -212,16 +212,17 @@ export default class Index extends Component {
                                     </div>
 
                                     <button type="button" className="btn btn-default" onClick={() => this.pesquisar()}><i className="fas fa-search"></i></button>
+
+
+                                    <button type="button" className="btn btn-primary" onClick={this.cadastroModalAbrir}>
+                                        <i className="fas fa-plus mr-1"></i>Novo
+                                    </button>
+                                    <button type="button" className="btn btn-outline-primary" onClick={() => this.setState({ resumoModal: true })}>
+                                        <i className="fas fa-chart-pie mr-1"></i>Resumo
+                                    </button>
                                 </div>
                             </div>
                         </div>
-
-                        <div className="form-group">
-                            <button type="button" className="btn btn-primary" onClick={this.cadastroModalAbrir}>Novo</button>
-                        </div>
-                        <button type="button" className="btn btn-outline-primary" onClick={() => this.setState({ resumoModal: true })}>
-                            <i className="fas fa-chart-pie mr-1"></i>Resumo
-                        </button>
                     </div>
 
                     <div className="row">

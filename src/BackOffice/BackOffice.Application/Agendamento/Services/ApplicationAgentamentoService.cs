@@ -18,6 +18,7 @@ namespace Psicologa.Application.Agendamento.Services
         private readonly Domain.Configuracao.Services.ConfiguracaoService _configuracaoService;
         private readonly Domain.Prontuario.Services.ProntuarioService _prontuarioService;
         private readonly Domain.ProntuarioSessao.Services.ProntuarioSessaoService _prontuarioSessaoService;
+
         //private readonly ApplicationProntuarioSessaoService _appProntuarioSessaoService;
         private readonly IAppSettings _appSettings;
 
@@ -120,8 +121,8 @@ namespace Psicologa.Application.Agendamento.Services
 
                     var operacaoSessao = _prontuarioSessaoService.EvoluirSessao(prontSessao);
                     operacao = operacao && operacaoSessao;
-                    
-                    if(operacao)
+
+                    if (operacao)
                         _logAplicacaoService.Registrar(prontSessao.Id, requisicao, prontSessao, null, "ProntuarioSessao", "ApplicationAgentamentoService", "Salvar");
                 }
             }
@@ -132,6 +133,7 @@ namespace Psicologa.Application.Agendamento.Services
             }
             return (operacao, vr);
         }
+
         public (bool, ValidationResult, ResultadoRecorrenciaViewModel) SalvarRecorrente(AgendamentoViewModel dados, string[] requisicao)
         {
             var resultado = new ResultadoRecorrenciaViewModel();
@@ -244,6 +246,7 @@ namespace Psicologa.Application.Agendamento.Services
 
             return datas;
         }
+
         public AgendamentoDisponibilidadeViewModel ObterDisponibilidade(int psicologoId, DateTime dataConsulta)
         {
             AgendamentoDisponibilidadeViewModel disponibilidade =
@@ -337,6 +340,7 @@ namespace Psicologa.Application.Agendamento.Services
 
             return disponibilidade;
         }
+
         public IEnumerable<AgendamentoConsultaViewModel> Consultar(string nome, Domain.Agendamento.Entities.Agendamento.tpFiltro filtro, PaginacaoDados paginacao)
         {
             List<AgendamentoConsultaViewModel> retorno = new List<AgendamentoConsultaViewModel>();
@@ -355,18 +359,44 @@ namespace Psicologa.Application.Agendamento.Services
 
             return retorno;
         }
+
         public AgendamentoConsultaViewModel ObterPorId(int id)
         {
             var agendamento = _servicoAgendamento.ObterPorId(id);
 
             return FormatarRetornoConsulta(agendamento);
         }
+
         public AgendamentoConsultaViewModel ObterAgendamentoPorPaciente(int prontuarioId, int psicologoId, DateTime data)
         {
             var paciente = _prontuarioService.Obter(prontuarioId);
-            var agendamento = _servicoAgendamento.ObterAgendamentoPorPaciente(paciente.Paciente.Pessoa.Id, psicologoId, data);
+            var agendamento = _servicoAgendamento.ObterAgendamentoPorPaciente(paciente.Paciente.Id, psicologoId, data);
             return FormatarRetornoConsulta(agendamento);
         }
+
+        public bool AtualizarStatusAgendamento(int agendamentoId, int agendamentoStatusId, string[] requisicao)
+        {
+            bool operacao = false;
+            var dadosExistente = _servicoAgendamento.ObterPorId(agendamentoId);
+            operacao = _servicoAgendamento.AtualizarStatusAgendamento(agendamentoId, agendamentoStatusId);
+            if (operacao)
+            {
+                var dadosAtualizado = _servicoAgendamento.ObterPorId(agendamentoId);
+                _logAplicacaoService.Registrar(agendamentoId, requisicao, dadosExistente, dadosAtualizado, "Agendamento", "ApplicationAgentamentoService", "AtualizarStatusAgendamento");
+            }
+            return operacao;
+        }
+        //public bool AtualizarStatusAgendamento(int agendamentoId, int agendamentoStatusId) 
+        //{
+        //    bool operacao = false;
+        //    operacao = _servicoAgendamento.AtualizarStatusAgendamento(agendamentoId, agendamentoStatusId);
+
+        //    if(operacao)
+
+
+        //    return operacao;
+        //}
+
         public bool Excluir(int agendamentoId, string[] requisicao)
         {
             bool operacao = false;
@@ -378,7 +408,6 @@ namespace Psicologa.Application.Agendamento.Services
 
             operacao = _prontuarioSessaoService.ExcluirSessao(prontSessao.Id);
 
-
             if (operacao)
             {
                 _logAplicacaoService.Registrar(agendamentoId, requisicao, dadosExistente, null, "Agendamento", "ApplicationAgentamentoService", "Excluir");
@@ -387,6 +416,7 @@ namespace Psicologa.Application.Agendamento.Services
 
             return operacao;
         }
+
         internal AgendamentoConsultaViewModel FormatarRetornoConsulta(Domain.Agendamento.Entities.Agendamento agendamento)
         {
             if (agendamento == null)
@@ -424,6 +454,7 @@ namespace Psicologa.Application.Agendamento.Services
                 TipoAgendamento = (int)agendamento.TipoAgendamento
             };
         }
+
         public void Dispose()
         {
         }

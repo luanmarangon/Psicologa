@@ -83,8 +83,8 @@ export default class ResumoFinanceiroModal extends Component {
 
     render() {
         const { aguarde, dataInicio, dataFim, resumo } = this.state;
-        const totalReceita = Number(resumo.totalReceita) || 0;
-        const totalDespesa = Number(resumo.totalDespesa) || 0;
+        const totalReceita = Number(resumo.totalReceitas) || 0;
+        const totalDespesa = Number(resumo.totalDespesas) || 0;
         const saldo = Number(resumo.saldo) || 0;
 
         // percentuais para o gráfico de barras (base: o maior dos dois valores)

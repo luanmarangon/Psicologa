@@ -1,10 +1,8 @@
-﻿using Newtonsoft.Json;
-using Shared.Infra.CrossCutting.JSONConverter;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Text.Json.Serialization;
+using Org.BouncyCastle.Asn1.X509;
+using Shared.Infra.CrossCutting.JSONConverter;
 
 namespace Psicologa.Application.ProntuarioSessao.ViewsModel
 {
@@ -19,7 +17,7 @@ namespace Psicologa.Application.ProntuarioSessao.ViewsModel
         public DateTime DataSessao { get; set; }
         public string HoraInicio { get; set; }
         public string HoraFim { get; set; }
-        [JsonConverter(typeof(EncryptIdJSONConverter))]
+        //[JsonConverter(typeof(EncryptIdJSONConverter))]
         public int PsicologaId { get; set; }
         public int TipoAtendimento { get; set; }
         public string Evolucao { get; set; }
